@@ -8,7 +8,6 @@ const expressSession = require('express-session');
 const sharedSession = require('express-socket.io-session');
 const express = require('express');
 const http = require('http');
-const orm = require('orm');
 
 /** 
  * This function sets up some boilerplate for express and socket.io
