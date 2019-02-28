@@ -16,7 +16,6 @@ io.on('connection', socket => {
 
 const model = require('./model.js');
 
-
 listen(port, () => {
   console.log("server listening on port", port);
 });
