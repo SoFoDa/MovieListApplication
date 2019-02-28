@@ -203,5 +203,9 @@ const Activity_movie = sequelize.define('activity_movie', {
 
 // ====== MODEL DEFINITIONS END ======
 
-
+module.exports.getUsers = () => {
+    return User.findAll({
+      attributes: ['user_id', 'username'],    
+    })
+}
 

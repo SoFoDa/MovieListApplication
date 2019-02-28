@@ -5,6 +5,7 @@
     "start": "node app/index.js"
   },
   "dependencies": {
+    "bcrypt": "^3.0.4",
     "better-logging": "^3.0.1",
     "express": "^4.16.4",
     "express-session": "^1.15.6",
