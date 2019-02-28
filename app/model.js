@@ -2,9 +2,12 @@
 "use strict";
 
 const Sequelize = require('sequelize');
-var config = require('./credentials')
-const sequelize = new Sequelize(config.database, config.user, config.password, {
-  host: config.host,
+// TODO FIX!!!!!!!!!!!!!!
+var config = require('./credentials');
+console.log(config.db);
+
+const sequelize = new Sequelize('mydb', 'root', 'korvar123', {
+  host: 'localhost',
   dialect: 'mysql',
   operatorsAliases: false,
 
@@ -25,7 +28,7 @@ sequelize
     console.error('Unable to connect to the database:', err);
   });
 
-// ====== MODEL DEFINITIONS ======
+// ====== MODEL DEFINITIONS START ======
 
 const User = sequelize.define('user', {
     user_id: {
@@ -37,17 +40,36 @@ const User = sequelize.define('user', {
     username: {
         type: Sequelize.STRING
     }
-});
+}, {timestamps: false});
+
+const User_friend = sequelize.define('user_friend', {
+    user_id: {
+        type: Sequelize.INTEGER,
+     
+        references: {
+          model: 'user',
+     
+          key: 'user_id',
+        }
+    },
+    friend_id: {
+        type: Sequelize.INTEGER,
+     
+        references: {
+          model: 'user',
+     
+          key: 'user_id',
+        }
+    },
+})
 
 const User_info = sequelize.define('user_info', {
     user_id: {
         type: Sequelize.INTEGER,
      
         references: {
-          // This is a reference to another model
-          model: User,
+          model: 'user',
      
-          // This is the column name of the referenced model
           key: 'user_id',
         }
     },
@@ -57,10 +79,129 @@ const User_info = sequelize.define('user_info', {
     created: {
         type: Sequelize.DATE
     }
-});
+}, {timestamps: false});
 
-const Movie = sequalize.define('movie', {
+const Movie = sequelize.define('movie', {
     movie_id: {
-        type: sequalize.INTEGER,
+        type: Sequelize.INTEGER
+    },
+    title: {
+        type: Sequelize.STRING
+    },
+    runtime: {
+        type: Sequelize.INTEGER
+    }, 
+    genre: {
+        type: Sequelize.STRING
+    }, 
+    release_year: {
+        type: Sequelize.INTEGER
+    }, 
+    director: {
+        type: Sequelize.STRING
     }
-})
+}, {timestamps: false});
+
+const Seen = sequelize.define('seen', {
+    user_id: {
+        type: Sequelize.INTEGER,
+     
+        references: {
+          model: User,
+     
+          key: 'user_id',
+        }
+    },
+    movie_id: {
+        type: Sequelize.INTEGER,
+     
+        references: {
+          model: 'movie',
+     
+          key: 'movie_id',
+        }
+    },
+    favourite: {
+        type: Sequelize.BOOLEAN
+    },
+    rating: {
+        type: Sequelize.INTEGER
+    },
+    date: {
+        type: Sequelize.DATE
+    }
+}, {timestamps: false})
+
+const Activity = sequelize.define('movie', {
+    user_id: {
+        type: Sequelize.INTEGER,
+     
+        references: {
+          model: User,
+     
+          key: 'user_id',
+        }
+    },
+    activity_id: {
+        type: Sequelize.INTEGER,
+     
+        references: {
+          model: 'activity_friend',
+     
+          key: 'activity_id',
+        }
+    },
+    date: {
+        type: Sequelize.INTEGER
+    }
+}, {timestamps: false});
+
+const Activity_friend = sequelize.define('activity_friend', {
+    activity_id: {
+        type: Sequelize.INTEGER,
+     
+        references: {
+          model: 'activity',
+     
+          key: 'activity_id',
+        }
+    },
+    friend_id: {
+        type: Sequelize.INTEGER,
+
+        references: {
+            model: 'user',
+       
+            key: 'user_id',
+          }
+    }
+}, {timestamps: false})
+
+const Activity_movie = sequelize.define('activity_movie', {
+    activity_id: {
+        type: Sequelize.INTEGER,
+     
+        references: {
+          model: 'activity',
+     
+          key: 'activity_id',
+        }
+    },
+    movie_id: {
+        type: Sequelize.INTEGER,
+
+        references: {
+            model: 'movie',
+       
+            key: 'movie_id',
+          }
+    },
+    type: {
+        type: Sequelize.STRING
+    }
+}, {timestamps: false})
+
+// ====== MODEL DEFINITIONS END ======
+
+
+
