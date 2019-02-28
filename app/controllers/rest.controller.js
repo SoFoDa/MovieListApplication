@@ -4,12 +4,11 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 
 router.get('/hello', function (req, res) {  
-  bcrypt.hash('korvar123', 10, function(err, hash) {
-    console.log(hash);
-  });
-  res.json({
-    response: 'OK'
-  });
-});
+  model.getUsers().then(function(data) {
+    res.json({
+      response: data
+    });
+  })
+}); 
 
 module.exports = router;
