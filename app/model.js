@@ -40,7 +40,7 @@ const User = sequelize.define('user', {
     username: {
         type: Sequelize.STRING
     }
-}, {timestamps: false});
+}, {timestamps: false, freezeTableName: true});
 
 const User_friend = sequelize.define('user_friend', {
     user_id: {
@@ -61,7 +61,7 @@ const User_friend = sequelize.define('user_friend', {
           key: 'user_id',
         }
     },
-})
+}, {timestamps: false, freezeTableName: true})
 
 const User_info = sequelize.define('user_info', {
     user_id: {
@@ -79,7 +79,7 @@ const User_info = sequelize.define('user_info', {
     created: {
         type: Sequelize.DATE
     }
-}, {timestamps: false});
+}, {timestamps: false, freezeTableName: true});
 
 const Movie = sequelize.define('movie', {
     movie_id: {
@@ -100,7 +100,7 @@ const Movie = sequelize.define('movie', {
     director: {
         type: Sequelize.STRING
     }
-}, {timestamps: false});
+}, {timestamps: false, freezeTableName: true});
 
 const Seen = sequelize.define('seen', {
     user_id: {
@@ -130,7 +130,7 @@ const Seen = sequelize.define('seen', {
     date: {
         type: Sequelize.DATE
     }
-}, {timestamps: false})
+}, {timestamps: false, freezeTableName: true})
 
 const Activity = sequelize.define('movie', {
     user_id: {
@@ -154,7 +154,7 @@ const Activity = sequelize.define('movie', {
     date: {
         type: Sequelize.INTEGER
     }
-}, {timestamps: false});
+}, {timestamps: false, freezeTableName: true});
 
 const Activity_friend = sequelize.define('activity_friend', {
     activity_id: {
@@ -175,7 +175,7 @@ const Activity_friend = sequelize.define('activity_friend', {
             key: 'user_id',
           }
     }
-}, {timestamps: false})
+}, {timestamps: false, freezeTableName: true})
 
 const Activity_movie = sequelize.define('activity_movie', {
     activity_id: {
@@ -199,9 +199,13 @@ const Activity_movie = sequelize.define('activity_movie', {
     type: {
         type: Sequelize.STRING
     }
-}, {timestamps: false})
+}, {timestamps: false, freezeTableName: true})
 
 // ====== MODEL DEFINITIONS END ======
 
-
+module.exports.getUsers = () => {
+    return User.findAll({
+      attributes: ['user_id', 'username'],    
+    })
+}
 
