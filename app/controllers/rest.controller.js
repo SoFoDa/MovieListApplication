@@ -3,12 +3,26 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 
-router.get('/hello', function (req, res) {  
-  model.getUsers().then(function(data) {
-    res.json({
-      response: data
-    });
-  })
+router.post('/authenticate', function (req, res) { 
+  // TODO load db hash 
+  let hash = '123';
+  bcrypt.compare(req.body.password, hash).then(function(correctHash) {
+    if(correctHash) {
+      res.json({
+        auth: 'authkey',
+        username: 'username',
+        user_id: 'user_id',
+        name: 'Johan',
+      });
+    } else {
+      res.json({
+        auth: '',
+        username: '',
+        user_id: '0',
+        name: '',
+      });
+    }
+  });
 }); 
 
 module.exports = router;

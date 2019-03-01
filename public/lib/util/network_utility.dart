@@ -34,7 +34,7 @@ class NetworkUtility {
     return http.post(url, body: body).then((response) {
       final String res = response.body;
       final int statusCode = response.statusCode;
-
+      print(statusCode);
       if (statusCode < 200 || statusCode > 400 || json == null) {
         throw new Exception("Post request failed.");
       }
