@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import './home_page.dart' as home_page;
-import './stats_page.dart' as stats_page;
+import './views/home.view.dart' as home;
+import './views/stats.view.dart' as stats;
 
 void main() => runApp(MyApp());
 
@@ -111,8 +111,8 @@ class _MovieListAppState extends State<_MovieListApp> with SingleTickerProviderS
       body: new TabBarView(
         controller: controller,
         children: <Widget>[          
-          home_page.HomePage(),                     
-          stats_page.StatsPage(),          
+          home.Home(),                     
+          stats.Stats(),          
         ]
       )
     );
