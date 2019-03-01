@@ -4,9 +4,9 @@ import 'package:http/http.dart' as http;
 
 class NetworkUtility {
   // make the class singleton, i.e. only create one object and reuse.
-  static final NetworkUtility _netutil = new NetworkUtility._internal();
+  static final NetworkUtility _netUtil = new NetworkUtility._internal();
   factory NetworkUtility() {
-    return _netutil;
+    return _netUtil;
   }
   NetworkUtility._internal();
 
