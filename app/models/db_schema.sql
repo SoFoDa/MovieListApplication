@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`User` (
   `user_id` INT NOT NULL AUTO_INCREMENT,
   `password_hash` VARCHAR(60) NOT NULL,
   `username` VARCHAR(45) NOT NULL,
+  `auth` VARCHAR(60) NOT NULL,
   PRIMARY KEY (`user_id`),
   UNIQUE INDEX `username_UNIQUE` (`username` ASC),
   UNIQUE INDEX `password_hash_UNIQUE` (`password_hash` ASC))

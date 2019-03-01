@@ -34,9 +34,24 @@ class NetworkUtility {
     return http.post(url, body: body).then((response) {
       final String res = response.body;
       final int statusCode = response.statusCode;
-      print(statusCode);
+
       if (statusCode < 200 || statusCode > 400 || json == null) {
         throw new Exception("Post request failed.");
+      }
+      return _decoder.convert(res);
+    });
+  }
+
+  /// Makes a put request to url.
+  /// 
+  /// Returns json decoded result.
+  Future<dynamic> put(String url, Map body) {
+    return http.put(url, body: body).then((response) {
+      final String res = response.body;
+      final int statusCode = response.statusCode;
+
+      if (statusCode < 200 || statusCode > 400 || json == null) {
+        throw new Exception("Put request failed.");
       }
       return _decoder.convert(res);
     });
