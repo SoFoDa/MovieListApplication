@@ -8,29 +8,66 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: _Login(),
+      home: Login(),      
     );
   }
 }
 
-class _Login extends StatelessWidget {
+// TODO move into own file
+class Login extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body:Center(
-        child: RaisedButton(
-          child: Text('Log in'),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => _MovieListApp()),
-            );
-          },
-        ),
+      body: Column(
+        children: <Widget>[
+          Container(
+            padding: EdgeInsets.only(top: 80.0, left: 25.0, right: 25.0),
+            child: TextField(
+              decoration:InputDecoration(
+                labelText: 'username'
+                //TODO labelStyle
+              )
+            )
+          ),
+          Container(
+            padding: EdgeInsets.only(top: 20.0, left: 25.0, right: 25.0),
+            child: TextField(
+              decoration:InputDecoration(
+                labelText: 'email'
+                //TODO labelStyle
+              )
+            )
+          ),
+          Container(
+            padding: EdgeInsets.only(top: 55.0),
+            child: Center(
+              child: RaisedButton(
+                child: Text('Log in'),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => _MovieListApp()),
+                  );
+                },
+              ),
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.only(top: 20.0),
+            child: Center(
+              child: RaisedButton(
+                child: Text('Register'),
+                // TODO implement register
+                onPressed: () {},
+              ),
+            ),
+          ),
+        ],        
       ),
     );
   }
 }
+
 
 class _MovieListApp extends StatefulWidget {
   @override
