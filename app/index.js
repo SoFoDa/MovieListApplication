@@ -1,7 +1,10 @@
+require('dotenv').load();
+
 const setupBoilerplate = require('./boilerplate/setup');
 
 const { app, io, listen } =  setupBoilerplate();
-const port = 8989;
+
+const port = process.env.PORT;
 
 // Bind REST controller to /api/*
 const router = require('./controllers/rest.controller.js');

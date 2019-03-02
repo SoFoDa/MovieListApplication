@@ -216,7 +216,6 @@ module.exports.getUser = (username) => {
 module.exports.registerUser = (regUsername, regPassword) => {
     return User.create({username: regUsername, password_hash: regPassword}).then(result => {
         console.log('success');
-        return true;
     }).catch(err => {
         return false;
     });
