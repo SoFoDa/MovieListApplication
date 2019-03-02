@@ -8,6 +8,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'MovieListApplication',      
       home: Login(),      
     );
   }
@@ -33,7 +34,7 @@ class Login extends StatelessWidget {
             padding: EdgeInsets.only(top: 20.0, left: 25.0, right: 25.0),
             child: TextField(
               decoration:InputDecoration(
-                labelText: 'email'
+                labelText: 'password'
                 //TODO labelStyle
               )
             )
@@ -93,8 +94,15 @@ class _MovieListAppState extends State<_MovieListApp> with SingleTickerProviderS
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text("MovieList"), 
+        title: new Text(
+          "MovieList",
+          style: TextStyle(
+            fontSize: 25
+          ),
+        ), 
         backgroundColor: Colors.redAccent,
+        // set to false for removal of back button
+        automaticallyImplyLeading: true,
       ),  
 
       bottomNavigationBar: new Material(
