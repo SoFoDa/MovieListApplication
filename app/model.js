@@ -32,7 +32,8 @@ sequelize
 
 const User = sequelize.define('user', {
     user_id: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        primaryKey: true
     },
     password_hash: {
         type: Sequelize.STRING
@@ -203,9 +204,20 @@ const Activity_movie = sequelize.define('activity_movie', {
 
 // ====== MODEL DEFINITIONS END ======
 
-module.exports.getUsers = () => {
-    return User.findAll({
-      attributes: ['user_id', 'username'],    
+module.exports.getUser = (username) => {
+    return User.findOne({
+      attributes: ['user_id', 'username', 'password_hash'],  
+      where: {
+          username: username
+      }  
     })
+};
+
+module.exports.registerUser = (regUsername, regPassword) => {
+    return User.create({username: regUsername, password_hash: regPassword}).then(result => {
+        console.log('success');
+    }).catch(err => {
+        return false;
+    });
 }
 
