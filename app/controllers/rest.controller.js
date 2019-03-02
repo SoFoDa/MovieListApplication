@@ -29,14 +29,14 @@ router.post('/authorize', function (req, res) {
         } else {
           res.json({
             user_id: 0,
-            error: 'Authentication error, invalid username or password.',
+            error: 'Authentication error, invalid username or password',
             status: '403'
           });
         }
       });
     }).catch(err => {
       res.json({
-        error: 'Bad authentication request.',
+        error: 'Bad authentication request',
         status: '400'
       });
     });
@@ -88,10 +88,14 @@ const verifyToken = (req, res, next) => {
         });
       } else {
         req.decoded = decoded;
-        // TODO verify id and name match w/ request
-        console.log(decoded.user_id);
-        console.log(decoded.username);
-        next();
+        if (req.body.username == decoded.username && req.body.user_id == decoded.user_id) {
+          next();
+        } else {
+          res.json({
+            status: '403',
+            message: 'Token does not match user'
+          });
+        }
       }
     });
   } else {
