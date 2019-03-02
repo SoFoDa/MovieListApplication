@@ -72,6 +72,44 @@ router.put('/register', function (req, res) {
   });
 });
 
-// todo write check token method
+// === VERIFY
+const verifyToken = (req, res, next) => {
+  let token = req.headers['authorization'];
+  // check for undefined
+  if (token) {
+    if (token.startsWith('Bearer ')) {
+      token = token.slice(7, token.length);
+    }
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+      if (err) {
+        res.json({
+          status: '403',
+          message: 'Token not valid'
+        });
+      } else {
+        req.decoded = decoded;
+        // TODO verify id and name match w/ request
+        console.log(decoded.user_id);
+        console.log(decoded.username);
+        next();
+      }
+    });
+  } else {
+    res.json({
+      status: '400',
+      message: 'Token not supplied'
+    });
+  }
+}
+
+// === PROTECTED ROUTES
+
+router.get('/users', verifyToken, function(req, res) {
+  console.log('VERIFIED');
+  res.json({
+    status: '200',
+    message: 'Valid token'
+  });
+});
 
 module.exports = router;
