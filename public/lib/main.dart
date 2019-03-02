@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import './views/home.view.dart' as home;
 import './views/stats.view.dart' as stats;
+import './views/login.view.dart' as login;
 
 void main() => runApp(MyApp());
 
@@ -13,71 +14,23 @@ class MyApp extends StatelessWidget {
         primaryColor: Color(0xFF133658),
         accentColor: Colors.redAccent,
       ),
-      home: Login(),      
+      initialRoute: '/',
+      routes: {
+        // When we navigate to the "/" route, build the FirstScreen Widget
+        '/': (context) => login.Login(),
+        // When we navigate to the "/second" route, build the SecondScreen Widget
+        '/home': (context) => MovieListApp(),
+      },           
     );
   }
 }
 
-// TODO move into own file
-class Login extends StatelessWidget {
+class MovieListApp extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: <Widget>[
-          Container(
-            padding: EdgeInsets.only(top: 80.0, left: 25.0, right: 25.0),
-            child: TextField(                 
-              decoration:InputDecoration(                        
-                labelText: 'username',               
-              )
-            )
-          ),
-          Container(
-            padding: EdgeInsets.only(top: 20.0, left: 25.0, right: 25.0),
-            child: TextField(
-              decoration:InputDecoration(
-                labelText: 'password'                
-              )
-            )
-          ),
-          Container(
-            padding: EdgeInsets.only(top: 55.0),
-            child: Center(
-              child: RaisedButton(                
-                child: Text('Log in'),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => _MovieListApp()),
-                  );
-                },
-              ),
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.only(top: 20.0),
-            child: Center(
-              child: RaisedButton(                
-                child: Text('Register'),
-                // TODO implement register
-                onPressed: () {},
-              ),
-            ),
-          ),
-        ],        
-      ),
-    );
-  }
+  MovieListAppState createState() => MovieListAppState();
 }
 
-
-class _MovieListApp extends StatefulWidget {
-  @override
-  _MovieListAppState createState() => _MovieListAppState();
-}
-
-class _MovieListAppState extends State<_MovieListApp> with SingleTickerProviderStateMixin{
+class MovieListAppState extends State<MovieListApp> with SingleTickerProviderStateMixin{
   TabController controller;
 
   @override
@@ -97,7 +50,7 @@ class _MovieListAppState extends State<_MovieListApp> with SingleTickerProviderS
     return new Scaffold(
       appBar: new AppBar(
         title: new Text(
-          "MovieList",
+          "MovieList!",
           style: TextStyle(
             fontSize: 25
           ),
