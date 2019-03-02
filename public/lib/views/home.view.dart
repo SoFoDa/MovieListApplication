@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../widgets/activity_card.dart' as activity_card;
+import 'package:public/models/activity.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -6,13 +8,23 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> with SingleTickerProviderStateMixin{
-  // Static example data
+  // static example data  
+  List<Activity> activities = [
+    new Activity('SoFoDa', 'friend', '2/3-2019', null, ActivityFriend('johanKJIP')),
+    new Activity('SoFoDa', 'movie', '3/3-2019', new ActivityMovie('Seen', 'The Big Sick', 'Comedy/Drama'), null),
+    new Activity('johanKJIP', 'movie', '7/3-2019', new ActivityMovie('Seen', 'Thor: Ragnarok', 'Action'), null),    
+  ];
+  
+  // debug example
   List<String> movies = ['Mad Max: Fury Road', 
                          'Hot Fuzz', 
                          'Thor: Ragnarok', 
                          'The Lego Movie', 
                          'Manchester by the Sea',
                          'Birdman'];
+
+  // TODO implement websocket get method for Activity objects  
+  // List<Activity> getActivities();
 
   @override
   void initState(){
@@ -30,30 +42,29 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin{
       body: Column(
         children: <Widget>[
           Container(
-            child: AppBar(
-              title: Text(
-                'Activity feed',
+            color:Colors.redAccent,
+            width: MediaQuery.of(context).size.width,
+            height: 35,
+            child: Center(
+              child: Text(
+                'Activity feed',                
                 style: TextStyle(
-                  fontSize: 20
+                  color: Colors.white,
+                  fontSize: 17, 
+                  fontWeight: FontWeight.w500,                                   
                 ),
-              ),                
-              backgroundColor: Colors.redAccent,            
-              automaticallyImplyLeading: false,              
-            )
+              ),   
+            ),     
           ),
           Expanded(
             child: Center(        
               child: ListView.builder(
-                itemCount: movies.length,
+                itemCount: activities.length,
                 itemBuilder: (context, index) {
-                  return ListTile(             
-                    // TODO format card design with activity info
-                    subtitle: Card(
-                      child: Container(
-                        padding: EdgeInsets.all(35.0),
-                        child: Text('${movies[index]}'),
-                      ),
-                    ),             
+                  return ListTile(                                 
+                    // TODO add style
+                    title: Text('${activities[index].date}'),
+                    subtitle: activity_card.ActivityCard(activities[index]),                                      
                   );
                 },
               ),          

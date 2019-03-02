@@ -9,6 +9,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'MovieListApplication',      
+      theme: ThemeData(
+        primaryColor: Color(0xFF133658),
+        accentColor: Colors.redAccent,
+      ),
       home: Login(),      
     );
   }
@@ -23,10 +27,9 @@ class Login extends StatelessWidget {
         children: <Widget>[
           Container(
             padding: EdgeInsets.only(top: 80.0, left: 25.0, right: 25.0),
-            child: TextField(
-              decoration:InputDecoration(
-                labelText: 'username'
-                //TODO labelStyle
+            child: TextField(                 
+              decoration:InputDecoration(                        
+                labelText: 'username',               
               )
             )
           ),
@@ -34,15 +37,14 @@ class Login extends StatelessWidget {
             padding: EdgeInsets.only(top: 20.0, left: 25.0, right: 25.0),
             child: TextField(
               decoration:InputDecoration(
-                labelText: 'password'
-                //TODO labelStyle
+                labelText: 'password'                
               )
             )
           ),
           Container(
             padding: EdgeInsets.only(top: 55.0),
             child: Center(
-              child: RaisedButton(
+              child: RaisedButton(                
                 child: Text('Log in'),
                 onPressed: () {
                   Navigator.push(
@@ -56,7 +58,7 @@ class Login extends StatelessWidget {
           Container(
             padding: EdgeInsets.only(top: 20.0),
             child: Center(
-              child: RaisedButton(
+              child: RaisedButton(                
                 child: Text('Register'),
                 // TODO implement register
                 onPressed: () {},
@@ -99,14 +101,13 @@ class _MovieListAppState extends State<_MovieListApp> with SingleTickerProviderS
           style: TextStyle(
             fontSize: 25
           ),
-        ), 
-        backgroundColor: Colors.redAccent,
+        ),         
         // set to false for removal of back button
         automaticallyImplyLeading: true,
       ),  
 
       bottomNavigationBar: new Material(
-        color: Colors.redAccent,
+        color: Color(0xFF133658),
         child: new TabBar(
           controller: controller,          
           tabs: <Tab>[
