@@ -8,11 +8,16 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> with SingleTickerProviderStateMixin{
+  // TODO make sure variable gets properly disposed
+  String previousDate;
+
   // static example data  
   List<Activity> activities = [
-    new Activity('SoFoDa', 'friend', '2/3-2019', null, ActivityFriend('johanKJIP')),
-    new Activity('SoFoDa', 'movie', '3/3-2019', new ActivityMovie('Seen', 'The Big Sick', 'Comedy/Drama'), null),
-    new Activity('johanKJIP', 'movie', '7/3-2019', new ActivityMovie('Seen', 'Thor: Ragnarok', 'Action'), null),    
+    new Activity('SoFoDa', 'movie', '2/3 2019', new ActivityMovie('Seen', 'Blade Runner 2049', 'Sci-Fi '), null),            
+    new Activity('SoFoDa', 'friend', '3/3 2019', null, ActivityFriend('johanKJIP')),
+    new Activity('johanKJIP', 'movie', '3/3 2019', new ActivityMovie('Seen', 'Mad Max: Fury Road', 'Action'), null), 
+    new Activity('SoFoDa', 'movie', '5/3 2019', new ActivityMovie('Seen', 'Spotlight', 'Drama'), null),   
+    
   ];
   
   // debug example
@@ -26,52 +31,56 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin{
   // TODO implement websocket get method for Activity objects  
   // List<Activity> getActivities();
 
+  Column checkPrevDate(String date, int index) {  
+    if(index == 0) {
+      previousDate = date;
+      return Column(children: <Widget>[Container(margin: EdgeInsets.only(top: 13), child: Text(date, style: TextStyle(fontSize: 10, color: Colors.white),))]);
+    }  
+    if(date != previousDate) {
+      previousDate = date;
+      return Column(children: <Widget>[Divider(color: Colors.grey), Text(date, style: TextStyle(fontSize: 10, color: Colors.white),)]);
+    }
+    return null;
+  }
+
   @override
-  void initState(){
+  void initState(){    
     super.initState();    
   }
 
   @override
-  void dispose(){        
+  void dispose(){      
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(      
-      body: Column(
-        children: <Widget>[
-          Container(
-            color:Colors.redAccent,
-            width: MediaQuery.of(context).size.width,
-            height: 35,
-            child: Center(
-              child: Text(
-                'Activity feed',                
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 17, 
-                  fontWeight: FontWeight.w500,                                   
-                ),
-              ),   
-            ),     
+    return Scaffold(    
+      body: Container(   
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            // Add one stop for each color. Stops should increase from 0 to 1
+            stops: [0.1, 0.7, 0.9],
+            colors: [
+              // Colors are easy thanks to Flutter's Colors class.
+              Color(0xFF245ADC),
+              Color(0xFF594CD2),
+              Color(0xFF913AC5),              
+            ],
           ),
-          Expanded(
-            child: Center(        
-              child: ListView.builder(
-                itemCount: activities.length,
-                itemBuilder: (context, index) {
-                  return ListTile(                                 
-                    // TODO add style
-                    title: Text('${activities[index].date}'),
-                    subtitle: activity_card.ActivityCard(activities[index]),                                      
-                  );
-                },
-              ),          
-            ),
-          ),          
-        ],
-      )      
+        ),             
+        child: ListView.builder(
+          itemCount: activities.length,
+          itemBuilder: (context, index) {
+            return ListTile(    
+              title: checkPrevDate(activities[index].date, index),
+              subtitle: activity_card.ActivityCard(activities[index]),                                      
+            );
+          },
+        ),     
+      ),                  
     );
   }
 }

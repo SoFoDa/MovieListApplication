@@ -5,7 +5,7 @@ class Stats extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(      
       child: Center(        
-        child: const Text('StatsPage\n(Better icon needed)'),           
+        child: const Text('Stats page'),           
       ),
     );
   }
