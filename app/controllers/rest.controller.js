@@ -10,7 +10,7 @@ router.post('/authorize', function (req, res) {
   if (username != undefined) {
     username = username.toLowerCase();
     model.getUser(username).then(function(user) {
-      let hash = user.password_hash;
+      let hash = user.password;
       bcrypt.compare(req.body.password, hash).then(function(correctHash) {
         if(correctHash) {
           // Auth token
@@ -108,11 +108,14 @@ const verifyToken = (req, res, next) => {
 
 // === PROTECTED ROUTES
 
-router.get('/users', verifyToken, function(req, res) {
-  console.log('VERIFIED');
-  res.json({
-    status: '200',
-    message: 'Valid token'
+router.get('/userActivity', verifyToken, function(req, res) {
+  model.getUserActivity(req.body.username).then(function(data) {
+    if(data[0] != undefined) {
+      res.json({
+        status: '200',
+        data: data[0].username
+      });
+    }
   });
 });
 

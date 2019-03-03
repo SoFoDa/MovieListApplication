@@ -24,11 +24,10 @@ DROP TABLE IF EXISTS `mydb`.`User` ;
 
 CREATE TABLE IF NOT EXISTS `mydb`.`User` (
   `user_id` INT NOT NULL AUTO_INCREMENT,
-  `password_hash` VARCHAR(60) NOT NULL,
+  `password` VARCHAR(60) NOT NULL,
   `username` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`user_id`),
-  UNIQUE INDEX `username_UNIQUE` (`username` ASC),
-  UNIQUE INDEX `password_hash_UNIQUE` (`password_hash` ASC))
+  UNIQUE INDEX `username_UNIQUE` (`username` ASC))
 ENGINE = InnoDB;
 
 
@@ -84,8 +83,9 @@ CREATE TABLE IF NOT EXISTS `mydb`.`Movie` (
   `title` VARCHAR(45) NOT NULL,
   `runtime` INT NOT NULL,
   `genre` VARCHAR(45) NOT NULL,
-  `release_year` YEAR NOT NULL,
+  `release_year` INT NOT NULL,
   `director` VARCHAR(45) NOT NULL,
+  `poster_path` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`movie_id`),
   UNIQUE INDEX `title_UNIQUE` (`title` ASC))
 ENGINE = InnoDB;
@@ -159,6 +159,7 @@ DROP TABLE IF EXISTS `mydb`.`Activity` ;
 CREATE TABLE IF NOT EXISTS `mydb`.`Activity` (
   `activity_id` INT NOT NULL AUTO_INCREMENT,
   `user_id` INT NOT NULL,
+  `date` DATE NOT NULL,
   INDEX `fk_Activity_User1_idx` (`user_id` ASC),
   PRIMARY KEY (`activity_id`),
   CONSTRAINT `fk_Activity_User1`
@@ -221,5 +222,3 @@ ENGINE = InnoDB;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
-
-INSERT INTO User (password_hash, username) VALUES ('$2b$10$m5KlgVK7z.OC3piUGgk2YOT1ke0bepiwTrydFbHy8ltXslu6pl1NS', 'Johan');

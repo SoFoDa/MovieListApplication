@@ -35,7 +35,7 @@ const User = sequelize.define('user', {
         type: Sequelize.INTEGER,
         primaryKey: true
     },
-    password_hash: {
+    password: {
         type: Sequelize.STRING
     },
     username: {
@@ -206,18 +206,23 @@ const Activity_movie = sequelize.define('activity_movie', {
 
 module.exports.getUser = (username) => {
     return User.findOne({
-      attributes: ['user_id', 'username', 'password_hash'],  
+      attributes: ['user_id', 'username', 'password'],  
       where: {
           username: username
       }  
     })
-};
+}
 
 module.exports.registerUser = (regUsername, regPassword) => {
-    return User.create({username: regUsername, password_hash: regPassword}).then(result => {
+    return User.create({username: regUsername, password: regPassword}).then(result => {
         console.log('success');
     }).catch(err => {
         return false;
     });
+}
+
+module.exports.getUserActivity = (username) => {
+    // TODO sql injection risk?
+    return sequelize.query("CALL getUserActivity('" + username + "');");
 }
 
