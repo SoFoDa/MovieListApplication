@@ -5,6 +5,9 @@ TRUNCATE table User_friend;
 TRUNCATE table User_info; 
 TRUNCATE table Movie;
 TRUNCATE table Seen;
+TRUNCATE table Activity;
+TRUNCATE table Activity_friend;
+TRUNCATE table Activity_movie;
 SET FOREIGN_KEY_CHECKS = 1;
 
 INSERT INTO User (username, password) VALUES ('JohanKJIP', '$2b$10$m5KlgVK7z.OC3piUGgk2YOT1ke0bepiwTrydFbHy8ltXslu6pl1NS');
