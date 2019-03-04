@@ -2,31 +2,32 @@
 "use strict";
 
 const Sequelize = require('sequelize');
+const Op = Sequelize.Op
 // TODO FIX!!!!!!!!!!!!!!
 var config = require('./credentials');
 console.log(config.db);
 
 const sequelize = new Sequelize('mydb', 'root', 'korvar123', {
-  host: 'localhost',
-  dialect: 'mysql',
-  operatorsAliases: false,
+    host: 'localhost',
+    dialect: 'mysql',
+    operatorsAliases: false,
 
-  pool: {
-    max: 5,
-    min: 0,
-    acquire: 30000,
-    idle: 10000
-  }
+    pool: {
+        max: 5,
+        min: 0,
+        acquire: 30000,
+        idle: 10000
+    }
 });
 
 sequelize
-  .authenticate()
-  .then(() => {
-    console.log('Connection to database has been established successfully.');
-  })
-  .catch(err => {
-    console.error('Unable to connect to the database:', err);
-  });
+    .authenticate()
+    .then(() => {
+        console.log('Connection to database has been established successfully.');
+    })
+    .catch(err => {
+        console.error('Unable to connect to the database:', err);
+    });
 
 // ====== MODEL DEFINITIONS START ======
 
@@ -84,7 +85,8 @@ const User_info = sequelize.define('user_info', {
 
 const Movie = sequelize.define('movie', {
     movie_id: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        primaryKey: true
     },
     title: {
         type: Sequelize.STRING
@@ -206,10 +208,10 @@ const Activity_movie = sequelize.define('activity_movie', {
 
 module.exports.getUser = (username) => {
     return User.findOne({
-      attributes: ['user_id', 'username', 'password'],  
-      where: {
-          username: username
-      }  
+        attributes: ['user_id', 'username', 'password'],  
+        where: {
+            username: username
+        }  
     })
 }
 
@@ -226,3 +228,18 @@ module.exports.getUserActivity = (username) => {
     return sequelize.query("CALL getUserActivity('" + username + "');");
 }
 
+module.exports.getMovieFromId = (id) => {
+    return Movie.findOne({
+        where: {
+            movie_id: id
+        }  
+    })
+}
+
+module.exports.getMoviesFromTitle = (mTitle) => {
+    return Movie.findAll({
+        where: {
+            title: {[Op.like]: '%'  + mTitle + '%'}
+        }  
+    })
+}

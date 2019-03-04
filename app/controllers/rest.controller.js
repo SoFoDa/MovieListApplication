@@ -72,6 +72,28 @@ router.put('/register', function (req, res) {
   });
 });
 
+router.get('/getMovieFromId', function(req, res) {
+  model.getMovieFromId(req.query.movie_id).then(function(data) {
+    if(data != undefined) {
+      res.json({
+        status: '200',
+        data: data
+      });
+    }
+  });
+});
+
+router.get('/searchMovie', function(req, res) {
+  model.getMoviesFromTitle(req.query.title).then(function(data) {
+    if(data != undefined) {
+      res.json({
+        status: '200',
+        data: data
+      });
+    }
+  });
+});
+
 // === VERIFY
 const verifyToken = (req, res, next) => {
   let token = req.headers['authorization'];
