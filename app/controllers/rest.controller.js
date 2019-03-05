@@ -161,7 +161,7 @@ router.get('/userActivity', verifyToken, function(req, res) {
 * @user_id: The user id
 * @username: The username
 */
-router.get('/getSeenMovies', verifyToken, function(req, res) {
+router.get('/seenMovies', verifyToken, function(req, res) {
   model.getSeenMovies(req.body.user_id).spread(function(result, metadata) {
     if(result != undefined) {
       res.json({
