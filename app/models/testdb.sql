@@ -23,8 +23,8 @@ INSERT INTO User_friend (user_id, friend_id) VALUES (1, 2);
 INSERT INTO User_friend (user_id, friend_id) VALUES (2, 1);
 INSERT INTO User_friend (user_id, friend_id) VALUES (2, 3);
 
-INSERT INTO Movie (title, runtime, genre, release_year, director, poster_path) VALUES ('Star Wars: Episode IV - A New Hope', 121, 'Action', 1977, 'Irvin Kershner', 'sw-ep4');
-INSERT INTO Movie (title, runtime, genre, release_year, director, poster_path) VALUES ('Blade Runner 2049', 164, 'Action', 2017, 'Ridley Scott', 'br-2049');
+INSERT INTO Movie (title, runtime, genre, release_year, director, poster_path) VALUES ('Star Wars: Episode IV - A New Hope', 121, 'Action', 1977, 'Irvin Kershner', 'posters/star-wars-ep4.jpg');
+INSERT INTO Movie (title, runtime, genre, release_year, director, poster_path) VALUES ('Blade Runner 2049', 164, 'Action', 2017, 'Ridley Scott', 'posters/blade-runner-2049.jpg');
 
 INSERT INTO Seen (user_id, movie_id, date) VALUES (1, 1, NOW());
 INSERT INTO Seen (user_id, movie_id, date) VALUES (2, 1, NOW());

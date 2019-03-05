@@ -39,7 +39,7 @@ module.exports = () => {
     app.use(express.urlencoded({
         extended: true
     }));
-    app.use(express.static(path.join(__dirname, '..', '..', 'public')) /*
+    app.use(express.static(path.join(__dirname, '..', 'resources')) /*
         express.static(absolutePathToPublicDirectory)
         This will serve static files from the public directory, starting with index.html
     */);
