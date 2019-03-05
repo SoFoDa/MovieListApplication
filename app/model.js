@@ -227,8 +227,8 @@ module.exports.registerUser = (regUsername, regPassword) => {
     });
 }
 
-module.exports.getUserActivity = (username) => {
-    return sequelize.query("CALL getUserActivity(?);", { replacements: [username], type: sequelize.QueryTypes.SELECT });
+module.exports.getUserActivity = (user_id) => {
+    return sequelize.query("CALL getUserActivity(?);", { replacements: [user_id], type: sequelize.QueryTypes.SELECT });
 }
 
 module.exports.getMovieFromId = (id) => {

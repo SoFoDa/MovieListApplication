@@ -143,11 +143,11 @@ const verifyToken = (req, res, next) => {
 * @username: The username
 */
 router.get('/userActivity', verifyToken, function(req, res) {
-  model.getUserActivity(req.body.username).then(function(data) {
-    if(data[0] != undefined) {
+  model.getUserActivity(req.body.user_id).spread(function(result, metadata) {
+    if(result != undefined) {
       res.json({
         status: '200',
-        data: data[0]
+        data: result
       });
     } else {
       res.json({
