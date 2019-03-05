@@ -140,6 +140,7 @@ const verifyToken = (req, res, next) => {
 
 /* Body params: 
 * @user_id: The user
+* @username: The username
 */
 router.get('/userActivity', verifyToken, function(req, res) {
   model.getUserActivity(req.body.username).then(function(data) {
@@ -150,14 +151,15 @@ router.get('/userActivity', verifyToken, function(req, res) {
       });
     } else {
       res.json({
-        status: 'error',
+        status: '500',
       })
     }
   });
 });
 
 /* Body params: 
-* @user_id: The user
+* @user_id: The user id
+* @username: The username
 */
 router.get('/getSeenMovies', verifyToken, function(req, res) {
   model.getSeenMovies(req.body.user_id).spread(function(result, metadata) {
@@ -171,19 +173,16 @@ router.get('/getSeenMovies', verifyToken, function(req, res) {
 });
 
 /* Body params: 
-* @user_id: The user
+* @user_id: The user id
+* @username: The username
 * @movie_id: The movie
 * @seen_status: true -> seen, false -> not seen
 */
 router.post('/setSeen', verifyToken, function(req, res) {
-  model.setSeenMovie(req.body.user_id, req.body.movie_id, req.body.seen_status).then(function(result) {
-    if(result != undefined) {
-      res.json({
-        status: '200',
-        data: result
-      });
-    }
-  });
+  model.setSeenMovie(req.body.user_id, req.body.movie_id, req.body.seen_status);
+  res.json({
+    status: '200'
+  })
 });
 
 module.exports = router;

@@ -108,6 +108,7 @@ const Movie = sequelize.define('movie', {
 const Seen = sequelize.define('seen', {
     user_id: {
         type: Sequelize.INTEGER,
+        primaryKey: true,
      
         references: {
           model: User,
@@ -250,6 +251,28 @@ module.exports.getSeenMovies = (user_id) => {
     return sequelize.query("CALL getSeenMovies(?);", { replacements: [user_id], type: sequelize.QueryTypes.SELECT });
 }
 
-module.exports.setSeenMovie = (user_id, movie_id, seen) => {
-    
+module.exports.setSeenMovie = (muser_id, mmovie_id, mseen) => {
+    let type = (mseen == 'true');
+    Seen.findOne({
+        where: {
+            movie_id: mmovie_id,
+            user_id: muser_id
+        }
+    }).then((entry) => {
+        if (entry != undefined && !type) {
+            Seen.destroy({
+                where: {
+                    movie_id: mmovie_id,
+                    user_id: muser_id
+                }
+            })
+        } else if (entry == undefined && type) {
+            const newEntry = Seen.build({
+                user_id: muser_id,
+                movie_id: mmovie_id,
+                date: Date.now()
+            });
+            newEntry.save();
+        }
+    })
 }
