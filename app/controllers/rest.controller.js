@@ -128,8 +128,19 @@ const verifyToken = (req, res, next) => {
   }
 }
 
-// === PROTECTED ROUTES
+// === PROTECTED ROUTES ===
+//
+// ALL REQUESTS BELOW THIS NEEDS A HEADER WITH THE FOLLOWING FORMAT:
+// authentication: Bearer $token
+// IMPORTANT: lower case a in authentication.
+//
+// You also NEED to have username and user_id in body.
+// username: $username
+// user_id: $user id
 
+/* Body params: 
+* @user_id: The user
+*/
 router.get('/userActivity', verifyToken, function(req, res) {
   model.getUserActivity(req.body.username).then(function(data) {
     if(data[0] != undefined) {
@@ -145,8 +156,27 @@ router.get('/userActivity', verifyToken, function(req, res) {
   });
 });
 
+/* Body params: 
+* @user_id: The user
+*/
 router.get('/getSeenMovies', verifyToken, function(req, res) {
   model.getSeenMovies(req.body.user_id).spread(function(result, metadata) {
+    if(result != undefined) {
+      res.json({
+        status: '200',
+        data: result
+      });
+    }
+  });
+});
+
+/* Body params: 
+* @user_id: The user
+* @movie_id: The movie
+* @seen_status: true -> seen, false -> not seen
+*/
+router.post('/setSeen', verifyToken, function(req, res) {
+  model.setSeenMovie(req.body.user_id, req.body.movie_id, req.body.seen_status).then(function(result) {
     if(result != undefined) {
       res.json({
         status: '200',

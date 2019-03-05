@@ -249,3 +249,7 @@ module.exports.getMoviesFromTitle = (mTitle) => {
 module.exports.getSeenMovies = (user_id) => {
     return sequelize.query("CALL getSeenMovies(?);", { replacements: [user_id], type: sequelize.QueryTypes.SELECT });
 }
+
+module.exports.setSeenMovie = (user_id, movie_id, seen) => {
+    
+}
