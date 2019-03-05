@@ -3,7 +3,12 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const omdb = require("../util/omdb.js");
 
+/* Body params: 
+* @username: The username
+* @password: The password
+*/
 router.post('/authorize', function (req, res) { 
   let username = req.body.username;
   console.log(username);
@@ -43,8 +48,11 @@ router.post('/authorize', function (req, res) {
   }
 }); 
 
+/* Body params: 
+* @username: The username
+* @password: The password
+*/
 router.put('/register', function (req, res) {
-  console.log('here');
   bcrypt.hash(req.body.password, 10, function(err, hash) {
     // save user
     model.registerUser(req.body.username, hash).then(function(response) {
@@ -72,6 +80,9 @@ router.put('/register', function (req, res) {
   });
 });
 
+/* URL params: 
+* @movie_id: ID of the movie.
+*/
 router.get('/getMovieFromId', function(req, res) {
   model.getMovieFromId(req.query.movie_id).then(function(data) {
     if(data != undefined) {
@@ -83,14 +94,34 @@ router.get('/getMovieFromId', function(req, res) {
   });
 });
 
+/* URL params: 
+* @title: Title of the movie
+*/
 router.get('/searchMovie', function(req, res) {
   model.getMoviesFromTitle(req.query.title).then(function(data) {
     if(data != undefined) {
       res.json({
         status: '200',
-        data: data
+        data: data.body
       });
     }
+  });
+});
+
+/* URL params: 
+* @title: Title of the movie
+*/
+router.get('/omdb/movie', function(req, res) {
+  let title = encodeURIComponent(req.query.title.replace(" ", "+"));
+  let url = `http://www.omdbapi.com/?apikey=${process.env.OMDB_KEY}&t=${title}`;
+  console.log(url);
+  fetch(url, {
+    json: true,
+  }).then(res => res.json()
+  ).then(data => { 
+    res.json({
+      data: data
+    })
   });
 });
 

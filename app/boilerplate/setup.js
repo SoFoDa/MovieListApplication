@@ -9,6 +9,9 @@ const sharedSession = require('express-socket.io-session');
 const express = require('express');
 const http = require('http');
 
+require('es6-promise').polyfill();
+require('isomorphic-fetch');
+
 /** 
  * This function sets up some boilerplate for express and socket.io
  * - Creates express app
