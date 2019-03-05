@@ -207,11 +207,14 @@ const Activity_movie = sequelize.define('activity_movie', {
 // ====== MODEL DEFINITIONS END ======
 
 module.exports.getUser = (username) => {
+    console.log('Getting user: ' +  username);
     return User.findOne({
         attributes: ['user_id', 'username', 'password'],  
         where: {
             username: username
-        }  
+        }
+    }).catch(err => {
+        return undefined;
     })
 }
 
@@ -224,8 +227,7 @@ module.exports.registerUser = (regUsername, regPassword) => {
 }
 
 module.exports.getUserActivity = (username) => {
-    // TODO sql injection risk?
-    return sequelize.query("CALL getUserActivity('" + username + "');");
+    return sequelize.query("CALL getUserActivity(?);", { replacements: [username], type: sequelize.QueryTypes.SELECT });
 }
 
 module.exports.getMovieFromId = (id) => {
@@ -242,4 +244,8 @@ module.exports.getMoviesFromTitle = (mTitle) => {
             title: {[Op.like]: '%'  + mTitle + '%'}
         }  
     })
+}
+
+module.exports.getSeenMovies = (user_id) => {
+    return sequelize.query("CALL getSeenMovies(?);", { replacements: [user_id], type: sequelize.QueryTypes.SELECT });
 }

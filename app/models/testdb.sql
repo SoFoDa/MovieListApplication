@@ -10,13 +10,13 @@ TRUNCATE table Activity_friend;
 TRUNCATE table Activity_movie;
 SET FOREIGN_KEY_CHECKS = 1;
 
-INSERT INTO User (username, password) VALUES ('JohanKJIP', '$2b$10$m5KlgVK7z.OC3piUGgk2YOT1ke0bepiwTrydFbHy8ltXslu6pl1NS');
+INSERT INTO User (username, password) VALUES ('johankjip', '$2b$10$m5KlgVK7z.OC3piUGgk2YOT1ke0bepiwTrydFbHy8ltXslu6pl1NS');
 INSERT INTO User_info (user_id, name, created) VALUES (1, 'Johan', NOW());
-INSERT INTO User (username, password) VALUES ('Sofoda', '$2b$10$m5KlgVK7z.OC3piUGgk2YOT1ke0bepiwTrydFbHy8ltXslu6pl1NS');
+INSERT INTO User (username, password) VALUES ('sofoda', '$2b$10$m5KlgVK7z.OC3piUGgk2YOT1ke0bepiwTrydFbHy8ltXslu6pl1NS');
 INSERT INTO User_info (user_id, name, created) VALUES (2, 'David', NOW());
-INSERT INTO User (username, password) VALUES ('Vrooomstah', '$2b$10$m5KlgVK7z.OC3piUGgk2YOT1ke0bepiwTrydFbHy8ltXslu6pl1NS');
+INSERT INTO User (username, password) VALUES ('vrooomstah', '$2b$10$m5KlgVK7z.OC3piUGgk2YOT1ke0bepiwTrydFbHy8ltXslu6pl1NS');
 INSERT INTO User_info (user_id, name, created) VALUES (3, 'Erik', NOW());
-INSERT INTO User (username, password) VALUES ('ElonMusk', '$2b$10$m5KlgVK7z.OC3piUGgk2YOT1ke0bepiwTrydFbHy8ltXslu6pl1NS');
+INSERT INTO User (username, password) VALUES ('elonmusk', '$2b$10$m5KlgVK7z.OC3piUGgk2YOT1ke0bepiwTrydFbHy8ltXslu6pl1NS');
 INSERT INTO User_info (user_id, name, created) VALUES (4, 'Elon Musk', NOW());
 
 INSERT INTO User_friend (user_id, friend_id) VALUES (1, 2);

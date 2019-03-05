@@ -15,7 +15,7 @@ router.post('/authorize', function (req, res) {
         if(correctHash) {
           // Auth token
           // Create a token
-          const payload = { username: user.username, user_id: user.user_id };
+          const payload = { username: user.username.toLowerCase(), user_id: user.user_id };
           const options = { expiresIn: '2d' };
           const secret = process.env.JWT_SECRET;
           const token = jwt.sign(payload, secret, options);
@@ -110,7 +110,7 @@ const verifyToken = (req, res, next) => {
         });
       } else {
         req.decoded = decoded;
-        if (req.body.username == decoded.username && req.body.user_id == decoded.user_id) {
+        if (req.body.username.toLowerCase() == decoded.username && req.body.user_id == decoded.user_id) {
           next();
         } else {
           res.json({
@@ -135,7 +135,22 @@ router.get('/userActivity', verifyToken, function(req, res) {
     if(data[0] != undefined) {
       res.json({
         status: '200',
-        data: data[0].username
+        data: data[0]
+      });
+    } else {
+      res.json({
+        status: 'error',
+      })
+    }
+  });
+});
+
+router.get('/getSeenMovies', verifyToken, function(req, res) {
+  model.getSeenMovies(req.body.user_id).spread(function(result, metadata) {
+    if(result != undefined) {
+      res.json({
+        status: '200',
+        data: result
       });
     }
   });
