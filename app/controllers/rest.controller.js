@@ -11,7 +11,7 @@ const omdb = require("../util/omdb.js");
 */
 router.post('/authorize', function (req, res) { 
   let username = req.body.username;
-  console.log(username);
+  let device_id = req.body.device_id;
   if (username != undefined) {
     username = username.toLowerCase();
     model.getUser(username).then(function(user) {
@@ -20,20 +20,19 @@ router.post('/authorize', function (req, res) {
         if(correctHash) {
           // Auth token
           // Create a token
-          const payload = { username: user.username.toLowerCase(), user_id: user.user_id };
+          const payload = { user_id: user.user_id, device_id: device_id };
           const options = { expiresIn: '2d' };
           const secret = process.env.JWT_SECRET;
           const token = jwt.sign(payload, secret, options);
-
+      
           res.json({
             token: token,
-            username: user.username,
             user_id: user.user_id,
             status: '200'
           });
         } else {
           res.json({
-            user_id: 0,
+            user_id: -1,
             error: 'Authentication error, invalid username or password',
             status: '403'
           });
@@ -58,22 +57,13 @@ router.put('/register', function (req, res) {
     model.registerUser(req.body.username, hash).then(function(response) {
       // created user
       if (response) {
-        // Auth token
-        // Create a token
-        const payload = { username: user.username, user_id: user.user_id };
-        const options = { expiresIn: '24h' };
-        const secret = process.env.JWT_SECRET;
-        const token = jwt.sign(payload, secret, options);
         res.json({
-          token: token,
-          user_id: 0,
-          username: req.body.username,
           status: '200'
         })
       } else {
         res.json({
           error: 'taken',
-          status: '200'
+          status: '503'
         })
       }
     });

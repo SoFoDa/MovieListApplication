@@ -21,6 +21,8 @@ dependencies:
   cupertino_icons: ^0.1.2
   http: any
   web_socket_channel: any
+  device_info: any
+  shared_preferences: any
 
 dev_dependencies:
   flutter_test:
