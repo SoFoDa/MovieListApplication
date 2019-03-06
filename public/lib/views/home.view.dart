@@ -58,11 +58,9 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin{
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            // Add one stop for each color. Stops should increase from 0 to 1
+            end: Alignment.bottomCenter,            
             stops: [0.1, 0.7, 0.9],
-            colors: [
-              // Colors are easy thanks to Flutter's Colors class.
+            colors: [              
               Color(0xFF245ADC),
               Color(0xFF594CD2),
               Color(0xFF913AC5),              
