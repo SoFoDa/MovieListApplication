@@ -20,10 +20,8 @@ class MyApp extends StatelessWidget {
         accentColor: Colors.redAccent,
       ),     
       initialRoute: '/',       
-      routes: {
-        // When we navigate to the "/" route, build the FirstScreen Widget
-        '/': (context) => login.Login(),
-        // When we navigate to the "/second" route, build the SecondScreen Widget
+      routes: {        
+        '/': (context) => login.Login(),        
         '/home': (context) => MovieListApp(),        
       },                           
     );
@@ -101,7 +99,7 @@ class MovieListAppState extends State<MovieListApp> with SingleTickerProviderSta
           controller: tabController,          
           tabs: <Tab>[
             new Tab(icon: new Icon(Icons.home)),                               
-            new Tab(icon: new Icon(Icons.account_circle)), 
+            new Tab(icon: new Icon(Icons.person)), 
             new Tab(icon: new Icon(Icons.insert_chart)),                           
           ]
         )

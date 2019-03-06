@@ -3,7 +3,7 @@ import 'package:web_socket_channel/io.dart';
 
 WebSocketConfig socket = new WebSocketConfig();
 
-const String _server_address = "ws://localhost";
+const String _server_address = "ws://localhost:8989";
 
 class WebSocketConfig {
   static final WebSocketConfig _sockets = new WebSocketConfig._internal();

@@ -47,7 +47,7 @@ class ActivityCard extends StatelessWidget {
             left: _LEFT_MARGIN,                          
             child: Opacity(
               opacity: (activity.type == 'movie' ? 1.0 : 0.0),
-              child: Container(
+              child: Container(                
                 alignment: Alignment(20, 20),
                 height: 125,
                 width: 83,  
