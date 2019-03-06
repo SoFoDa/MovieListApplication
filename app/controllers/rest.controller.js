@@ -17,6 +17,7 @@ router.post('/authorize', function (req, res) {
   if (username != undefined) {
     username = username.toLowerCase();
     model.getUser(username).then(function(user) {
+      console.log(user);
       console.log('Pword: ' + user.password);
       let hash = user.password;
       bcrypt.compare(req.body.password, hash).then(function(correctHash) {
