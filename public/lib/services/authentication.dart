@@ -9,7 +9,7 @@ import 'dart:io';
 const String _storageKeyMobileToken = "token";
 
 // the mobile device unique identity
-String _deviceIdentity = "dev_id";
+String _deviceIdentity = '';
 
 class Authentication {
   /// === METHODS MODIFIED FROM https://www.didierboelens.com/2018/05/token-based-communication-with-server---part-1/ 
@@ -41,7 +41,7 @@ class Authentication {
   }
   // ===
 
-  String url = 'http://127.0.0.1:8989/api';
+  String url = 'http://localhost:8989/api';
   int userID = 0;
   String token = "";
   NetworkUtility _netUtil = new NetworkUtility();
@@ -52,18 +52,21 @@ class Authentication {
   /// Returns null if invalid login.
   ///
   Future<int> login(String username, String password) async {
-    Map<String, String> header = {'device_id':_deviceIdentity};
-    Map<String, String> body = {'username': username, 'password': password};
-    return _netUtil.post(url + '/authorize', header: header, body: body).then((response) {
-      if (response['status'] == '200') {
-        _setMobileToken(response['token']);
-        token = response['token'];
-        userID = response['user_id'];
-        return userID;
-      } else {
-        print('invalid username pass');
-        return null;
-      }
+    _getDeviceIdentity().then((device_id) {
+      print(device_id);
+      Map<String, String> header = {'device_id': device_id};
+      Map<String, String> body = {'username': username, 'password': password};
+      return _netUtil.post(url + '/authorize', header: header, body: body).then((response) {
+        if (response['status'] == '200') {
+          _setMobileToken(response['token']);
+          token = response['token'];
+          userID = response['user_id'];
+          return userID;
+        } else {
+          print('invalid username pass');
+          return null;
+        }
+      });
     });
   }
 

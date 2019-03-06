@@ -11,7 +11,8 @@ const omdb = require("../util/omdb.js");
 */
 router.post('/authorize', function (req, res) { 
   let username = req.body.username;
-  let device_id = req.body.device_id;
+  let device_id = req.headers.device_id;
+  console.log(device_id);
   if (username != undefined) {
     username = username.toLowerCase();
     model.getUser(username).then(function(user) {
