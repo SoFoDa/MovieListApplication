@@ -7,17 +7,24 @@ CREATE PROCEDURE getUserActivity
 (IN user CHAR(30))
 BEGIN
   SELECT
-    date,
-    friend_id,
-    movie_id,
-    type
+    usr.username,
+    ac.date, 
+    fusr.username as friend_username,    
+    acm.type,
+    mov.title,
+    mov.genre,
+    mov.release_year,
+    mov.director
   FROM
-    Activity as ac
+    Activity as ac    
+    LEFT JOIN User as usr ON ac.user_id = usr.user_id
     LEFT JOIN Activity_friend as acf ON ac.activity_id = acf.activity_id
-    LEFT JOIN Activity_movie acm ON ac.activity_id = acm.activity_id
-    INNER JOIN User as u ON ac.user_id = u.user_id
-  WHERE
-    u.user_id = user;
+    LEFT JOIN User as fusr ON acf.friend_id = fusr.user_id      
+    LEFT JOIN Activity_movie as acm ON ac.activity_id = acm.activity_id 
+    LEFT JOIN Movie as mov ON acm.movie_id = mov.movie_id
+  WHERE 
+    ac.user_id != user     
+  ORDER BY ac.date ASC; 
 END //
 
 CREATE PROCEDURE getSeenMovies
@@ -37,4 +44,5 @@ BEGIN
   WHERE
     u.user_id = id;
 END //
+
 DELIMITER ;
