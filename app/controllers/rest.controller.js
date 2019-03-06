@@ -25,13 +25,14 @@ router.post('/authorize', function (req, res) {
           const options = { expiresIn: '2d' };
           const secret = process.env.JWT_SECRET;
           const token = jwt.sign(payload, secret, options);
-      
+          console.log("Successful login for user: " + user.user_id);
           res.json({
             token: token,
             user_id: user.user_id,
             status: '200'
           });
         } else {
+          console.log("Invaluid username or password");
           res.json({
             user_id: -1,
             error: 'Authentication error, invalid username or password',
@@ -40,6 +41,7 @@ router.post('/authorize', function (req, res) {
         }
       });
     }).catch(err => {
+      console.log("Invalid login format")
       res.json({
         error: 'Bad authentication request',
         status: '400'
@@ -132,7 +134,7 @@ const verifyToken = (req, res, next) => {
         });
       } else {
         req.decoded = decoded;
-        if (req.body.username.toLowerCase() == decoded.username && req.body.user_id == decoded.user_id) {
+        if (req.headers.device_id == decoded.device_id && req.body.user_id == decoded.user_id) {
           next();
         } else {
           res.json({

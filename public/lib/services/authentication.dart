@@ -59,9 +59,8 @@ class Authentication {
   /// Returns null if invalid login.
   ///
   Future<int> login(String username, String password) async {
-    _getDeviceIdentity().then((device_id) {
-      print(device_id);
-      Map<String, String> header = {'device_id': device_id};
+    return _getDeviceIdentity().then((deviceId) {
+      Map<String, String> header = {'device_id': deviceId};
       Map<String, String> body = {'username': username, 'password': password};
       return _netUtil.post(url + '/authorize', header: header, body: body).then((response) {
         if (response['status'] == '200') {

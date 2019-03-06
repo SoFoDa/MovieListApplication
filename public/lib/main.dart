@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
       ),     
       initialRoute: '/',       
       routes: {        
-        '/': (context) => login.Login(),        
+        '/': (context) => login.LoginPage(),        
         '/home': (context) => MovieListApp(),        
       },                           
     );
