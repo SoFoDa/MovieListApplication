@@ -12,7 +12,7 @@ class ActivityCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(   
       margin: EdgeInsets.symmetric(vertical: 10),
-      height: (activity.type == 'movie' ? 150 : 80),       
+      height: (activity.type == 'movie' ? 150 : 75),       
       child: Stack(  
         overflow: Overflow.visible,              
         children: <Widget>[ 
@@ -21,7 +21,7 @@ class ActivityCard extends StatelessWidget {
             right: 10,                  
             child: Container(
               alignment: Alignment(20, 20),
-              height: (activity.type == 'movie' ? 150 : 80),
+              height: (activity.type == 'movie' ? 150 : 75),
               width: 270,       
               decoration: BoxDecoration(        
                 borderRadius: BorderRadius.circular(0),
@@ -57,8 +57,7 @@ class ActivityCard extends StatelessWidget {
             ),
           ),   
           // Friend icon
-          Positioned(
-            top: 0,   
+          Positioned(            
             left: 3, 
             child: Opacity(
               opacity: (activity.type == 'friend' ? 1.0 : 0.0),
@@ -71,9 +70,9 @@ class ActivityCard extends StatelessWidget {
           ),
           // Username   
           Positioned(      
-            top: 30,
+            top: (activity.type == 'movie' ? 30 : 15),
             left:105,                              
-            child: RichText(
+            child: RichText(              
               text: TextSpan(
                 style: TextStyle(
                   color: Colors.white,                    
@@ -95,10 +94,10 @@ class ActivityCard extends StatelessWidget {
           ),
           // activity name
           Positioned(      
-            top: 50,
+            top: (activity.type == 'movie' ? 50 : 35),
             left:105,                              
             child: Text(
-              (activity.type == 'movie' ? '${activity.activityMovie.genre}' : ''),              
+              (activity.type == 'movie' ? '${activity.activityMovie.movieName}' : '${activity.activityFriend.friendUsername}'),              
               style: TextStyle(
                 color: Colors.white,                    
                 fontSize: 20, 
@@ -123,7 +122,7 @@ class ActivityCard extends StatelessWidget {
             child: Opacity(
               opacity: (activity.type == 'movie' ? 1.0 : 0.0),
               child: Text(
-                (activity.type == 'movie' ? '${activity.activityMovie.movieName}' : '${activity.activityFriend.friendUsername}'),              
+                (activity.type == 'movie' ? '${activity.activityMovie.genre}' : ''),
                 style: TextStyle(
                   color: Color(0xFFd6dceb), 
                   fontSize: 11,
