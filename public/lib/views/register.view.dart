@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:public/services/authentication.dart';
 
-class _LoginData {
+class _RegisterData {
   String username = '';
   String password = '';
 }
 
-class LoginPage extends StatefulWidget {
+class RegisterPage extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => new Login();
+  State<StatefulWidget> createState() => new Register();
 }
 
-class Login extends State<LoginPage> {
-  _LoginData _data = new _LoginData();
+class Register extends State<RegisterPage> {
+  _RegisterData _data = new _RegisterData();
   Authentication _auth = new Authentication();
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   String _errorText = "";
@@ -20,19 +20,15 @@ class Login extends State<LoginPage> {
   void submit() {
     if (this._formKey.currentState.validate()) {
       _formKey.currentState.save();
+      _auth.register(this._data.username, this._data.password).then((userId) {
+        if (userId != null) {
+          setState(() {
+            _errorText = "";
+          });
+          Navigator.pushNamed(context, '/home');
+        }
+      });
     }
-  }
-
-  @override
-  void initState(){  
-    _auth.handShake().then((validToken) {
-      print(validToken);
-      if (!validToken) {
-        //super.initState();    
-      } else {
-        Navigator.pushNamed(context, '/home');
-      }
-    });
   }
 
   @override
@@ -51,7 +47,7 @@ class Login extends State<LoginPage> {
               Container(
                 padding: EdgeInsets.only(top: 60.0),
                 child: Text(
-                  "Login",
+                  "Account registration",
                   style: TextStyle(
                     fontStyle: FontStyle.normal, 
                     color: Colors.black,
@@ -65,7 +61,11 @@ class Login extends State<LoginPage> {
                     labelText: 'username',               
                   ), onSaved: (String value) {
                       this._data.username = value;
-                  }
+                  }, validator: (value) {
+                    if (value.length < 6) {
+                      return ('Username has to be at least 6 characters.');
+                    }
+                  }, 
                 )
               ),
               Container(
@@ -76,7 +76,11 @@ class Login extends State<LoginPage> {
                     labelText: 'password'                
                   ), onSaved: (String value) {
                       this._data.password = value;
-                  }
+                  }, validator: (value) {
+                    if (value.length < 8) {
+                      return ('Username has to be at least 8 characters.');
+                    }
+                  }, 
                 )
               ),
               Container(
@@ -90,33 +94,20 @@ class Login extends State<LoginPage> {
                 padding: EdgeInsets.only(top: 55.0),
                 child: Center(
                   child: RaisedButton(                
-                    child: Text('Log in'),
+                    child: Text('Register'),
                     onPressed: () {
                       submit();
-                      _auth.login(this._data.username, this._data.password).then((userId) {
-                        if (userId != null) {
-                          setState(() {
-                            _errorText = "";
-                          });
-                          Navigator.pushNamed(context, '/home');
-                        } else {
-                          setState(() {
-                            _errorText = "Invalid username or password!";
-                          });
-                        }
-                      });
                     },
                   ),
                 ),
               ),
               Container(
-                padding: EdgeInsets.only(top: 20.0),
+                padding: EdgeInsets.only(top: 10.0),
                 child: Center(
                   child: RaisedButton(                
-                    child: Text('Register'),
-                    // TODO implement register
+                    child: Text('Cancel'),
                     onPressed: () {
-                      Navigator.pushNamed(context, '/register');
+                      Navigator.pop(context);
                     },
                   ),
                 ),

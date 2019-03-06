@@ -2,31 +2,32 @@
 "use strict";
 
 const Sequelize = require('sequelize');
+const Op = Sequelize.Op
 // TODO FIX!!!!!!!!!!!!!!
-var config = require('./credentials');
-console.log(config.db);
+//var config = require('./credentials');
+//console.log(config.db);
 
 const sequelize = new Sequelize('mydb', 'root', 'korvar123', {
-  host: 'localhost',
-  dialect: 'mysql',
-  operatorsAliases: false,
+    host: 'localhost',
+    dialect: 'mysql',
+    operatorsAliases: false,
 
-  pool: {
-    max: 5,
-    min: 0,
-    acquire: 30000,
-    idle: 10000
-  }
+    pool: {
+        max: 5,
+        min: 0,
+        acquire: 30000,
+        idle: 10000
+    }
 });
 
 sequelize
-  .authenticate()
-  .then(() => {
-    console.log('Connection to database has been established successfully.');
-  })
-  .catch(err => {
-    console.error('Unable to connect to the database:', err);
-  });
+    .authenticate()
+    .then(() => {
+        console.log('Connection to database has been established successfully.');
+    })
+    .catch(err => {
+        console.error('Unable to connect to the database:', err);
+    });
 
 // ====== MODEL DEFINITIONS START ======
 
@@ -35,7 +36,7 @@ const User = sequelize.define('user', {
         type: Sequelize.INTEGER,
         primaryKey: true
     },
-    password_hash: {
+    password: {
         type: Sequelize.STRING
     },
     username: {
@@ -84,7 +85,8 @@ const User_info = sequelize.define('user_info', {
 
 const Movie = sequelize.define('movie', {
     movie_id: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        primaryKey: true
     },
     title: {
         type: Sequelize.STRING
@@ -106,6 +108,7 @@ const Movie = sequelize.define('movie', {
 const Seen = sequelize.define('seen', {
     user_id: {
         type: Sequelize.INTEGER,
+        primaryKey: true,
      
         references: {
           model: User,
@@ -205,19 +208,72 @@ const Activity_movie = sequelize.define('activity_movie', {
 // ====== MODEL DEFINITIONS END ======
 
 module.exports.getUser = (username) => {
+    console.log('Getting user: ' +  username);
     return User.findOne({
-      attributes: ['user_id', 'username', 'password_hash'],  
-      where: {
-          username: username
-      }  
+        attributes: ['user_id', 'username', 'password'],  
+        where: {
+            username: username
+        }
+    }).catch(err => {
+        return undefined;
     })
-};
+}
 
 module.exports.registerUser = (regUsername, regPassword) => {
-    return User.create({username: regUsername, password_hash: regPassword}).then(result => {
-        console.log('success');
+    return User.create({username: regUsername, password: regPassword}).then(result => {
+        console.log('Db registration success!');
+        return true;
     }).catch(err => {
         return false;
     });
 }
 
+module.exports.getUserActivity = (user_id) => {
+    return sequelize.query("CALL getUserActivity(?);", { replacements: [user_id], type: sequelize.QueryTypes.SELECT });
+}
+
+module.exports.getMovieFromId = (id) => {
+    return Movie.findOne({
+        where: {
+            movie_id: id
+        }  
+    })
+}
+
+module.exports.getMoviesFromTitle = (mTitle) => {
+    return Movie.findAll({
+        where: {
+            title: {[Op.like]: '%'  + mTitle + '%'}
+        }  
+    })
+}
+
+module.exports.getSeenMovies = (user_id) => {
+    return sequelize.query("CALL getSeenMovies(?);", { replacements: [user_id], type: sequelize.QueryTypes.SELECT });
+}
+
+module.exports.setSeenMovie = (muser_id, mmovie_id, mseen) => {
+    let type = (mseen == 'true');
+    Seen.findOne({
+        where: {
+            movie_id: mmovie_id,
+            user_id: muser_id
+        }
+    }).then((entry) => {
+        if (entry != undefined && !type) {
+            Seen.destroy({
+                where: {
+                    movie_id: mmovie_id,
+                    user_id: muser_id
+                }
+            })
+        } else if (entry == undefined && type) {
+            const newEntry = Seen.build({
+                user_id: muser_id,
+                movie_id: mmovie_id,
+                date: Date.now()
+            });
+            newEntry.save();
+        }
+    })
+}

@@ -9,6 +9,9 @@ const sharedSession = require('express-socket.io-session');
 const express = require('express');
 const http = require('http');
 
+require('es6-promise').polyfill();
+require('isomorphic-fetch');
+
 /** 
  * This function sets up some boilerplate for express and socket.io
  * - Creates express app
@@ -39,7 +42,7 @@ module.exports = () => {
     app.use(express.urlencoded({
         extended: true
     }));
-    app.use(express.static(path.join(__dirname, '..', '..', 'public')) /*
+    app.use(express.static(path.join(__dirname, '..', 'resources')) /*
         express.static(absolutePathToPublicDirectory)
         This will serve static files from the public directory, starting with index.html
     */);

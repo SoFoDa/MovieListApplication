@@ -1,82 +1,120 @@
+// Widgets
 import 'package:flutter/material.dart';
-import './views/home.view.dart' as home;
-import './views/stats.view.dart' as stats;
+
+// Application views
 import './views/login.view.dart' as login;
+import './views/register.view.dart' as register;
+import './views/home.view.dart' as home;
+import './views/profile.view.dart' as profile;
+import './views/stats.view.dart' as stats;
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatelessWidget {  
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'MovieListApplication',      
+      title: 'Elisto',      
       theme: ThemeData(
         primaryColor: Color(0xFF133658),
         accentColor: Colors.redAccent,
-      ),
-      initialRoute: '/',
-      routes: {
-        // When we navigate to the "/" route, build the FirstScreen Widget
-        '/': (context) => login.Login(),
-        // When we navigate to the "/second" route, build the SecondScreen Widget
-        '/home': (context) => MovieListApp(),
-      },           
+      ),     
+      initialRoute: '/',       
+      routes: {        
+        '/': (context) => login.LoginPage(),        
+        '/home': (context) => MovieListApp(), 
+        '/register': (context) => register.RegisterPage(),        
+      },                           
     );
   }
 }
 
-class MovieListApp extends StatefulWidget {
+class MovieListApp extends StatefulWidget {    
   @override
   MovieListAppState createState() => MovieListAppState();
 }
 
-class MovieListAppState extends State<MovieListApp> with SingleTickerProviderStateMixin{
-  TabController controller;
+class MovieListAppState extends State<MovieListApp> with SingleTickerProviderStateMixin{    
+  final List<Text> appBarTitles = [Text('Home'), Text('Profile'), Text('Stats')];
+  TabController tabController;  
+  Text currentTitle;
 
   @override
-  void initState(){
-    super.initState();
-    controller = new TabController(vsync: this, length: 2);
+  void initState(){    
+    super.initState();        
+    tabController = new TabController(vsync: this, length: 3);
+    currentTitle = appBarTitles[0];
+    tabController.addListener(_handleTitle);
+  }
+
+  void _handleTitle() {
+    setState(() {
+      currentTitle = appBarTitles[tabController.index];
+    });
+
   }
 
   @override
-  void dispose(){
-    controller.dispose();
+  void dispose(){    
+    tabController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text(
-          "MovieList!",
-          style: TextStyle(
-            fontSize: 25
+    return new Scaffold(      
+      appBar: new AppBar(        
+        title: currentTitle,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+              print("Search!");
+            },
           ),
-        ),         
-        // set to false for removal of back button
-        automaticallyImplyLeading: true,
-      ),  
+        ],        
+      ),   
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              child: Text('TODO'),
+            ),
+            ListTile(
+              title: Text('item1'),
+            ),
+            ListTile(
+              title: Text('item2'),
+            ),
+            ListTile(
+              title: Text('item3'),
+            )
+          ],
 
-      bottomNavigationBar: new Material(
+        ),
+      ),     
+      bottomNavigationBar: Material(
         color: Color(0xFF133658),
         child: new TabBar(
-          controller: controller,          
+          controller: tabController,          
           tabs: <Tab>[
             new Tab(icon: new Icon(Icons.home)),                               
-            new Tab(icon: new Icon(Icons.account_circle)),               
+            new Tab(icon: new Icon(Icons.person)), 
+            new Tab(icon: new Icon(Icons.insert_chart)),                           
           ]
         )
       ),   
 
-      body: new TabBarView(
-        controller: controller,
+      body: TabBarView(
+        controller: tabController,
         children: <Widget>[          
-          home.Home(),                     
-          stats.Stats(),          
+          home.Home(),    
+          profile.Profile(),                  
+          stats.Stats(),                     
         ]
-      )
+      ),
     );
   }  
 }

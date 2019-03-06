@@ -16,7 +16,6 @@ io.on('connection', socket => {
     socketController(socket, io);
 });
 
-
 const model = require('./model.js');
 
 listen(port, () => {
