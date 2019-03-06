@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:public/services/authentication.dart';
 
 class Login extends StatelessWidget {
   @override
@@ -28,7 +29,14 @@ class Login extends StatelessWidget {
               child: RaisedButton(                
                 child: Text('Log in'),
                 onPressed: () {
-                  Navigator.pushNamed(context, '/home');
+                  Authentication auth = new Authentication();
+                  auth.login('JohanKJIP', 'korvar123').then((userId) {
+                    print(auth.token);
+                    print(auth.userID);
+                    if (auth.token != "") {
+                      Navigator.pushNamed(context, '/home');
+                    }
+                  });
                 },
               ),
             ),
