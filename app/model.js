@@ -4,8 +4,8 @@
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op
 // TODO FIX!!!!!!!!!!!!!!
-var config = require('./credentials');
-console.log(config.db);
+//var config = require('./credentials');
+//console.log(config.db);
 
 const sequelize = new Sequelize('mydb', 'root', 'korvar123', {
     host: 'localhost',
