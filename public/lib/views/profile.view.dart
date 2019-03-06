@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:public/services/authentication.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -118,7 +119,9 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
             child: RaisedButton(
               child: Text('Log out'),
               onPressed: () {
-                Navigator.pushNamed(context, '/');
+                Authentication _auth = new Authentication();
+                _auth.logout();
+                Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
               }
             ),            
           ), 

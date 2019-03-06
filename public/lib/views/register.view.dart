@@ -32,6 +32,11 @@ class Register extends State<RegisterPage> {
   }
 
   @override
+  void dispose(){               
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: new Container(

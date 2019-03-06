@@ -16,12 +16,28 @@ class Login extends State<LoginPage> {
   Authentication _auth = new Authentication();
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   String _errorText = "";
-  // TODO: _auth.handshake at init, i.e. look for stored token...
 
   void submit() {
     if (this._formKey.currentState.validate()) {
       _formKey.currentState.save();
     }
+  }
+
+  @override
+  void initState(){  
+    _auth.handShake().then((validToken) {
+      print(validToken);
+      if (!validToken) {
+        //super.initState();    
+      } else {
+        Navigator.pushNamed(context, '/home');
+      }
+    });
+  }
+
+  @override
+  void dispose(){               
+    super.dispose();
   }
 
   @override

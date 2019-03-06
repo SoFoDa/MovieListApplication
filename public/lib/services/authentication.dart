@@ -7,6 +7,7 @@ import 'dart:io';
 
 // the storage key for the token
 const String _storageKeyMobileToken = "token";
+const String _storageKeyMobileUID = "uid";
 
 // the mobile device unique identity
 String _deviceIdentity = '';
@@ -19,7 +20,7 @@ class Authentication {
   }
   Authentication._internal();
 
-  /// === METHODS MODIFIED FROM https://www.didierboelens.com/2018/05/token-based-communication-with-server---part-1/ 
+  /// storage
   final DeviceInfoPlugin _deviceInfoPlugin = new DeviceInfoPlugin();
 
   Future<String> _getDeviceIdentity() async {
@@ -37,14 +38,14 @@ class Authentication {
   }
   Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
-  Future<String> _getMobileToken() async {
+  Future<String> _getMobileValue(String key) async {
     final SharedPreferences prefs = await _prefs;
-    return prefs.getString(_storageKeyMobileToken) ?? '';
+    return prefs.getString(key) ?? '';
   }
 
-  Future<bool> _setMobileToken(String token) async {
+  Future<bool> _setMobileValue(String key, String token) async {
     final SharedPreferences prefs = await _prefs;
-    return prefs.setString(_storageKeyMobileToken, token);
+    return prefs.setString(key, token);
   }
   // ===
 
@@ -65,7 +66,8 @@ class Authentication {
       Map<String, String> body = {'username': username, 'password': password};
       return _netUtil.post(url + '/authorize', header: header, body: body).then((response) {
         if (response['status'] == '200') {
-          _setMobileToken(response['token']);
+          _setMobileValue(_storageKeyMobileToken, response['token']);
+          _setMobileValue(_storageKeyMobileUID, response['user_id'].toString());
           token = response['token'];
           userID = response['user_id'];
           return userID;
@@ -78,8 +80,12 @@ class Authentication {
   }
 
   bool logout() {
+    print('Logging out...');
+    // reset local and stored user data
     token = "";
     userID = -1;
+    _setMobileValue(_storageKeyMobileToken, '');
+    _setMobileValue(_storageKeyMobileUID, '');
     return true;
   }
 
@@ -89,14 +95,32 @@ class Authentication {
   /// Returns null if username taken.
   ///
   Future<int> register(String username, String password) async {
+    print('Register: ' + username);
     return _netUtil.put(url + '/register', body: {'username': username, 'password': password}).then((response) {
-      print(response['status']);
       if (response['status'] == '200') {
-        print('in here');
+        print('Registration success');
         return login(username, password);
       } else {
+        print('Registration error');
         return null;
       }
+    });
+  }
+
+  ///
+  /// Register a user with username and password.
+  /// Returns user_id of the logged in user if successful. 
+  /// Returns null if username taken.
+  ///
+  Future<bool> handShake() async {
+    print('in handshake');
+    String deviceId = await _getDeviceIdentity();
+    String storedToken = await _getMobileValue(_storageKeyMobileToken);
+    String userId = await _getMobileValue(_storageKeyMobileUID);
+    Map<String, String> header = {'device_id': deviceId, 'authorization': 'Bearer ' + storedToken};
+    Map<String, String> body = {'user_id': userId};
+    return _netUtil.post(url + '/handshake', header: header, body: body).then((response) {
+      return response['status'] == '200';
     });
   }
 }

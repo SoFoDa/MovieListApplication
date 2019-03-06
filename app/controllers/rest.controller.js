@@ -12,7 +12,7 @@ const omdb = require("../util/omdb.js");
 router.post('/authorize', function (req, res) { 
   let username = req.body.username;
   let device_id = req.headers.device_id;
-  console.log(device_id);
+  console.log('Authrize user: ' + username);
   if (username != undefined) {
     username = username.toLowerCase();
     model.getUser(username).then(function(user) {
@@ -129,6 +129,7 @@ const verifyToken = (req, res, next) => {
     }
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
       if (err) {
+        console.log('Invalid token');
         res.json({
           status: '403',
           message: 'Token not valid'
@@ -136,8 +137,10 @@ const verifyToken = (req, res, next) => {
       } else {
         req.decoded = decoded;
         if (req.headers.device_id == decoded.device_id && req.body.user_id == decoded.user_id) {
+          console.log('Verified token user');
           next();
         } else {
+          console.log('Token not match user');
           res.json({
             status: '403',
             message: 'Token does not match user'
@@ -146,12 +149,19 @@ const verifyToken = (req, res, next) => {
       }
     });
   } else {
+    console.log('Token not supplied');
     res.json({
       status: '400',
       message: 'Token not supplied'
     });
   }
 }
+
+router.post('/handshake', verifyToken, function (req, res) {
+  res.json({
+    status: '200'
+  })
+});
 
 // === PROTECTED ROUTES ===
 //
