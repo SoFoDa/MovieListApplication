@@ -215,6 +215,7 @@ module.exports.getUser = (username) => {
             username: username
         }
     }).catch(err => {
+        console.log(err);
         return undefined;
     })
 }
@@ -224,6 +225,7 @@ module.exports.registerUser = (regUsername, regPassword) => {
         console.log('Db registration success!');
         return true;
     }).catch(err => {
+        console.log(err);
         return false;
     });
 }

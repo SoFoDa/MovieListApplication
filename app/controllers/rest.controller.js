@@ -44,7 +44,8 @@ router.post('/authorize', function (req, res) {
         }
       });
     }).catch(err => {
-      console.log("User not found")
+      console.log("User not found");
+      console.log(err);
       res.json({
         error: 'Bad authentication request',
         status: '400'
