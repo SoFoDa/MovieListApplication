@@ -36,12 +36,23 @@ class MovieListApp extends StatefulWidget {
 }
 
 class MovieListAppState extends State<MovieListApp> with SingleTickerProviderStateMixin{    
-  TabController tabController;
+  final List<Text> appBarTitles = [Text('Home'), Text('Profile'), Text('Stats')];
+  TabController tabController;  
+  Text currentTitle;
 
   @override
-  void initState(){
+  void initState(){    
     super.initState();        
     tabController = new TabController(vsync: this, length: 3);
+    currentTitle = appBarTitles[0];
+    tabController.addListener(_handleTitle);
+  }
+
+  void _handleTitle() {
+    setState(() {
+      currentTitle = appBarTitles[tabController.index];
+    });
+
   }
 
   @override
@@ -53,9 +64,8 @@ class MovieListAppState extends State<MovieListApp> with SingleTickerProviderSta
   @override
   Widget build(BuildContext context) {
     return new Scaffold(      
-      appBar: new AppBar(
-        // TODO make title dynamic
-        title: Text('Home'),
+      appBar: new AppBar(        
+        title: currentTitle,
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.search),
@@ -63,9 +73,28 @@ class MovieListAppState extends State<MovieListApp> with SingleTickerProviderSta
               print("Search!");
             },
           ),
-        ],
-        automaticallyImplyLeading: false,
-      ),        
+        ],        
+      ),   
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              child: Text('TODO'),
+            ),
+            ListTile(
+              title: Text('item1'),
+            ),
+            ListTile(
+              title: Text('item2'),
+            ),
+            ListTile(
+              title: Text('item3'),
+            )
+          ],
+
+        ),
+      ),     
       bottomNavigationBar: Material(
         color: Color(0xFF133658),
         child: new TabBar(

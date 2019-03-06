@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:public/models/activity.dart';
 
 class ActivityCard extends StatelessWidget {
+  // Positional values
+  final double _CARD_WIDTH = 270;
+  final double _LEFT_MARGIN = 10;
   final double _MOVIE_TOP = 30;
   final double _FRIEND_TOP = 15;
+  
   Activity activity;  
 
   ActivityCard(this.activity){
@@ -20,11 +24,11 @@ class ActivityCard extends StatelessWidget {
         children: <Widget>[ 
           // Blue card          
           Positioned(   
-            right: 10,                  
+            right: _LEFT_MARGIN,                  
             child: Container(
               alignment: Alignment(20, 20),
               height: (activity.type == 'movie' ? 150 : 75),
-              width: 270,       
+              width: _CARD_WIDTH,       
               decoration: BoxDecoration(        
                 borderRadius: BorderRadius.circular(0),
                 color: Color(0xFF1b3e73),
@@ -39,8 +43,8 @@ class ActivityCard extends StatelessWidget {
           ), 
           // Movie poster      
           Positioned( 
-            top: 13,   
-            left: 10,                          
+            top: _MOVIE_TOP - 17,   
+            left: _LEFT_MARGIN,                          
             child: Opacity(
               opacity: (activity.type == 'movie' ? 1.0 : 0.0),
               child: Container(
@@ -53,14 +57,14 @@ class ActivityCard extends StatelessWidget {
                     // TODO make non-static
                     image: AssetImage('assets/bladerunnerPoster.jpg'),
                     fit: BoxFit.cover,
-                  ),                                   
+                  ),                                       
                 ),                                             
               ),
             ),
           ),   
           // Friend icon
           Positioned(            
-            left: 3, 
+            left: _LEFT_MARGIN - 7, 
             child: Opacity(
               opacity: (activity.type == 'friend' ? 1.0 : 0.0),
               child: Icon(              
@@ -73,7 +77,7 @@ class ActivityCard extends StatelessWidget {
           // Username   
           Positioned(      
             top: (activity.type == 'movie' ? _MOVIE_TOP : _FRIEND_TOP),
-            left:105,                              
+            left: _LEFT_MARGIN + 95,                              
             child: RichText(              
               text: TextSpan(
                 style: TextStyle(
@@ -97,7 +101,7 @@ class ActivityCard extends StatelessWidget {
           // activity name
           Positioned(      
             top: (activity.type == 'movie' ? _MOVIE_TOP + 20 : _FRIEND_TOP + 20),
-            left:105,                              
+            left:_LEFT_MARGIN + 95,                              
             child: Text(
               (activity.type == 'movie' ? '${activity.activityMovie.movieName}' : '${activity.activityFriend.friendUsername}'),              
               style: TextStyle(
@@ -110,7 +114,7 @@ class ActivityCard extends StatelessWidget {
           // movie information
           Positioned(
             top: _MOVIE_TOP + 50,
-            left:105, 
+            left: _LEFT_MARGIN + 95, 
             child: Opacity(
               opacity: (activity.type == 'movie' ? 1.0 : 0.0),
               child: Row(
