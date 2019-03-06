@@ -12,6 +12,13 @@ const String _storageKeyMobileToken = "token";
 String _deviceIdentity = '';
 
 class Authentication {
+  // make the class singleton, i.e. only create one object and reuse.
+  static final Authentication _auth = new Authentication._internal();
+  factory Authentication() {
+    return _auth;
+  }
+  Authentication._internal();
+
   /// === METHODS MODIFIED FROM https://www.didierboelens.com/2018/05/token-based-communication-with-server---part-1/ 
   final DeviceInfoPlugin _deviceInfoPlugin = new DeviceInfoPlugin();
 
