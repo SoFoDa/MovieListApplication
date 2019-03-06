@@ -31,7 +31,7 @@ sequelize
 
 // ====== MODEL DEFINITIONS START ======
 
-const User = sequelize.define('user', {
+const User = sequelize.define('User', {
     user_id: {
         type: Sequelize.INTEGER,
         primaryKey: true
@@ -44,12 +44,12 @@ const User = sequelize.define('user', {
     }
 }, {timestamps: false, freezeTableName: true});
 
-const User_friend = sequelize.define('user_friend', {
+const User_friend = sequelize.define('User_friend', {
     user_id: {
         type: Sequelize.INTEGER,
      
         references: {
-          model: 'user',
+          model: 'User',
      
           key: 'user_id',
         }
@@ -58,19 +58,19 @@ const User_friend = sequelize.define('user_friend', {
         type: Sequelize.INTEGER,
      
         references: {
-          model: 'user',
+          model: 'User',
      
           key: 'user_id',
         }
     },
 }, {timestamps: false, freezeTableName: true})
 
-const User_info = sequelize.define('user_info', {
+const User_info = sequelize.define('User_info', {
     user_id: {
         type: Sequelize.INTEGER,
      
         references: {
-          model: 'user',
+          model: 'User',
      
           key: 'user_id',
         }
@@ -83,7 +83,7 @@ const User_info = sequelize.define('user_info', {
     }
 }, {timestamps: false, freezeTableName: true});
 
-const Movie = sequelize.define('movie', {
+const Movie = sequelize.define('Movie', {
     movie_id: {
         type: Sequelize.INTEGER,
         primaryKey: true
@@ -105,7 +105,7 @@ const Movie = sequelize.define('movie', {
     }
 }, {timestamps: false, freezeTableName: true});
 
-const Seen = sequelize.define('seen', {
+const Seen = sequelize.define('Seen', {
     user_id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -136,7 +136,7 @@ const Seen = sequelize.define('seen', {
     }
 }, {timestamps: false, freezeTableName: true})
 
-const Activity = sequelize.define('movie', {
+const Activity = sequelize.define('Movie', {
     user_id: {
         type: Sequelize.INTEGER,
      
@@ -150,7 +150,7 @@ const Activity = sequelize.define('movie', {
         type: Sequelize.INTEGER,
      
         references: {
-          model: 'activity_friend',
+          model: 'Activity_friend',
      
           key: 'activity_id',
         }
@@ -160,12 +160,12 @@ const Activity = sequelize.define('movie', {
     }
 }, {timestamps: false, freezeTableName: true});
 
-const Activity_friend = sequelize.define('activity_friend', {
+const Activity_friend = sequelize.define('Activity_friend', {
     activity_id: {
         type: Sequelize.INTEGER,
      
         references: {
-          model: 'activity',
+          model: 'Activity',
      
           key: 'activity_id',
         }
@@ -174,19 +174,19 @@ const Activity_friend = sequelize.define('activity_friend', {
         type: Sequelize.INTEGER,
 
         references: {
-            model: 'user',
+            model: 'User',
        
             key: 'user_id',
           }
     }
 }, {timestamps: false, freezeTableName: true})
 
-const Activity_movie = sequelize.define('activity_movie', {
+const Activity_movie = sequelize.define('Activity_movie', {
     activity_id: {
         type: Sequelize.INTEGER,
      
         references: {
-          model: 'activity',
+          model: 'Activity',
      
           key: 'activity_id',
         }
