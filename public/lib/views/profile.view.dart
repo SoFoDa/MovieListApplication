@@ -118,7 +118,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
             child: RaisedButton(
               child: Text('Log out'),
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.pushNamed(context, '/');
               }
             ),            
           ), 

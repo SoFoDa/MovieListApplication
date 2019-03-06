@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Application views
 import './views/login.view.dart' as login;
+import './views/register.view.dart' as register;
 import './views/home.view.dart' as home;
 import './views/profile.view.dart' as profile;
 import './views/stats.view.dart' as stats;
@@ -22,7 +23,8 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',       
       routes: {        
         '/': (context) => login.LoginPage(),        
-        '/home': (context) => MovieListApp(),        
+        '/home': (context) => MovieListApp(), 
+        '/register': (context) => register.RegisterPage(),        
       },                           
     );
   }

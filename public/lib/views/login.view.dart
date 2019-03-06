@@ -21,10 +21,6 @@ class Login extends State<LoginPage> {
   void submit() {
     if (this._formKey.currentState.validate()) {
       _formKey.currentState.save();
-
-      print('Printing the login data.');
-      print('Email: ${_data.username}');
-      print('Password: ${_data.password}');
     }
   }
 
@@ -37,7 +33,17 @@ class Login extends State<LoginPage> {
           child: Column(
             children: <Widget>[
               Container(
-                padding: EdgeInsets.only(top: 80.0, left: 25.0, right: 25.0),
+                padding: EdgeInsets.only(top: 60.0),
+                child: Text(
+                  "Login",
+                  style: TextStyle(
+                    fontStyle: FontStyle.normal, 
+                    color: Colors.black,
+                    fontSize: 20),
+                )
+              ),
+              Container(
+                padding: EdgeInsets.only(top: 10.0, left: 25.0, right: 25.0),
                 child: TextFormField(                 
                   decoration:InputDecoration(                        
                     labelText: 'username',               
@@ -93,7 +99,9 @@ class Login extends State<LoginPage> {
                   child: RaisedButton(                
                     child: Text('Register'),
                     // TODO implement register
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/register');
+                    },
                   ),
                 ),
               ),

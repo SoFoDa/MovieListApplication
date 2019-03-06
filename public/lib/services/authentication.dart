@@ -49,7 +49,7 @@ class Authentication {
   // ===
 
   String url = 'http://localhost:8989/api';
-  int userID = 0;
+  int userID = -1;
   String token = "";
   NetworkUtility _netUtil = new NetworkUtility();
 
@@ -59,6 +59,7 @@ class Authentication {
   /// Returns null if invalid login.
   ///
   Future<int> login(String username, String password) async {
+    print('Logging in...');
     return _getDeviceIdentity().then((deviceId) {
       Map<String, String> header = {'device_id': deviceId};
       Map<String, String> body = {'username': username, 'password': password};
@@ -76,6 +77,12 @@ class Authentication {
     });
   }
 
+  bool logout() {
+    token = "";
+    userID = -1;
+    return true;
+  }
+
   ///
   /// Register a user with username and password.
   /// Returns user_id of the logged in user if successful. 
@@ -83,10 +90,13 @@ class Authentication {
   ///
   Future<int> register(String username, String password) async {
     return _netUtil.put(url + '/register', body: {'username': username, 'password': password}).then((response) {
+      print(response['status']);
       if (response['status'] == '200') {
+        print('in here');
         return login(username, password);
+      } else {
+        return null;
       }
-      return null;
     });
   }
 }
