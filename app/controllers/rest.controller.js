@@ -12,10 +12,12 @@ const omdb = require("../util/omdb.js");
 router.post('/authorize', function (req, res) { 
   let username = req.body.username;
   let device_id = req.headers.device_id;
-  console.log('Authrize user: ' + username);
+  console.log('Auth user: ' + username);
+  console.log('Device id: ' + device_id);
   if (username != undefined) {
     username = username.toLowerCase();
     model.getUser(username).then(function(user) {
+      console.log('Pword: ' + user.password);
       let hash = user.password;
       bcrypt.compare(req.body.password, hash).then(function(correctHash) {
         if(correctHash) {
@@ -41,7 +43,7 @@ router.post('/authorize', function (req, res) {
         }
       });
     }).catch(err => {
-      console.log("Invalid login format")
+      console.log("User not found")
       res.json({
         error: 'Bad authentication request',
         status: '400'

@@ -49,7 +49,7 @@ class Authentication {
   }
   // ===
 
-  String url = 'http://localhost:8989/api';
+  String url = 'http://207.154.209.202:8989/api';
   int userID = -1;
   String token = "";
   NetworkUtility _netUtil = new NetworkUtility();
@@ -113,7 +113,6 @@ class Authentication {
   /// Returns null if username taken.
   ///
   Future<bool> handShake() async {
-    print('in handshake');
     String deviceId = await _getDeviceIdentity();
     String storedToken = await _getMobileValue(_storageKeyMobileToken);
     String userId = await _getMobileValue(_storageKeyMobileUID);
