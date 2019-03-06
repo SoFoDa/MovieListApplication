@@ -12,10 +12,10 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin{
 
   // static example data        
   List<Activity> activities = [
-    new Activity('SoFoDa', 'movie', '2/3 2019', new ActivityMovie('Seen', 'Blade Runner 2049', 'Sci-Fi '), null),            
+    new Activity('SoFoDa', 'movie', '2/3 2019', new ActivityMovie('Seen', 'Blade Runner 2049', 'Sci-Fi', '2017'), null),            
     new Activity('SoFoDa', 'friend', '3/3 2019', null, ActivityFriend('johanKJIP')),
-    new Activity('johanKJIP', 'movie', '3/3 2019', new ActivityMovie('Seen', 'Mad Max: Fury Road', 'Action'), null), 
-    new Activity('SoFoDa', 'movie', '5/3 2019', new ActivityMovie('Seen', 'Spotlight', 'Drama'), null),  
+    new Activity('johanKJIP', 'movie', '3/3 2019', new ActivityMovie('Seen', 'Mad Max: Fury Road', 'Action', '2015'), null), 
+    new Activity('SoFoDa', 'movie', '5/3 2019', new ActivityMovie('Seen', 'Spotlight', 'Drama', '2015'), null),  
   ];  
   
   // debug example

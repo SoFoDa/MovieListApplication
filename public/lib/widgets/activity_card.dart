@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:public/models/activity.dart';
 
 class ActivityCard extends StatelessWidget {
-  Activity activity;
+  final double _MOVIE_TOP = 30;
+  final double _FRIEND_TOP = 15;
+  Activity activity;  
 
   ActivityCard(this.activity){
     activity = this.activity;
@@ -70,7 +72,7 @@ class ActivityCard extends StatelessWidget {
           ),
           // Username   
           Positioned(      
-            top: (activity.type == 'movie' ? 30 : 15),
+            top: (activity.type == 'movie' ? _MOVIE_TOP : _FRIEND_TOP),
             left:105,                              
             child: RichText(              
               text: TextSpan(
@@ -94,7 +96,7 @@ class ActivityCard extends StatelessWidget {
           ),
           // activity name
           Positioned(      
-            top: (activity.type == 'movie' ? 50 : 35),
+            top: (activity.type == 'movie' ? _MOVIE_TOP + 20 : _FRIEND_TOP + 20),
             left:105,                              
             child: Text(
               (activity.type == 'movie' ? '${activity.activityMovie.movieName}' : '${activity.activityFriend.friendUsername}'),              
@@ -105,31 +107,50 @@ class ActivityCard extends StatelessWidget {
               ),  
             ),
           ),
+          // movie information
           Positioned(
-            top: 80,
+            top: _MOVIE_TOP + 50,
             left:105, 
             child: Opacity(
               opacity: (activity.type == 'movie' ? 1.0 : 0.0),
-              child: Icon(
-                Icons.theaters, 
-                color: Color(0xFFd6dceb), 
-                size: 12),
-              ),            
-          ),         
-          Positioned(
-            top: 80,
-            left:120, 
-            child: Opacity(
-              opacity: (activity.type == 'movie' ? 1.0 : 0.0),
-              child: Text(
-                (activity.type == 'movie' ? '${activity.activityMovie.genre}' : ''),
-                style: TextStyle(
-                  color: Color(0xFFd6dceb), 
-                  fontSize: 11,
-                )
-              ),  
-            ),
-          ),                    
+              child: Row(
+                children: <Widget>[   
+                  // genre icon            
+                  Icon(
+                    Icons.theaters, 
+                    color: Color(0xFFd6dceb), 
+                    size: 12
+                  ),  
+                  // genre
+                  Text(
+                    (activity.type == 'movie' ? ' ${activity.activityMovie.genre}' : ' '),
+                    style: TextStyle(
+                      color: Color(0xFFd6dceb), 
+                      fontSize: 11,
+                    )                    
+                  ), 
+                  // release year icon
+                  Container(
+                    margin:EdgeInsets.only(left: 15),
+                    child: Icon(
+                      Icons.calendar_today, 
+                      color: Color(0xFFd6dceb), 
+                      size: 12
+                    ), 
+                  ),                 
+                  // release year
+                  Text(
+                    (activity.type == 'movie' ? ' ${activity.activityMovie.releaseYear}' : ' '),
+                    style: TextStyle(
+                      color: Color(0xFFd6dceb), 
+                      fontSize: 11,
+                    )                    
+                  ),                                                 
+                ],
+              ),   
+            ), 
+          ),
+          // genre text                 
         ],
       ),      
     );
