@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:public/util/network_utility.dart';
 import 'package:device_info/device_info.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:io';
 
 // the storage key for the token
@@ -36,16 +36,16 @@ class Authentication {
 
     return _deviceIdentity;
   }
-  Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
-  Future<String> _getMobileValue(String key) async {
-    final SharedPreferences prefs = await _prefs;
-    return prefs.getString(key) ?? '';
+  final _storage = new FlutterSecureStorage();
+
+  Future<String> _getStorageValue(String key) async {
+    return await _storage.read(key: key);
   }
 
-  Future<bool> _setMobileValue(String key, String token) async {
-    final SharedPreferences prefs = await _prefs;
-    return prefs.setString(key, token);
+  Future<bool> _setStorageValue(String key, String value) async {
+    await _storage.write(key: key, value: value);
+    return true;
   }
   // ===
 
@@ -66,8 +66,8 @@ class Authentication {
       Map<String, String> body = {'username': username, 'password': password};
       return _netUtil.post(url + '/authorize', header: header, body: body).then((response) {
         if (response['status'] == '200') {
-          _setMobileValue(_storageKeyMobileToken, response['token']);
-          _setMobileValue(_storageKeyMobileUID, response['user_id'].toString());
+          _setStorageValue(_storageKeyMobileToken, response['token']);
+          _setStorageValue(_storageKeyMobileUID, response['user_id'].toString());
           token = response['token'];
           userID = response['user_id'];
           return userID;
@@ -84,8 +84,8 @@ class Authentication {
     // reset local and stored user data
     token = "";
     userID = -1;
-    _setMobileValue(_storageKeyMobileToken, '');
-    _setMobileValue(_storageKeyMobileUID, '');
+    _setStorageValue(_storageKeyMobileToken, '');
+    _setStorageValue(_storageKeyMobileUID, '');
     return true;
   }
 
@@ -114,9 +114,9 @@ class Authentication {
   ///
   Future<bool> handShake() async {
     String deviceId = await _getDeviceIdentity();
-    String storedToken = await _getMobileValue(_storageKeyMobileToken);
-    String userId = await _getMobileValue(_storageKeyMobileUID);
-    Map<String, String> header = {'device_id': deviceId, 'authorization': 'Bearer ' + storedToken};
+    String storedToken = await _getStorageValue(_storageKeyMobileToken);
+    String userId = await _getStorageValue(_storageKeyMobileUID);
+    Map<String, String> header = {'device_id': deviceId, 'authorization': 'Bearer ' + storedToken.toString()};
     Map<String, String> body = {'user_id': userId};
     return _netUtil.post(url + '/handshake', header: header, body: body).then((response) {
       return response['status'] == '200';
