@@ -7,18 +7,16 @@ class Home extends StatefulWidget {
   _HomeState createState() => _HomeState();  
 }
 
-class _HomeState extends State<Home> with SingleTickerProviderStateMixin{
-  // TODO make sure variable gets properly disposed
+class _HomeState extends State<Home> with SingleTickerProviderStateMixin{  
   String previousDate;
 
-  // static example data  
+  // static example data        
   List<Activity> activities = [
     new Activity('SoFoDa', 'movie', '2/3 2019', new ActivityMovie('Seen', 'Blade Runner 2049', 'Sci-Fi '), null),            
     new Activity('SoFoDa', 'friend', '3/3 2019', null, ActivityFriend('johanKJIP')),
     new Activity('johanKJIP', 'movie', '3/3 2019', new ActivityMovie('Seen', 'Mad Max: Fury Road', 'Action'), null), 
-    new Activity('SoFoDa', 'movie', '5/3 2019', new ActivityMovie('Seen', 'Spotlight', 'Drama'), null),   
-    
-  ];
+    new Activity('SoFoDa', 'movie', '5/3 2019', new ActivityMovie('Seen', 'Spotlight', 'Drama'), null),  
+  ];  
   
   // debug example
   List<String> movies = ['Mad Max: Fury Road', 
@@ -44,12 +42,12 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin{
   }
 
   @override
-  void initState(){    
+  void initState(){      
     super.initState();    
   }
 
   @override
-  void dispose(){      
+  void dispose(){               
     super.dispose();
   }
 

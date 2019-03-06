@@ -1,4 +1,7 @@
+// Widgets
 import 'package:flutter/material.dart';
+
+// Application views
 import './views/login.view.dart' as login;
 import './views/home.view.dart' as home;
 import './views/profile.view.dart' as profile;
@@ -6,7 +9,8 @@ import './views/stats.view.dart' as stats;
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatelessWidget {  
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -21,28 +25,28 @@ class MyApp extends StatelessWidget {
         '/': (context) => login.Login(),
         // When we navigate to the "/second" route, build the SecondScreen Widget
         '/home': (context) => MovieListApp(),        
-      },                     
+      },                           
     );
   }
 }
 
-class MovieListApp extends StatefulWidget {  
+class MovieListApp extends StatefulWidget {    
   @override
   MovieListAppState createState() => MovieListAppState();
 }
 
-class MovieListAppState extends State<MovieListApp> with SingleTickerProviderStateMixin{  
-  TabController controller;
+class MovieListAppState extends State<MovieListApp> with SingleTickerProviderStateMixin{    
+  TabController tabController;
 
   @override
   void initState(){
-    super.initState();
-    controller = new TabController(vsync: this, length: 3);
+    super.initState();        
+    tabController = new TabController(vsync: this, length: 3);
   }
 
   @override
-  void dispose(){
-    controller.dispose();
+  void dispose(){    
+    tabController.dispose();
     super.dispose();
   }
 
@@ -65,7 +69,7 @@ class MovieListAppState extends State<MovieListApp> with SingleTickerProviderSta
       bottomNavigationBar: Material(
         color: Color(0xFF133658),
         child: new TabBar(
-          controller: controller,          
+          controller: tabController,          
           tabs: <Tab>[
             new Tab(icon: new Icon(Icons.home)),                               
             new Tab(icon: new Icon(Icons.account_circle)), 
@@ -75,7 +79,7 @@ class MovieListAppState extends State<MovieListApp> with SingleTickerProviderSta
       ),   
 
       body: TabBarView(
-        controller: controller,
+        controller: tabController,
         children: <Widget>[          
           home.Home(),    
           profile.Profile(),                  
