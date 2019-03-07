@@ -344,8 +344,35 @@ module.exports.setSeenMovie = (muser_id, mmovie_id, mseen) => {
     })
 }
 
-module.exports.addMovie = (entry) => {
-    return Movie.create(entry).then(result => {
+module.exports.addMovie = async (movie) => {
+    let dbEntry = {
+        title: movie.Title, 
+        runtime: parseInt(movie.Runtime.split(" ")[0]),
+        release_year: parseInt(movie.Year), 
+        poster_path: '',
+    };
+
+    // try to add genres and directors
+    /*
+    movie.Genre.split(",").map(genre => {
+        if(genre.startsWith(" ")) {
+            await Genre.create({'genre_type': genre.slice(1)}).catch(err);
+        }
+        await Genre.create({'genre_type': genre}).catch(err);
+    });
+    movie.Director.split(",").map(director => {
+        if(director.startsWith(" ")) {
+            await Genre.create({'genre_type': director.slice(1)}).catch(err);
+        }
+        await Director.create({'genre_type': director}).catch(err);
+    });
+
+    // many to many relation
+    await Movie_director.create({});
+    await Movie_genre.create({});
+    */
+
+    Movie.create(dbEntry).then(result => {
         console.log('Movie added!');
         return true;
     }).catch(err => {

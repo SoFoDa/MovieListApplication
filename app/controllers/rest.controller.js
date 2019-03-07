@@ -104,7 +104,9 @@ router.get('/searchMovie', async function(req, res) {
       for (let i = 0; i < result.length; i++) {
         const movie = result[i];
         // don't want to show the same movie twice.
-        if (omdbEntry.Title == model.title) inDb = true;
+        if (omdbEntry.title === movie.title) {
+          inDb = true;
+        }
 
         let jsonMovie = {
           'title': movie.title,
@@ -126,8 +128,9 @@ router.get('/searchMovie', async function(req, res) {
       }
     }
     if (!inDb) {
+      console.log('not in db');
       jsonObject.unshift(omdbEntry);
-      // TODO add movie to database.
+      //model.addMovie(omdbEntry);
     }
     res.json({
       status: '200',

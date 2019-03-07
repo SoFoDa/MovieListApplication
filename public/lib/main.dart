@@ -119,7 +119,7 @@ class MovieListAppState extends State<MovieListApp> with SingleTickerProviderSta
         title: TextField(
           onSubmitted: _search,
           decoration: InputDecoration(
-            hintText: "search...",
+            hintText: "search movie...",
           ),
         ),
         actions: <Widget>[
