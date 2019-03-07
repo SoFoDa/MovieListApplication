@@ -93,17 +93,39 @@ router.get('/getMovieFromId', function(req, res) {
 /* URL params: 
 * @title: Title of the movie
 */
-router.get('/searchMovie', function(req, res) {
-  model.getMoviesFromTitle(req.query.title).spread((first) => {
-    // in db, return it!
-    if(first != undefined) {
+router.get('/searchMovie', async function(req, res) {
+  model.getMoviesFromTitle(req.query.title).then(async (result) => {
+    // in db, fetch genres, directors and send it!
+    if(result != undefined) {
       console.log("Movie found in db!");
+      let jsonObject = [];
+      for (let i = 0; i < result.length; i++) {
+        const movie = result[i];
+        let jsonMovie = {
+          'title': movie.title,
+          'runtime': movie.runtime,
+          'release_year': movie.release_year,
+          'genres': [],
+          'directors': [],
+          'poster_path': movie.poster_path,
+        };
+        let genres = await model.getMovieGenres(movie.movie_id);
+        let directors = await model.getMovieDirectors(movie.movie_id);
+        for (let key in genres[0]) {
+          jsonMovie['genres'].push(genres[0][key].genre_type);
+        }
+        for (let key in directors[0]) {
+          jsonMovie['directors'].push(directors[0][key].name);
+        }
+        jsonObject.push(jsonMovie);
+      }
       res.json({
         status: '200',
-        data: first,
+        data: jsonObject,
       });
     // use api
     } else {
+      /*
       omdb.getMovieByTitle(req.query.title).then(function(movie) {
         let entry = {
           title: movie.Title, 
@@ -118,6 +140,7 @@ router.get('/searchMovie', function(req, res) {
           data: entry
         })
       });
+      */
     }
   });
 });

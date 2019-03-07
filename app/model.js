@@ -94,19 +94,76 @@ const Movie = sequelize.define('Movie', {
     runtime: {
         type: Sequelize.INTEGER
     }, 
-    genre: {
-        type: Sequelize.STRING
-    }, 
     release_year: {
         type: Sequelize.INTEGER
     }, 
-    director: {
-        type: Sequelize.STRING
-    },
     poster_path: {
         type: Sequelize.STRING
     }
 }, {timestamps: false, freezeTableName: true});
+
+const Genre = sequelize.define('Genre', {
+    genre_id: {
+        type: Sequelize.INTEGER,
+        primaryKey: true
+    },
+    genre_type: {
+        type: Sequelize.STRING
+    }
+}, {timestamps: false, freezeTableName: true});
+
+const Director = sequelize.define('Director', {
+    director_id: {
+        type: Sequelize.INTEGER,
+        primaryKey: true
+    },
+    name: {
+        type: Sequelize.STRING
+    }
+}, {timestamps: false, freezeTableName: true});
+
+const Movie_director = sequelize.define('Movie_director', {
+    movie_id: {
+        type: Sequelize.INTEGER,
+        
+        references: {
+            model: 'movie',
+       
+            key: 'movie_id',
+        }
+    },
+    director_id: {
+        type: Sequelize.INTEGER,
+
+        references: {
+            model: 'Director',
+       
+            key: 'director_id',
+        }
+    }
+}, {timestamps: false, freezeTableName: true});
+
+const Movie_genre = sequelize.define('Movie_genre', {
+    movie_id: {
+        type: Sequelize.INTEGER,
+        
+        references: {
+            model: 'movie',
+       
+            key: 'movie_id',
+        }
+    },
+    genre_id: {
+        type: Sequelize.INTEGER,
+
+        references: {
+            model: 'Genre',
+       
+            key: 'genre_id',
+        }
+    }
+}, {timestamps: false, freezeTableName: true});
+
 
 const Seen = sequelize.define('Seen', {
     user_id: {
@@ -123,7 +180,7 @@ const Seen = sequelize.define('Seen', {
         type: Sequelize.INTEGER,
      
         references: {
-          model: 'movie',
+          model: 'Movie',
      
           key: 'movie_id',
         }
@@ -295,4 +352,12 @@ module.exports.addMovie = (entry) => {
         console.log(err);
         return false;
     });
+}
+
+module.exports.getMovieGenres = async (movie_id) => {
+    return sequelize.query("CALL getGenres(?);", { replacements: [movie_id], type: sequelize.QueryTypes.SELECT });
+}
+
+module.exports.getMovieDirectors = async (movie_id) => {
+    return sequelize.query("CALL getDirectors(?);", { replacements: [movie_id], type: sequelize.QueryTypes.SELECT });
 }
