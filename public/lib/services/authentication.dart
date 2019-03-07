@@ -49,7 +49,7 @@ class Authentication {
   }
   // ===
 
-  String url = 'http://207.154.209.202:8989/api';
+  String url = 'http://localhost:8989/api';
   int userID = -1;
   String token = "";
   NetworkUtility _netUtil = new NetworkUtility();

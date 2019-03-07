@@ -17,8 +17,6 @@ router.post('/authorize', function (req, res) {
   if (username != undefined) {
     username = username.toLowerCase();
     model.getUser(username).then(function(user) {
-      console.log(user);
-      console.log('Pword: ' + user.password);
       let hash = user.password;
       bcrypt.compare(req.body.password, hash).then(function(correctHash) {
         if(correctHash) {
@@ -96,11 +94,29 @@ router.get('/getMovieFromId', function(req, res) {
 * @title: Title of the movie
 */
 router.get('/searchMovie', function(req, res) {
-  model.getMoviesFromTitle(req.query.title).then(function(data) {
-    if(data != undefined) {
+  model.getMoviesFromTitle(req.query.title).spread((first) => {
+    // in db, return it!
+    if(first != undefined) {
+      console.log("Movie found in db!");
       res.json({
         status: '200',
-        data: data.body
+        data: first,
+      });
+    // use api
+    } else {
+      omdb.getMovieByTitle(req.query.title).then(function(movie) {
+        let entry = {
+          title: movie.Title, 
+          runtime: parseInt(movie.Runtime.split(" ")[0]),
+          genre: movie.Genre,
+          release_year: parseInt(movie.Year), 
+          director: movie.Director,
+          poster_path: '',
+        };
+        model.addMovie(entry);
+        res.json({
+          data: entry
+        })
       });
     }
   });
@@ -110,15 +126,9 @@ router.get('/searchMovie', function(req, res) {
 * @title: Title of the movie
 */
 router.get('/omdb/movie', function(req, res) {
-  let title = encodeURIComponent(req.query.title.replace(" ", "+"));
-  let url = `http://www.omdbapi.com/?apikey=${process.env.OMDB_KEY}&t=${title}`;
-  console.log(url);
-  fetch(url, {
-    json: true,
-  }).then(res => res.json()
-  ).then(data => { 
+  omdb.getMovieByTitle(req.query.title).then(function(data) {
     res.json({
-      data: data
+      data: data,
     })
   });
 });

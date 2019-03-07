@@ -7,8 +7,8 @@ const Op = Sequelize.Op
 //var config = require('./credentials');
 //console.log(config.db);
 
-const sequelize = new Sequelize('mydb', 'root', 'korvar123', {
-    host: 'localhost',
+const sequelize = new Sequelize(process.env.DB_DB, process.env.DB_USER, process.env.DB_PASSWORD, {
+    host: process.env.DB_HOST,
     dialect: 'mysql',
     operatorsAliases: false,
 
@@ -101,6 +101,9 @@ const Movie = sequelize.define('Movie', {
         type: Sequelize.INTEGER
     }, 
     director: {
+        type: Sequelize.STRING
+    },
+    poster_path: {
         type: Sequelize.STRING
     }
 }, {timestamps: false, freezeTableName: true});
@@ -278,4 +281,14 @@ module.exports.setSeenMovie = (muser_id, mmovie_id, mseen) => {
             newEntry.save();
         }
     })
+}
+
+module.exports.addMovie = (entry) => {
+    return Movie.create(entry).then(result => {
+        console.log('Movie added!');
+        return true;
+    }).catch(err => {
+        console.log(err);
+        return false;
+    });
 }
