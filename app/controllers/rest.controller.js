@@ -95,12 +95,17 @@ router.get('/getMovieFromId', function(req, res) {
 */
 router.get('/searchMovie', async function(req, res) {
   model.getMoviesFromTitle(req.query.title).then(async (result) => {
-    // in db, fetch genres, directors and send it!
+    // in db, fetch movies its genres and directors and send it!
+    let omdbEntry = await omdb.getMovieByTitle(req.query.title);
+    let inDb = false;
+    let jsonObject = [];
     if(result != undefined) {
       console.log("Movie found in db!");
-      let jsonObject = [];
       for (let i = 0; i < result.length; i++) {
         const movie = result[i];
+        // don't want to show the same movie twice.
+        if (omdbEntry.Title == model.title) inDb = true;
+
         let jsonMovie = {
           'title': movie.title,
           'runtime': movie.runtime,
@@ -119,29 +124,15 @@ router.get('/searchMovie', async function(req, res) {
         }
         jsonObject.push(jsonMovie);
       }
-      res.json({
-        status: '200',
-        data: jsonObject,
-      });
-    // use api
-    } else {
-      /*
-      omdb.getMovieByTitle(req.query.title).then(function(movie) {
-        let entry = {
-          title: movie.Title, 
-          runtime: parseInt(movie.Runtime.split(" ")[0]),
-          genre: movie.Genre,
-          release_year: parseInt(movie.Year), 
-          director: movie.Director,
-          poster_path: '',
-        };
-        model.addMovie(entry);
-        res.json({
-          data: entry
-        })
-      });
-      */
     }
+    if (!inDb) {
+      jsonObject.unshift(omdbEntry);
+      // TODO add movie to database.
+    }
+    res.json({
+      status: '200',
+      data: jsonObject,
+    });
   });
 });
 
