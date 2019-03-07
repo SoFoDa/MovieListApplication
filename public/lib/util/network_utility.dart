@@ -15,7 +15,7 @@ class NetworkUtility {
   /// Makes a get request to url.
   /// 
   /// Returns json decoded result.
-  Future<dynamic> get(String url, Map header) async {
+  Future<dynamic> get(String url, {Map header}) async {
     return http.get(url, headers: header).then((response) {
       final String res = response.body;
       final int statusCode = response.statusCode;

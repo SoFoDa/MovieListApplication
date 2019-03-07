@@ -249,7 +249,11 @@ module.exports.getMoviesFromTitle = (mTitle) => {
     return Movie.findAll({
         where: {
             title: {[Op.like]: '%'  + mTitle + '%'}
-        }  
+        },
+        limit: 10,
+        order: [
+            ['title', 'DESC']
+        ]
     })
 }
 

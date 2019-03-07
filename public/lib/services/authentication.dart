@@ -52,6 +52,7 @@ class Authentication {
   String url = 'http://localhost:8989/api';
   int userID = -1;
   String token = "";
+  String deviceIdLocal = "";
   NetworkUtility _netUtil = new NetworkUtility();
 
   ///
@@ -62,6 +63,7 @@ class Authentication {
   Future<int> login(String username, String password) async {
     print('Logging in...');
     return _getDeviceIdentity().then((deviceId) {
+      deviceIdLocal = deviceId;
       Map<String, String> header = {'device_id': deviceId};
       Map<String, String> body = {'username': username, 'password': password};
       return _netUtil.post(url + '/authorize', header: header, body: body).then((response) {
