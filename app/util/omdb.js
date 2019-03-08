@@ -22,6 +22,8 @@ module.exports.getMovieByTitle = async (title, year=-1) => {
                     directors: [],
                     poster_path: movie.Poster,
                 };
+                if (isNaN(entry.runtime)) entry.runtime = 0;
+
                 entry['genres'] = movie.Genre.split(",").map(genre => {
                     if(genre.startsWith(" ")) {
                         return genre.slice(1);

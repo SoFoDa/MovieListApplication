@@ -72,7 +72,7 @@ class SearchCard extends StatelessWidget {
     }    
 
     // Get runtime values
-    while(runtime > 60){
+    while(runtime != null && runtime > 60){
       runtime -= 60;
       _hours++;
     }

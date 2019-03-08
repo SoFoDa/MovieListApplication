@@ -29,8 +29,10 @@ class Movie extends State<MoviePage> {
 
   @override
   Widget build(BuildContext context) {
-    print(_movie);
     if (_movie != null) {
+      if (_movie['poster_path'] == '') {
+      _movie['poster_path'] = 'noposter.jpg';
+      }
       return new Scaffold(
         appBar: AppBar(
           
