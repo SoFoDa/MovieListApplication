@@ -20,7 +20,7 @@ module.exports.getMovieByTitle = async (title, year=-1) => {
                     genres: [],
                     release_year: parseInt(movie.Year), 
                     directors: [],
-                    poster_path: '',
+                    poster_path: movie.Poster,
                 };
                 entry['genres'] = movie.Genre.split(",").map(genre => {
                     if(genre.startsWith(" ")) {

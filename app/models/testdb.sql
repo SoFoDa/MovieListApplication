@@ -38,8 +38,8 @@ INSERT INTO Genre (genre_type) VALUES ('Drama');
 INSERT INTO Genre (genre_type) VALUES ('Mystery');
 INSERT INTO Genre (genre_type) VALUES ('Thriller');
 
-INSERT INTO Movie (title, runtime, release_year, poster_path) VALUES ('Star Wars: Episode IV - A New Hope', 121, 1977, 'posters/star-wars-ep4.jpg');
-INSERT INTO Movie (title, runtime, release_year, poster_path) VALUES ('Blade Runner 2049', 164, 2017, 'posters/blade-runner-2049.jpg');
+INSERT INTO Movie (title, runtime, release_year, poster_path) VALUES ('Star Wars: Episode IV - A New Hope', 121, 1977, 'star-wars-ep4.jpg');
+INSERT INTO Movie (title, runtime, release_year, poster_path) VALUES ('Blade Runner 2049', 164, 2017, 'blade-runner-2049.jpg');
 
 INSERT INTO Movie_genre (movie_id, genre_id) VALUES (1, 1);
 INSERT INTO Movie_genre (movie_id, genre_id) VALUES (1, 2);

@@ -3,9 +3,7 @@
 
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op
-// TODO FIX!!!!!!!!!!!!!!
-//var config = require('./credentials');
-//console.log(config.db);
+const download = require('image-downloader')
 
 const sequelize = new Sequelize(process.env.DB_DB, process.env.DB_USER, process.env.DB_PASSWORD, {
     host: process.env.DB_HOST,
@@ -354,6 +352,19 @@ module.exports.addMovie = async (dbEntry) => {
     let dbCheck = await module.exports.getMoviesFromTitle(dbEntry.title);
     if(dbCheck.length > 0 && dbCheck[0].title == dbEntry.title && dbCheck[0].release_year ==  dbEntry.release_year) {
         return;
+    }
+    // download  image
+    let posterName = dbEntry.title.replace(/\s+/g, "-").toLowerCase() + dbEntry.release_year + '.jpg';
+    const options = {
+        url: dbEntry.poster_path,
+        dest: 'app/resources/posters/' + posterName                  
+    }
+    try {
+        const { filename, image } = await download.image(options);
+        dbEntry.poster_path = posterName;
+    } catch (e) {
+        dbEntry.poster_path = '';
+        console.error(e)
     }
 
     Movie.create(dbEntry).then(async () => {

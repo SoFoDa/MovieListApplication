@@ -39,7 +39,7 @@ class ActivityCard extends StatelessWidget {
                 height: 125,
                 width: 83,  
                 decoration: BoxDecoration(  
-                  border: Border.all(color: Colors.white),                  
+                  border: Border.all(color: Colors.grey),                  
                   image: DecorationImage(
                     // TODO make non-static
                     image: AssetImage('assets/bladerunnerPoster.jpg'),

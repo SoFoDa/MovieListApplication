@@ -18,7 +18,7 @@ class BaseCard extends StatelessWidget {
       width: width,
       margin: margin,
       decoration: BoxDecoration(                            
-        //border: Border.all(color: Colors.white),             
+        border: Border.all(color: Colors.blueGrey),             
         color: Color(0xFF1b3e73),
         boxShadow: [BoxShadow(
           color: Color(0xAA092042),

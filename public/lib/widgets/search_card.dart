@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/base_card.dart';
+import 'package:public/config.dart';
 
 class SearchCard extends StatelessWidget {  
   String title;
@@ -7,6 +8,7 @@ class SearchCard extends StatelessWidget {
   List<dynamic> genreList;
   List<dynamic> directorList;  
   int runtime;
+  String posterPath;
     
   int _hours = 0;
   int _minutes = 0; 
@@ -19,7 +21,7 @@ class SearchCard extends StatelessWidget {
   double _card_height = 100;   
   
 
-  SearchCard(this.title, this.release_year, this.genreList, this.directorList, this.runtime){
+  SearchCard(this.title, this.release_year, this.genreList, this.directorList, this.runtime, this.posterPath){
     title = this.title;
     release_year = this.release_year;    
     genreList = this.genreList; 

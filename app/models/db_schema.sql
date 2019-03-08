@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`Movie` (
   `title` VARCHAR(150) NOT NULL,
   `runtime` INT NOT NULL,
   `release_year` INT NOT NULL,
-  `poster_path` VARCHAR(45) NOT NULL,
+  `poster_path` VARCHAR(150) NOT NULL,
   PRIMARY KEY (`movie_id`))
 ENGINE = InnoDB;
 

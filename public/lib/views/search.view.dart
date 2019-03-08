@@ -69,6 +69,7 @@ class Search extends State<SearchPage> {
               Color(0xFF594CD2),
               Color(0xFF913AC5),              
             ],
+            tileMode: TileMode.clamp,
           ),
         ),             
         child: Column(          
@@ -89,7 +90,7 @@ class Search extends State<SearchPage> {
                   final movie = _movies[index];                  
                   if (movie != null) {
                     return ListTile(                                      
-                      subtitle: SearchCard(movie['title'], movie['release_year'], movie['genres'], movie['directors'], movie['runtime'])     
+                      subtitle: SearchCard(movie['title'], movie['release_year'], movie['genres'], movie['directors'], movie['runtime'], movie['poster_path'])     
                     );
                   }
                 },
