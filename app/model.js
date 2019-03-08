@@ -349,45 +349,46 @@ module.exports.setSeenMovie = (muser_id, mmovie_id, mseen) => {
 }
 
 module.exports.addMovie = async (dbEntry) => {
-    await Movie.create(dbEntry);
-    // movie table
-    return sequelize.transaction(async function (t) {
-        // chain all your queries here. make sure you return them.
-        let movie = await Movie.findOne({
-            where: {
-                title: dbEntry.title
+    Movie.create(dbEntry).then(async () => {
+        // movie table
+        return sequelize.transaction(async function (t) {
+            // chain all your queries here. make sure you return them.
+            let movie = await Movie.findOne({
+                where: {
+                    title: dbEntry.title
+                }
+            });
+            let promises = [];
+            for (let i = 0; i < dbEntry.genres.length; i++) {
+                promises.push(await Genre.findOrCreate({
+                    where: {
+                        genre_type: dbEntry.genres[i]
+                    },
+                    transaction: t
+                }).spread(async (genreEntry, created) => {
+                    await Movie_genre.create({'movie_id': movie.movie_id, 'genre_id': genreEntry.genre_id}, {transaction: t}).catch(err => cosnsole.log(err));
+                }));
             }
+            for (let i = 0; i < dbEntry.directors.length; i++) {
+                promises.push(await Director.findOrCreate({
+                    where: {
+                        name: dbEntry.directors[i]
+                    },
+                    transaction: t
+                }).spread(async (directorEntry, created) => {
+                    await Movie_director.create({'movie_id': movie.movie_id, 'director_id': directorEntry.director_id}, {transaction: t}).catch(err => cosnsole.log(err));
+                }));
+            }
+            return Promise.all(promises);
+            }).then(function (result) {
+                console.log('Movie added!');
+                return true;
+            }).catch(function (err) {
+                console.log(err);
+                // Transaction has been rolled back
+                // err is whatever rejected the promise chain returned to the transaction callback
         });
-        let promises = [];
-        for (let i = 0; i < dbEntry.genres.length; i++) {
-            promises.push(await Genre.findOrCreate({
-                where: {
-                    genre_type: dbEntry.genres[i]
-                },
-                transaction: t
-            }).spread(async (genreEntry, created) => {
-                await Movie_genre.create({'movie_id': movie.movie_id, 'genre_id': genreEntry.genre_id}, {transaction: t});
-            }));
-        }
-        for (let i = 0; i < dbEntry.directors.length; i++) {
-            promises.push(await Director.findOrCreate({
-                where: {
-                    name: dbEntry.directors[i]
-                },
-                transaction: t
-            }).spread(async (directorEntry, created) => {
-                await Movie_genre.create({'movie_id': movie.movie_id, 'genre_id': directorEntry.director_id}, {transaction: t});
-            }));
-        }
-        return Promise.all(promises);
-        }).then(function (result) {
-            console.log('Movie added!');
-            return true;
-        }).catch(function (err) {
-            console.log(err);
-            // Transaction has been rolled back
-            // err is whatever rejected the promise chain returned to the transaction callback
-    });
+    }).catch(err => console.log('Movie already in db!'));
 }
 
 module.exports.getMovieGenres = async (movie_id) => {

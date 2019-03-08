@@ -100,10 +100,12 @@ router.get('/searchMovie', async function(req, res) {
     let inDb = false;
     let jsonObject = [];
     if(result != undefined) {
-      console.log("Movie found in db!");
+      console.log("Movie found in db! " + result.length + ' - ' + result);
       for (let i = 0; i < result.length; i++) {
         const movie = result[i];
         // don't want to show the same movie twice.
+        console.log('omdb: ' + omdbEntry.title);
+        console.log('db: ' + movie.title);
         if (omdbEntry.title === movie.title) {
           inDb = true;
         }
