@@ -305,7 +305,7 @@ module.exports.getMovieFromId = (id) => {
     })
 }
 
-module.exports.getMoviesFromTitle = (mTitle) => {
+module.exports.getMoviesFromTitle = async (mTitle) => {
     return Movie.findAll({
         where: {
             title: {[Op.like]: '%'  + mTitle + '%'}
@@ -367,7 +367,7 @@ module.exports.addMovie = async (dbEntry) => {
         console.error(e)
     }
 
-    Movie.create(dbEntry).then(async () => {
+    return Movie.create(dbEntry).then(async () => {
         // movie table
         return sequelize.transaction(async function (t) {
             console.log('Began transaction');

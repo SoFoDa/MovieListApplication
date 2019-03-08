@@ -147,7 +147,9 @@ router.get('/searchMovie', async function(req, res) {
       if(omdbEntry !== null) {
         await model.addMovie(omdbEntry);
         let omdbInDbEntry = await model.getMoviesFromTitle(omdbEntry.title);
-        omdbEntry['movie_id'] = omdbInDbEntry.movie_id;
+        //console.log('id: == ' + mov.movie_id)
+        omdbEntry['movie_id'] = omdbInDbEntry[0].movie_id;
+        console.log(omdbEntry['movie_id']);
         jsonObject.unshift(omdbEntry);
       }
     }

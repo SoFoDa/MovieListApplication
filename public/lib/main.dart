@@ -8,6 +8,7 @@ import './views/home.view.dart' as home;
 import './views/profile.view.dart' as profile;
 import './views/stats.view.dart' as stats;
 import './views/search.view.dart' as search;
+import './views/movie.view.dart' as movie;
 
 void main() => runApp(MyApp());
 
@@ -25,8 +26,7 @@ class MyApp extends StatelessWidget {
       routes: {        
         '/': (context) => login.LoginPage(),        
         '/home': (context) => MovieListApp(), 
-        '/register': (context) => register.RegisterPage(), 
-        '/search': (context) => search.SearchPage(),        
+        '/register': (context) => register.RegisterPage(),        
       },                           
     );
   }
