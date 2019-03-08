@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:public/util/network_utility.dart';
 import 'package:public/services/authentication.dart';
-import '../widgets/base_card.dart';
+import '../widgets/search_card.dart';
 
 class SearchPage extends StatefulWidget {
   final String search;
@@ -73,7 +73,7 @@ class Search extends State<SearchPage> {
         child: Column(          
           children: <Widget>[
             Container(
-              margin: EdgeInsets.only(top: 10),
+              margin: EdgeInsets.symmetric(vertical: 10),
               child: Text(     
                 // Format search result amount text
                 (_movies.contains(null) ? '0 search results' : _movies.length.toString() + 
@@ -88,21 +88,7 @@ class Search extends State<SearchPage> {
                   final movie = _movies[index];                  
                   if (movie != null) {
                     return ListTile(                                      
-                      subtitle: Stack(
-                        children: <Widget>[                          
-                          BaseCard(MediaQuery.of(context).size.width, 100, EdgeInsets.all(0)),
-                          Container(
-                            margin: EdgeInsets.all(10),                            
-                            child: Text(
-                              movie['title'],
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 15,
-                              ),
-                            ),
-                          ),                          
-                        ],
-                      ),                      
+                      subtitle: SearchCard(movie['title'], movie['release_year'], movie['genres'], movie['directors'], movie['runtime'])     
                     );
                   }
                 },
