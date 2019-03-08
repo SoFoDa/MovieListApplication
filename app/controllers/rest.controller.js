@@ -128,9 +128,9 @@ router.get('/searchMovie', async function(req, res) {
       }
     }
     if (!inDb) {
-      console.log('not in db');
+      console.log('Movie not in db, trying to add...');
       jsonObject.unshift(omdbEntry);
-      //model.addMovie(omdbEntry);
+      model.addMovie(omdbEntry);
     }
     res.json({
       status: '200',

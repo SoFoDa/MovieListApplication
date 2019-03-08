@@ -105,7 +105,8 @@ const Movie = sequelize.define('Movie', {
 const Genre = sequelize.define('Genre', {
     genre_id: {
         type: Sequelize.INTEGER,
-        primaryKey: true
+        primaryKey: true,
+        autoIncrement: true,
     },
     genre_type: {
         type: Sequelize.STRING
@@ -115,7 +116,8 @@ const Genre = sequelize.define('Genre', {
 const Director = sequelize.define('Director', {
     director_id: {
         type: Sequelize.INTEGER,
-        primaryKey: true
+        primaryKey: true,
+        autoIncrement: true,
     },
     name: {
         type: Sequelize.STRING
@@ -125,6 +127,7 @@ const Director = sequelize.define('Director', {
 const Movie_director = sequelize.define('Movie_director', {
     movie_id: {
         type: Sequelize.INTEGER,
+        primaryKey: true,
         
         references: {
             model: 'movie',
@@ -146,6 +149,7 @@ const Movie_director = sequelize.define('Movie_director', {
 const Movie_genre = sequelize.define('Movie_genre', {
     movie_id: {
         type: Sequelize.INTEGER,
+        primaryKey: true,
         
         references: {
             model: 'movie',
@@ -344,40 +348,45 @@ module.exports.setSeenMovie = (muser_id, mmovie_id, mseen) => {
     })
 }
 
-module.exports.addMovie = async (movie) => {
-    let dbEntry = {
-        title: movie.Title, 
-        runtime: parseInt(movie.Runtime.split(" ")[0]),
-        release_year: parseInt(movie.Year), 
-        poster_path: '',
-    };
-
-    // try to add genres and directors
-    /*
-    movie.Genre.split(",").map(genre => {
-        if(genre.startsWith(" ")) {
-            await Genre.create({'genre_type': genre.slice(1)}).catch(err);
+module.exports.addMovie = async (dbEntry) => {
+    await Movie.create(dbEntry);
+    // movie table
+    return sequelize.transaction(async function (t) {
+        // chain all your queries here. make sure you return them.
+        let movie = await Movie.findOne({
+            where: {
+                title: dbEntry.title
+            }
+        });
+        let promises = [];
+        for (let i = 0; i < dbEntry.genres.length; i++) {
+            promises.push(await Genre.findOrCreate({
+                where: {
+                    genre_type: dbEntry.genres[i]
+                },
+                transaction: t
+            }).spread(async (genreEntry, created) => {
+                await Movie_genre.create({'movie_id': movie.movie_id, 'genre_id': genreEntry.genre_id}, {transaction: t});
+            }));
         }
-        await Genre.create({'genre_type': genre}).catch(err);
-    });
-    movie.Director.split(",").map(director => {
-        if(director.startsWith(" ")) {
-            await Genre.create({'genre_type': director.slice(1)}).catch(err);
+        for (let i = 0; i < dbEntry.directors.length; i++) {
+            promises.push(await Director.findOrCreate({
+                where: {
+                    name: dbEntry.directors[i]
+                },
+                transaction: t
+            }).spread(async (directorEntry, created) => {
+                await Movie_genre.create({'movie_id': movie.movie_id, 'genre_id': directorEntry.director_id}, {transaction: t});
+            }));
         }
-        await Director.create({'genre_type': director}).catch(err);
-    });
-
-    // many to many relation
-    await Movie_director.create({});
-    await Movie_genre.create({});
-    */
-
-    Movie.create(dbEntry).then(result => {
-        console.log('Movie added!');
-        return true;
-    }).catch(err => {
-        console.log(err);
-        return false;
+        return Promise.all(promises);
+        }).then(function (result) {
+            console.log('Movie added!');
+            return true;
+        }).catch(function (err) {
+            console.log(err);
+            // Transaction has been rolled back
+            // err is whatever rejected the promise chain returned to the transaction callback
     });
 }
 

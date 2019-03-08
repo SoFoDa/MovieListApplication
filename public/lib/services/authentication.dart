@@ -4,6 +4,7 @@ import 'package:public/util/network_utility.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:io';
+import 'package:public/config.dart';
 
 // the storage key for the token
 const String _storageKeyMobileToken = "token";
@@ -49,7 +50,6 @@ class Authentication {
   }
   // ===
 
-  String url = 'http://localhost:8989/api';
   int userID = -1;
   String token = "";
   String deviceIdLocal = "";
@@ -63,10 +63,11 @@ class Authentication {
   Future<int> login(String username, String password) async {
     print('Logging in...');
     return _getDeviceIdentity().then((deviceId) {
+      var url = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/authorize');
       deviceIdLocal = deviceId;
       Map<String, String> header = {'device_id': deviceId};
       Map<String, String> body = {'username': username, 'password': password};
-      return _netUtil.post(url + '/authorize', header: header, body: body).then((response) {
+      return _netUtil.post(url, header: header, body: body).then((response) {
         if (response['status'] == '200') {
           _setStorageValue(_storageKeyMobileToken, response['token']);
           _setStorageValue(_storageKeyMobileUID, response['user_id'].toString());
@@ -98,7 +99,8 @@ class Authentication {
   ///
   Future<int> register(String username, String password) async {
     print('Register: ' + username);
-    return _netUtil.put(url + '/register', body: {'username': username, 'password': password}).then((response) {
+    var url = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/register');
+    return _netUtil.put(url, body: {'username': username, 'password': password}).then((response) {
       if (response['status'] == '200') {
         print('Registration success');
         return login(username, password);
@@ -120,7 +122,9 @@ class Authentication {
     String userId = await _getStorageValue(_storageKeyMobileUID);
     Map<String, String> header = {'device_id': deviceId, 'authorization': 'Bearer ' + storedToken.toString()};
     Map<String, String> body = {'user_id': userId};
-    return _netUtil.post(url + '/handshake', header: header, body: body).then((response) {
+    
+    var url = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/handshake');
+    return _netUtil.post(url, header: header, body: body).then((response) {
       return response['status'] == '200';
     });
   }

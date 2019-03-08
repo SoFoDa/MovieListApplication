@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:public/util/network_utility.dart';
 import 'package:public/services/authentication.dart';
 import '../widgets/search_card.dart';
+import 'package:public/config.dart';
 
 class SearchPage extends StatefulWidget {
   final String search;
@@ -23,8 +24,8 @@ class Search extends State<SearchPage> {
     var params = {
       'title': widget.search,
     };
-    var uri = Uri.http('localhost:8989', '/api/searchMovie', params).toString();
-    _netUtil.get(uri).then((movies) => {
+    var url = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/searchMovie', params);
+    _netUtil.get(url).then((movies) => {
       this.setState(() {
           _movies = movies['data'];
           print(movies['data']);
