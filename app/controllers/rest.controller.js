@@ -99,7 +99,6 @@ router.get('/searchMovie', async function(req, res) {
 
   // separate year and title if exists
   let match = title.match("(19[0-9][0-9]|20[0-2][0-9])");
-  console.log(match);
   let omdbEntry = await omdb.getMovieByTitle(req.query.title);
   if (match !== null) {
     title = title.replace(match[0], "");
@@ -145,11 +144,9 @@ router.get('/searchMovie', async function(req, res) {
     if (!inDb) {
       console.log('Movie not in db, trying to add...');
       if(omdbEntry !== null) {
-        await model.addMovie(omdbEntry);
+        let mov = await model.addMovie(omdbEntry);
         let omdbInDbEntry = await model.getMoviesFromTitle(omdbEntry.title);
-        //console.log('id: == ' + mov.movie_id)
-        omdbEntry['movie_id'] = omdbInDbEntry[0].movie_id;
-        console.log(omdbEntry['movie_id']);
+        omdbEntry['movie_id'] = mov.movie_id;
         jsonObject.unshift(omdbEntry);
       }
     }

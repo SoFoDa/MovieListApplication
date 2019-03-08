@@ -367,7 +367,7 @@ module.exports.addMovie = async (dbEntry) => {
         console.error(e)
     }
 
-    return Movie.create(dbEntry).then(async () => {
+    return Movie.create(dbEntry).then(async (movie) => {
         // movie table
         return sequelize.transaction(async function (t) {
             console.log('Began transaction');
@@ -405,7 +405,7 @@ module.exports.addMovie = async (dbEntry) => {
             return Promise.all(promises);
             }).then(function (result) {
                 console.log('Movie added!');
-                return true;
+                return movie;
             }).catch(function (err) {
                 console.log(err);
                 // Transaction has been rolled back
