@@ -99,10 +99,11 @@ router.get('/searchMovie', async function(req, res) {
 
   // separate year and title if exists
   let match = title.match("(19[0-9][0-9]|20[0-2][0-9])");
+  console.log(match);
   let omdbEntry = await omdb.getMovieByTitle(req.query.title);
   if (match !== null) {
     title = title.replace(match[0], "");
-    omdbEntry = await omdb.getMovieByTitle(req.query.title, parseInt(match[0]));
+    omdbEntry = await omdb.getMovieByTitle(title, parseInt(match[0]));
   }
   if (title.endsWith(" ")) {
     title = title.substring(0, title.length - 1);
@@ -116,12 +117,13 @@ router.get('/searchMovie', async function(req, res) {
       for (let i = 0; i < result.length; i++) {
         const movie = result[i];
         // don't want to show the same movie twice.
-        if ((omdbEntry.title === movie.title) && (omdbEntry.release_year === movie.release_year)) {
+        if (omdbEntry !== null && (omdbEntry.title === movie.title) && (omdbEntry.release_year === movie.release_year)) {
           console.log('In db!');
           inDb = true;
         }
 
         let jsonMovie = {
+          'movie_id': movie.movie_id,
           'title': movie.title,
           'runtime': movie.runtime,
           'release_year': movie.release_year,
@@ -143,8 +145,10 @@ router.get('/searchMovie', async function(req, res) {
     if (!inDb) {
       console.log('Movie not in db, trying to add...');
       if(omdbEntry !== null) {
+        await model.addMovie(omdbEntry);
+        let omdbInDbEntry = await model.getMoviesFromTitle(omdbEntry.title);
+        omdbEntry['movie_id'] = omdbInDbEntry.movie_id;
         jsonObject.unshift(omdbEntry);
-        model.addMovie(omdbEntry);
       }
     }
     res.json({
