@@ -94,19 +94,30 @@ router.get('/getMovieFromId', function(req, res) {
 * @title: Title of the movie
 */
 router.get('/searchMovie', async function(req, res) {
-  model.getMoviesFromTitle(req.query.title).then(async (result) => {
-    // in db, fetch movies its genres and directors and send it!
-    let omdbEntry = await omdb.getMovieByTitle(req.query.title);
+  // in db, fetch movies its genres and directors and send it!
+  let title = req.query.title;
+
+  // separate year and title if exists
+  let match = title.match("(19[0-9][0-9]|20[0-2][0-9])");
+  let omdbEntry = await omdb.getMovieByTitle(req.query.title);
+  if (match !== null) {
+    title = title.replace(match[0], "");
+    omdbEntry = await omdb.getMovieByTitle(req.query.title, parseInt(match[0]));
+  }
+  if (title.endsWith(" ")) {
+    title = title.substring(0, title.length - 1);
+  }
+  model.getMoviesFromTitle(title).then(async (result) => {
+    // build json object from db results
     let inDb = false;
     let jsonObject = [];
-    if(result != undefined) {
-      console.log("Movie found in db! " + result.length + ' - ' + result);
+    if(result !== undefined) {
+      console.log("Similar movie found in db! len: " + result.length);
       for (let i = 0; i < result.length; i++) {
         const movie = result[i];
         // don't want to show the same movie twice.
-        console.log('omdb: ' + omdbEntry.title);
-        console.log('db: ' + movie.title);
-        if (omdbEntry.title === movie.title) {
+        if ((omdbEntry.title === movie.title) && (omdbEntry.release_year === movie.release_year)) {
+          console.log('In db!');
           inDb = true;
         }
 
@@ -131,8 +142,10 @@ router.get('/searchMovie', async function(req, res) {
     }
     if (!inDb) {
       console.log('Movie not in db, trying to add...');
-      jsonObject.unshift(omdbEntry);
-      model.addMovie(omdbEntry);
+      if(omdbEntry !== null) {
+        jsonObject.unshift(omdbEntry);
+        model.addMovie(omdbEntry);
+      }
     }
     res.json({
       status: '200',

@@ -86,7 +86,8 @@ const User_info = sequelize.define('User_info', {
 const Movie = sequelize.define('Movie', {
     movie_id: {
         type: Sequelize.INTEGER,
-        primaryKey: true
+        primaryKey: true,
+        autoIncrement: true,
     },
     title: {
         type: Sequelize.STRING
@@ -349,15 +350,24 @@ module.exports.setSeenMovie = (muser_id, mmovie_id, mseen) => {
 }
 
 module.exports.addMovie = async (dbEntry) => {
+    // last check if it already is in db
+    let dbCheck = await module.exports.getMoviesFromTitle(dbEntry.title);
+    if(dbCheck.length > 0 && dbCheck[0].title == dbEntry.title && dbCheck[0].release_year ==  dbEntry.release_year) {
+        return;
+    }
+
     Movie.create(dbEntry).then(async () => {
         // movie table
         return sequelize.transaction(async function (t) {
+            console.log('Began transaction');
             // chain all your queries here. make sure you return them.
             let movie = await Movie.findOne({
                 where: {
-                    title: dbEntry.title
+                    title: dbEntry.title,
+                    release_year: dbEntry.release_year,
                 }
             });
+            console.log('Found movie id');
             let promises = [];
             for (let i = 0; i < dbEntry.genres.length; i++) {
                 promises.push(await Genre.findOrCreate({
@@ -369,6 +379,7 @@ module.exports.addMovie = async (dbEntry) => {
                     await Movie_genre.create({'movie_id': movie.movie_id, 'genre_id': genreEntry.genre_id}, {transaction: t}).catch(err => cosnsole.log(err));
                 }));
             }
+            console.log('Added genres');
             for (let i = 0; i < dbEntry.directors.length; i++) {
                 promises.push(await Director.findOrCreate({
                     where: {
@@ -379,6 +390,7 @@ module.exports.addMovie = async (dbEntry) => {
                     await Movie_director.create({'movie_id': movie.movie_id, 'director_id': directorEntry.director_id}, {transaction: t}).catch(err => cosnsole.log(err));
                 }));
             }
+            console.log('Added directors');
             return Promise.all(promises);
             }).then(function (result) {
                 console.log('Movie added!');
@@ -388,7 +400,7 @@ module.exports.addMovie = async (dbEntry) => {
                 // Transaction has been rolled back
                 // err is whatever rejected the promise chain returned to the transaction callback
         });
-    }).catch(err => console.log('Movie already in db!'));
+    }).catch(err => console.log('Error: movie might already be in db: ' + err));
 }
 
 module.exports.getMovieGenres = async (movie_id) => {

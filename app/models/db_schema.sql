@@ -80,12 +80,11 @@ DROP TABLE IF EXISTS `mydb`.`Movie` ;
 
 CREATE TABLE IF NOT EXISTS `mydb`.`Movie` (
   `movie_id` INT NOT NULL AUTO_INCREMENT,
-  `title` VARCHAR(45) NOT NULL,
+  `title` VARCHAR(150) NOT NULL,
   `runtime` INT NOT NULL,
   `release_year` INT NOT NULL,
   `poster_path` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`movie_id`),
-  UNIQUE INDEX `title_UNIQUE` (`title` ASC))
+  PRIMARY KEY (`movie_id`))
 ENGINE = InnoDB;
 
 
