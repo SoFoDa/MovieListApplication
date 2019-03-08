@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:public/models/activity.dart';
+import '../widgets/base_card.dart';
 
 class ActivityCard extends StatelessWidget {
   // Positional values
@@ -25,21 +26,7 @@ class ActivityCard extends StatelessWidget {
           // Blue card          
           Positioned(   
             right: _LEFT_MARGIN,                  
-            child: Container(
-              alignment: Alignment(20, 20),
-              height: (activity.type == 'movie' ? 150 : 75),
-              width: _CARD_WIDTH,       
-              decoration: BoxDecoration(        
-                borderRadius: BorderRadius.circular(0),
-                color: Color(0xFF1b3e73),
-                boxShadow: [BoxShadow(
-                  color: Color(0xAA092042),
-                  offset: Offset(0, 15),
-                  blurRadius: 0,
-                  spreadRadius: -9,
-                )]
-              ),                                                                                    
-            ),
+            child: BaseCard(_CARD_WIDTH, (activity.type == 'movie' ? 150 : 75), EdgeInsets.all(0)),
           ), 
           // Movie poster      
           Positioned( 

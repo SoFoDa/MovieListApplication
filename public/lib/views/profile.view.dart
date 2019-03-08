@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:public/services/authentication.dart';
+import '../widgets/base_card.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -43,17 +44,10 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
         children: <Widget>[
           Stack(        
             children: <Widget>[
-              Positioned(                                
+              Positioned(   
                 child: Center(
-                  child:Container(                    
-                    height: 170,
-                    width: MediaQuery.of(context).size.width - 40,
-                    margin: EdgeInsets.only(top: 100),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                    ),
-                  ),
-                )
+                  child: BaseCard(MediaQuery.of(context).size.width - 40, 170, EdgeInsets.only(top: 100)),                                                     
+                )                                                                        
               ),
               //
               Positioned(            
@@ -84,6 +78,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                         Text(
                           username,
                           style: TextStyle(
+                            color: Colors.white,
                             fontSize: 30,
                             fontWeight: FontWeight.bold,
                           ),
@@ -91,6 +86,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                         Text(
                           name,
                           style: TextStyle(
+                            color: Colors.white,
                             fontSize: 15,
                             fontWeight: FontWeight.normal,
                           ),
@@ -107,8 +103,14 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                   margin: EdgeInsets.only(top: 225),
                   child: Row(
                     children: <Widget>[
-                      Icon(Icons.people),
-                      Text(" " + followers.toString() , textAlign: TextAlign.center),
+                      Icon(Icons.people, color: Colors.white),
+                      Text(
+                        " " + followers.toString(), 
+                        textAlign: TextAlign.center, 
+                        style: TextStyle(
+                          color: Colors.white
+                        ),
+                      ),
                     ],      
                   ),        
                 ),                      
@@ -116,7 +118,8 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
             ],
           ),          
           Container(
-            child: RaisedButton(
+            margin: EdgeInsets.only(top: 20),
+            child: RaisedButton(              
               child: Text('Log out'),
               onPressed: () {
                 Authentication _auth = new Authentication();
@@ -124,7 +127,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                 Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
               }
             ),            
-          ), 
+          ),           
         ],
       ),  
     );       
