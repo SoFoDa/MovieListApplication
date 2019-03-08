@@ -117,9 +117,16 @@ class MovieListAppState extends State<MovieListApp> with SingleTickerProviderSta
       return AppBar(
         leading: Icon(Icons.search),
         title: TextField(
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+          ),
           onSubmitted: _search,
-          decoration: InputDecoration(
-            hintText: "search movie...",
+          decoration: InputDecoration.collapsed(                           
+            hintText: "search for movie...",
+            hintStyle: TextStyle(
+              color: Colors.white70,
+            )
           ),
         ),
         actions: <Widget>[

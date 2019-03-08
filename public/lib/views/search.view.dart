@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:public/util/network_utility.dart';
 import 'package:public/services/authentication.dart';
+import '../widgets/base_card.dart';
 
 class SearchPage extends StatefulWidget {
   final String search;
@@ -26,39 +27,89 @@ class Search extends State<SearchPage> {
     _netUtil.get(uri).then((movies) => {
       this.setState(() {
           _movies = movies['data'];
+          print(movies['data']);
       }) :_movies
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
+    return new Scaffold(           
+      appBar: AppBar(
+        title: RichText(
+          text: TextSpan(
+            style: TextStyle(
+              color: Colors.white,                    
+              fontSize: 16,   
+            ),
+            children: <TextSpan>[
+              TextSpan(
+                text: "results for "                
+              ),
+              TextSpan(
+                text: widget.search,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                )
+              )
+            ],
+          ), 
+        ),  
+        elevation: 0,        
+      ),
       body: new Container(
-        child:
-          ListView.builder(
-          // Let the ListView know how many items it needs to build
-          itemCount: _movies.length,
-          // Provide a builder function. This is where the magic happens! We'll
-          // convert each item into a Widget based on the type of item it is.
-          itemBuilder: (context, index) {
-            final movie = _movies[index];
-            if (movie != null) {
-              return ListTile(
-                title: Text(
-                  movie['title'],
-                  style: Theme.of(context).textTheme.headline,
-                ),
-              );
-            } else {
-              return ListTile(
-                title: Text(
-                  "No movies found, please try another search!",
-                  style: Theme.of(context).textTheme.headline,
-                ),
-              );
-            }
-          },
-        )
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,            
+            stops: [0.1, 0.7, 0.9],
+            colors: [              
+              Color(0xFF245ADC),
+              Color(0xFF594CD2),
+              Color(0xFF913AC5),              
+            ],
+          ),
+        ),             
+        child: Column(          
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.only(top: 10),
+              child: Text(     
+                // Format search result amount text
+                (_movies.contains(null) ? '0 search results' : _movies.length.toString() + 
+                (_movies.length > 1 ? ' search results' : ' search result')), 
+                style: TextStyle(fontSize: 10, color: Colors.white),             
+              ),
+            ),          
+            Expanded(
+              child: ListView.builder(          
+                itemCount: _movies.length,          
+                itemBuilder: (context, index) {
+                  final movie = _movies[index];                  
+                  if (movie != null) {
+                    return ListTile(                                      
+                      subtitle: Stack(
+                        children: <Widget>[                          
+                          BaseCard(MediaQuery.of(context).size.width, 100, EdgeInsets.all(0)),
+                          Container(
+                            margin: EdgeInsets.all(10),                            
+                            child: Text(
+                              movie['title'],
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 15,
+                              ),
+                            ),
+                          ),                          
+                        ],
+                      ),                      
+                    );
+                  }
+                },
+              ),
+            ),
+          ],
+        ),          
       ),
     );
   }
