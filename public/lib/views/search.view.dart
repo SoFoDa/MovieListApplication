@@ -33,7 +33,7 @@ class Search extends State<SearchPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {    
     return new Scaffold(           
       appBar: AppBar(
         title: RichText(

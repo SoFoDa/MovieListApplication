@@ -1,35 +1,75 @@
 import 'package:flutter/material.dart';
 import '../widgets/base_card.dart';
 
-class SearchCard extends StatelessWidget {
+class SearchCard extends StatelessWidget {  
   String title;
   int release_year;  
   List<dynamic> genreList;
-  List<dynamic> directorList;
+  List<dynamic> directorList;  
+  int runtime;
+    
+  int _hours = 0;
+  int _minutes = 0; 
+  String row1 = "";
+  String row2 = "";
   String _genres = "";
   String _directors = "";
-  int runtime;
-  int _hours = 0;
-  int _minutes = 0;  
+
+  int _max_genre_amount = 5;  
+  double _card_height = 100;   
   
 
   SearchCard(this.title, this.release_year, this.genreList, this.directorList, this.runtime){
     title = this.title;
     release_year = this.release_year;    
     genreList = this.genreList; 
-    directorList = this.directorList;       
-    for (var i = 0; i < genreList.length; i++) {
+    directorList = this.directorList;  
+    List<String> titleList = title.split(" ");
+         
+    // Format title
+    for (var word in titleList) {
+      if(row1.length + word.length < 30) {        
+        row1 +=  word;              
+        if(row1.length != 0) {
+          row1 += " ";
+        }             
+      } else if(row2.length + word.length < 25) {  
+        row2 += word;              
+        if(row2.length != 0) {
+          row2 += " ";
+        }              
+      } else if(row2.length + word.length >= 25) {
+        row2 += " ...";              
+      }      
+    } 
+
+    // Make card higher if two title rows necessary
+    if(row2.length > 0) {       
+      _card_height = 125; 
+    }
+
+    // Limit maximum amount of genres
+    if(genreList.length < _max_genre_amount) {
+      _max_genre_amount = genreList.length;
+    }
+
+    // Format genres     
+    for (var i = 0; i < _max_genre_amount; i++) {
       _genres += genreList[i];
-      if(i != genreList.length - 1){
+      if(i != _max_genre_amount - 1){
         _genres += " / ";
       }
     }    
+
+    // Format directors
     for (var i = 0; i < directorList.length; i++) {
       _directors += directorList[i];
       if(i != directorList.length - 1){
         _directors += ", ";
       }
     }    
+
+    // Get runtime values
     while(runtime > 60){
       runtime -= 60;
       _hours++;
@@ -43,7 +83,7 @@ class SearchCard extends StatelessWidget {
       child: Stack(
         children: <Widget>[                          
           // background card 
-          BaseCard(MediaQuery.of(context).size.width, 100, EdgeInsets.all(0)),
+          BaseCard(MediaQuery.of(context).size.width, _card_height, EdgeInsets.all(0)),
           // title
           Positioned(
             top: 10,
@@ -54,10 +94,9 @@ class SearchCard extends StatelessWidget {
                   color: Colors.white,
                   fontSize: 20,                                  
                 ),
-                children: <TextSpan>[
-                  // TODO format correctly for long titles
+                children: <TextSpan>[                  
                   TextSpan(                    
-                    text: title,
+                    text: (row2.length == 0 ? row1 : row1 + "\n" + row2),
                     style: TextStyle(
                       fontWeight: FontWeight.bold,             
                     )                                                                      
@@ -71,7 +110,7 @@ class SearchCard extends StatelessWidget {
           ),                          
           // movie information
           Positioned(
-            top: 40,
+            top: _card_height - 60,
             left: 10,
             child: Row(
               children: <Widget>[
@@ -91,7 +130,7 @@ class SearchCard extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: 60,
+            top: _card_height - 40,
             left: 10,
             child: Row(
               children: <Widget>[
@@ -111,7 +150,7 @@ class SearchCard extends StatelessWidget {
             ),
           ), 
           Positioned(
-            top: 80,
+            top: _card_height - 20,
             left: 10,
             child: Row(
               children: <Widget>[
