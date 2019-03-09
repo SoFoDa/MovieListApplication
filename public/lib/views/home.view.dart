@@ -53,28 +53,33 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin{
 
   @override
   Widget build(BuildContext context) {
-    return Container(  
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,            
-          stops: [0.1, 0.7, 0.9],
-          colors: [              
-            Color(0xFF245ADC),
-            Color(0xFF594CD2),
-            Color(0xFF913AC5),              
-          ],
-        ),
-      ),             
-      child: ListView.builder(
-        itemCount: activities.length,
-        itemBuilder: (context, index) {
-          return ListTile(    
-            title: checkPrevDate(activities[index].date, index),
-            subtitle: activity_card.ActivityCard(activities[index]),                                      
-          );
-        },
-      ),     
+    return new WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: Container(  
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,            
+            stops: [0.1, 0.7, 0.9],
+            colors: [              
+              Color(0xFF245ADC),
+              Color(0xFF594CD2),
+              Color(0xFF594CD2),              
+            ],
+          ),
+        ),             
+        child: ListView.builder(
+          itemCount: activities.length,
+          itemBuilder: (context, index) {
+            return ListTile(    
+              title: checkPrevDate(activities[index].date, index),
+              subtitle: activity_card.ActivityCard(activities[index]),                                      
+            );
+          },
+        ),     
+      ),               
     );                
   }
 }
