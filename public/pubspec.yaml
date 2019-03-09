@@ -23,6 +23,7 @@ dependencies:
   web_socket_channel: any
   device_info: any
   shared_preferences: any
+  flutter_secure_storage: ^3.2.0
 
 dev_dependencies:
   flutter_test:

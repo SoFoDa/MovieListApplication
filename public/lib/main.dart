@@ -7,6 +7,8 @@ import './views/register.view.dart' as register;
 import './views/home.view.dart' as home;
 import './views/profile.view.dart' as profile;
 import './views/stats.view.dart' as stats;
+import './views/search.view.dart' as search;
+import './views/movie.view.dart' as movie;
 
 void main() => runApp(MyApp());
 
@@ -39,6 +41,7 @@ class MovieListAppState extends State<MovieListApp> with SingleTickerProviderSta
   final List<Text> appBarTitles = [Text('Home'), Text('Profile'), Text('Stats')];
   TabController tabController;  
   Text currentTitle;
+  bool activeSearch;
 
   @override
   void initState(){    
@@ -46,6 +49,7 @@ class MovieListAppState extends State<MovieListApp> with SingleTickerProviderSta
     tabController = new TabController(vsync: this, length: 3);
     currentTitle = appBarTitles[0];
     tabController.addListener(_handleTitle);
+    activeSearch = false;
   }
 
   void _handleTitle() {
@@ -63,58 +67,78 @@ class MovieListAppState extends State<MovieListApp> with SingleTickerProviderSta
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(      
-      appBar: new AppBar(        
+    return new WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: new Scaffold(      
+        appBar: _appBar(),   
+        bottomNavigationBar: Material(
+          color: Color(0xFF133658),
+          child: new TabBar(
+            controller: tabController,          
+            tabs: <Tab>[
+              new Tab(icon: new Icon(Icons.home)),                               
+              new Tab(icon: new Icon(Icons.person)), 
+              new Tab(icon: new Icon(Icons.insert_chart)),                           
+            ]
+          )
+        ),   
+        body: TabBarView(
+          controller: tabController,
+          children: <Widget>[          
+            home.Home(),    
+            profile.Profile(),                  
+            stats.Stats(),                     
+          ]
+        ),
+      ),
+    );  
+  }  
+
+  PreferredSizeWidget _appBar() {
+    if (activeSearch) {
+      return AppBar(
+        leading: Icon(Icons.search),
+        title: TextField(
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+          ),
+          onSubmitted: _search,
+          decoration: InputDecoration.collapsed(                           
+            hintText: "search for movie...",
+            hintStyle: TextStyle(
+              color: Colors.white70,
+            )
+          ),
+        ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.close),
+            onPressed: () => setState(() => activeSearch = false),
+          )
+        ],
+      );
+    } else {
+      return new AppBar(        
         title: currentTitle,
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.search),
-            onPressed: () {
-              print("Search!");
-            },
+            onPressed: () => setState(() => activeSearch = true),
           ),
         ],        
-      ),   
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
-              child: Text('TODO'),
-            ),
-            ListTile(
-              title: Text('item1'),
-            ),
-            ListTile(
-              title: Text('item2'),
-            ),
-            ListTile(
-              title: Text('item3'),
-            )
-          ],
+      );
+    }
+  }
 
-        ),
-      ),     
-      bottomNavigationBar: Material(
-        color: Color(0xFF133658),
-        child: new TabBar(
-          controller: tabController,          
-          tabs: <Tab>[
-            new Tab(icon: new Icon(Icons.home)),                               
-            new Tab(icon: new Icon(Icons.person)), 
-            new Tab(icon: new Icon(Icons.insert_chart)),                           
-          ]
-        )
-      ),   
-
-      body: TabBarView(
-        controller: tabController,
-        children: <Widget>[          
-          home.Home(),    
-          profile.Profile(),                  
-          stats.Stats(),                     
-        ]
+  void _search(String queryString) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => search.SearchPage(search: queryString),
       ),
     );
-  }  
+  }
 }

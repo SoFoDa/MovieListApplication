@@ -12,7 +12,8 @@ const omdb = require("../util/omdb.js");
 router.post('/authorize', function (req, res) { 
   let username = req.body.username;
   let device_id = req.headers.device_id;
-  console.log('Authrize user: ' + username);
+  console.log('Auth user: ' + username);
+  console.log('Device id: ' + device_id);
   if (username != undefined) {
     username = username.toLowerCase();
     model.getUser(username).then(function(user) {
@@ -41,7 +42,8 @@ router.post('/authorize', function (req, res) {
         }
       });
     }).catch(err => {
-      console.log("Invalid login format")
+      console.log("User not found");
+      console.log(err);
       res.json({
         error: 'Bad authentication request',
         status: '400'
@@ -91,14 +93,67 @@ router.get('/getMovieFromId', function(req, res) {
 /* URL params: 
 * @title: Title of the movie
 */
-router.get('/searchMovie', function(req, res) {
-  model.getMoviesFromTitle(req.query.title).then(function(data) {
-    if(data != undefined) {
-      res.json({
-        status: '200',
-        data: data.body
-      });
+router.get('/searchMovie', async function(req, res) {
+  // in db, fetch movies its genres and directors and send it!
+  let title = req.query.title;
+
+  // separate year and title if exists
+  let match = title.match("(19[0-9][0-9]|20[0-2][0-9])");
+  let omdbEntry = await omdb.getMovieByTitle(req.query.title);
+  if (match !== null) {
+    title = title.replace(match[0], "");
+    omdbEntry = await omdb.getMovieByTitle(title, parseInt(match[0]));
+  }
+  if (title.endsWith(" ")) {
+    title = title.substring(0, title.length - 1);
+  }
+  model.getMoviesFromTitle(title).then(async (result) => {
+    // build json object from db results
+    let inDb = false;
+    let jsonObject = [];
+    if(result !== undefined) {
+      console.log("Similar movie found in db! len: " + result.length);
+      for (let i = 0; i < result.length; i++) {
+        const movie = result[i];
+        // don't want to show the same movie twice.
+        if (omdbEntry !== null && (omdbEntry.title === movie.title) && (omdbEntry.release_year === movie.release_year)) {
+          console.log('In db!');
+          inDb = true;
+        }
+
+        let jsonMovie = {
+          'movie_id': movie.movie_id,
+          'title': movie.title,
+          'runtime': movie.runtime,
+          'release_year': movie.release_year,
+          'genres': [],
+          'directors': [],
+          'poster_path': movie.poster_path,
+        };
+        let genres = await model.getMovieGenres(movie.movie_id);
+        let directors = await model.getMovieDirectors(movie.movie_id);
+        for (let key in genres[0]) {
+          jsonMovie['genres'].push(genres[0][key].genre_type);
+        }
+        for (let key in directors[0]) {
+          jsonMovie['directors'].push(directors[0][key].name);
+        }
+        jsonObject.push(jsonMovie);
+      }
     }
+    if (!inDb) {
+      console.log('Movie not in db, trying to add...');
+      if(omdbEntry !== null) {
+        let mov = await model.addMovie(omdbEntry);
+        let omdbInDbEntry = await model.getMoviesFromTitle(omdbEntry.title);
+        omdbEntry['movie_id'] = mov.movie_id;
+        jsonObject.unshift(omdbEntry);
+      }
+    }
+    res.json({
+      status: '200',
+      data: jsonObject,
+    });
   });
 });
 
@@ -106,15 +161,9 @@ router.get('/searchMovie', function(req, res) {
 * @title: Title of the movie
 */
 router.get('/omdb/movie', function(req, res) {
-  let title = encodeURIComponent(req.query.title.replace(" ", "+"));
-  let url = `http://www.omdbapi.com/?apikey=${process.env.OMDB_KEY}&t=${title}`;
-  console.log(url);
-  fetch(url, {
-    json: true,
-  }).then(res => res.json()
-  ).then(data => { 
+  omdb.getMovieByTitle(req.query.title).then(function(data) {
     res.json({
-      data: data
+      data: data,
     })
   });
 });
