@@ -4,6 +4,7 @@ import 'package:public/util/network_utility.dart';
 import 'package:public/services/authentication.dart';
 import '../widgets/search_card.dart';
 import 'package:public/config.dart';
+import 'package:public/views/movie.view.dart';
 
 class SearchPage extends StatefulWidget {
   final String search;
@@ -69,6 +70,7 @@ class Search extends State<SearchPage> {
               Color(0xFF594CD2),
               Color(0xFF913AC5),              
             ],
+            tileMode: TileMode.clamp,
           ),
         ),             
         child: Column(          
@@ -89,7 +91,15 @@ class Search extends State<SearchPage> {
                   final movie = _movies[index];                  
                   if (movie != null) {
                     return ListTile(                                      
-                      subtitle: SearchCard(movie['title'], movie['release_year'], movie['genres'], movie['directors'], movie['runtime'])     
+                      subtitle: SearchCard(movie['title'], movie['release_year'], movie['genres'], movie['directors'], movie['runtime'], movie['poster_path']),
+                      onTap: () => {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MoviePage(movieId: movie['movie_id'].toString()),
+                          ),
+                        ) : context
+                      },
                     );
                   }
                 },

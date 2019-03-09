@@ -8,6 +8,7 @@ import './views/home.view.dart' as home;
 import './views/profile.view.dart' as profile;
 import './views/stats.view.dart' as stats;
 import './views/search.view.dart' as search;
+import './views/movie.view.dart' as movie;
 
 void main() => runApp(MyApp());
 
@@ -25,8 +26,7 @@ class MyApp extends StatelessWidget {
       routes: {        
         '/': (context) => login.LoginPage(),        
         '/home': (context) => MovieListApp(), 
-        '/register': (context) => register.RegisterPage(), 
-        '/search': (context) => search.SearchPage(),        
+        '/register': (context) => register.RegisterPage(),        
       },                           
     );
   }
@@ -67,49 +67,33 @@ class MovieListAppState extends State<MovieListApp> with SingleTickerProviderSta
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(      
-      appBar: _appBar(), 
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
-              child: Text('TODO'),
-            ),
-            ListTile(
-              title: Text('item1'),
-            ),
-            ListTile(
-              title: Text('item2'),
-            ),
-            ListTile(
-              title: Text('item3'),
-            )
-          ],
-
-        ),
-      ),     
-      bottomNavigationBar: Material(
-        color: Color(0xFF133658),
-        child: new TabBar(
-          controller: tabController,          
-          tabs: <Tab>[
-            new Tab(icon: new Icon(Icons.home)),                               
-            new Tab(icon: new Icon(Icons.person)), 
-            new Tab(icon: new Icon(Icons.insert_chart)),                           
+    return new WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: new Scaffold(      
+        appBar: _appBar(),   
+        bottomNavigationBar: Material(
+          color: Color(0xFF133658),
+          child: new TabBar(
+            controller: tabController,          
+            tabs: <Tab>[
+              new Tab(icon: new Icon(Icons.home)),                               
+              new Tab(icon: new Icon(Icons.person)), 
+              new Tab(icon: new Icon(Icons.insert_chart)),                           
+            ]
+          )
+        ),   
+        body: TabBarView(
+          controller: tabController,
+          children: <Widget>[          
+            home.Home(),    
+            profile.Profile(),                  
+            stats.Stats(),                     
           ]
-        )
-      ),   
-
-      body: TabBarView(
-        controller: tabController,
-        children: <Widget>[          
-          home.Home(),    
-          profile.Profile(),                  
-          stats.Stats(),                     
-        ]
+        ),
       ),
-    );
+    );  
   }  
 
   PreferredSizeWidget _appBar() {

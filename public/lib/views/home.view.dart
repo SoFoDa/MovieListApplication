@@ -62,7 +62,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin{
           colors: [              
             Color(0xFF245ADC),
             Color(0xFF594CD2),
-            Color(0xFF913AC5),              
+            Color(0xFF594CD2),              
           ],
         ),
       ),             
