@@ -1,22 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:public/util/network_utility.dart';
 import 'package:public/services/authentication.dart';
+import 'package:public/config.dart';
 import '../widgets/base_card.dart';
 
-class Profile extends StatefulWidget {
+class Profile extends StatefulWidget {  
   @override
   _ProfileState createState() => _ProfileState();  
 }
 
 class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
-  String username;
+  String username = "";
   String name;   
-  int followers; 
+  int followers = 0; 
+  dynamic _userInfo = []; 
 
+  NetworkUtility _netUtil = new NetworkUtility();
+  Authentication _auth = new Authentication();    
+  
   @override
-  void initState(){  
-    username = "SoFoDa";    
-    name = "David Johansson";
-    followers = 5;
+  void initState(){             
+    // Request parameters    
+    var params = { 'user_id': _auth.userID.toString()};
+
+    // Get user information
+    var url = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/getUserInfo', params);      
+    print(url);      
+    _netUtil.get(url).then((res) => {
+      this.setState(() {                    
+          username = res['data'][0]['0']['username'];
+      }) :_userInfo
+    });    
+
+    // Get follower amount 
+    var url2 = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/getFollowerAmount', params);      
+    print(url2);      
+    _netUtil.get(url2).then((res) => {
+      this.setState(() {                  
+          followers = res['data'][0]['0']['follower_amount'];                    
+      }) :followers
+    });            
+        
+           
+    name = "todo";
+    //followers = 5;
     super.initState();    
   }
 
