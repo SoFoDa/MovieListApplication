@@ -75,14 +75,16 @@ BEGIN
     mg.movie_id = id;
 END //
 
--- TODO add User_info data
 CREATE PROCEDURE getUserInfo
 (IN id CHAR(30))
 BEGIN
   SELECT
-    usr.username
+    usr.username,
+    uinf.name,
+    uinf.created as join_date
   FROM
-    User as usr    
+    User as usr   
+    Join User_info as uinf on usr.user_id = uinf.user_id  
   WHERE
     usr.user_id = id;  
 END //

@@ -11,8 +11,9 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   String username = "";
-  String name;   
-  int followers = 0; 
+  String name = ""; 
+  String joinDate = "";     
+  int followers = 0;  
   dynamic _userInfo = []; 
 
   NetworkUtility _netUtil = new NetworkUtility();
@@ -29,6 +30,9 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
     _netUtil.get(url).then((res) => {
       this.setState(() {                    
           username = res['data'][0]['0']['username'];
+          name = res['data'][0]['0']['name'];
+          joinDate = res['data'][0]['0']['join_date'].toString();
+          print(joinDate);
       }) :_userInfo
     });    
 
@@ -36,7 +40,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
     var url2 = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/getFollowerAmount', params);      
     print(url2);      
     _netUtil.get(url2).then((res) => {
-      this.setState(() {                  
+      this.setState(() {                            
           followers = res['data'][0]['0']['follower_amount'];                    
       }) :followers
     });            
