@@ -2,6 +2,8 @@ DROP PROCEDURE getUserActivity;
 DROP PROCEDURE getSeenMovies;
 DROP PROCEDURE getDirectors;
 DROP PROCEDURE getGenres;
+DROP PROCEDURE getUserInfo;
+DROP PROCEDURE getFollowerAmount;
 
 
 DELIMITER //
@@ -73,19 +75,27 @@ BEGIN
     mg.movie_id = id;
 END //
 
+-- TODO add User_info data
 CREATE PROCEDURE getUserInfo
 (IN id CHAR(30))
 BEGIN
   SELECT
-  usr.username,  
-  SUM(ufri.friend_id) as follower_amount
+    usr.username
   FROM
     User as usr    
-    JOIN User_friend as ufri ON usr.user_id = ufri.user_id  
   WHERE
-    usr.user_id = id
-  GROUP BY 
-    usr.user_id;
+    usr.user_id = id;  
+END //
+
+CREATE PROCEDURE getFollowerAmount
+(IN id CHAR(30))
+BEGIN
+  SELECT  
+    COUNT(ufri.friend_id) as follower_amount
+  FROM    
+    User_friend as ufri
+  WHERE
+    ufri.user_id = id;  
 END //
 
 DELIMITER ;
