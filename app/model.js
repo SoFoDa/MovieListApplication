@@ -297,6 +297,14 @@ module.exports.getUserActivity = (user_id) => {
     return sequelize.query("CALL getUserActivity(?);", { replacements: [user_id], type: sequelize.QueryTypes.SELECT });
 }
 
+module.exports.getUserInfo = (user_id) => {
+    return sequelize.query("CALL getUserInfo(?);", { replacements: [user_id], type: sequelize.QueryTypes.SELECT });
+}
+
+module.exports.getFollowerAmount = (user_id) => {
+    return sequelize.query("CALL getFollowerAmount(?);", { replacements: [user_id], type: sequelize.QueryTypes.SELECT });
+}
+
 module.exports.getMovieFromId = (id) => {
     return Movie.findOne({
         where: {

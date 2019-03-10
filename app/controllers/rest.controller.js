@@ -91,6 +91,35 @@ router.get('/getMovieFromId', function(req, res) {
 });
 
 /* URL params: 
+* @user_id: ID of the user.
+*/
+router.get('/getUserInfo', function(req, res) {  
+  model.getUserInfo(req.query.user_id).then(function(data) {
+    if(data != undefined) {
+      res.json({
+        status: '200',
+        data: data
+      });
+    }
+  });
+});
+
+
+/* URL params: 
+* @user_id: ID of the user.
+*/
+router.get('/getFollowerAmount', function(req, res) {  
+  model.getFollowerAmount(req.query.user_id).then(function(data) {
+    if(data != undefined) {
+      res.json({
+        status: '200',
+        data: data
+      });
+    }
+  });
+});
+
+/* URL params: 
 * @title: Title of the movie
 */
 router.get('/searchMovie', async function(req, res) {
@@ -268,5 +297,6 @@ router.post('/setSeen', verifyToken, function(req, res) {
     status: '200'
   })
 });
+
 
 module.exports = router;
