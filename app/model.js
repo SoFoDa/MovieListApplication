@@ -287,7 +287,7 @@ module.exports.getUser = (username) => {
 
 module.exports.registerUser = (regFullName, regUsername, regPassword) => {
     return User.create({username: regUsername, password: regPassword}).then(user => {                           
-        User_info.create({user_id: user.user_id, name: regFullName, created: new Date()}).then(result => {
+        return User_info.create({user_id: user.user_id, name: regFullName, created: new Date()}).then(result => {
             console.log('Db registration success!');
             return true;
         }).catch(err => {
