@@ -73,4 +73,19 @@ BEGIN
     mg.movie_id = id;
 END //
 
+CREATE PROCEDURE getUserInfo
+(IN id CHAR(30))
+BEGIN
+  SELECT
+  usr.username,  
+  SUM(ufri.friend_id) as follower_amount
+  FROM
+    User as usr    
+    JOIN User_friend as ufri ON usr.user_id = ufri.user_id  
+  WHERE
+    usr.user_id = id
+  GROUP BY 
+    usr.user_id;
+END //
+
 DELIMITER ;
