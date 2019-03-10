@@ -55,11 +55,12 @@ router.post('/authorize', function (req, res) {
 /* Body params: 
 * @username: The username
 * @password: The password
+* @full_name: User's full name
 */
 router.put('/register', function (req, res) {
   bcrypt.hash(req.body.password, 10, function(err, hash) {
     // save user
-    model.registerUser(req.body.username, hash).then(function(response) {
+    model.registerUser(req.body.full_name, req.body.username, hash).then(function(response) {
       console.log(response);
       // created user
       if (response) {

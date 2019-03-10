@@ -97,10 +97,10 @@ class Authentication {
   /// Returns user_id of the logged in user if successful. 
   /// Returns null if username taken.
   ///
-  Future<int> register(String username, String password) async {
+  Future<int> register(String username, String password, String fullName) async {
     print('Register: ' + username);
     var url = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/register');
-    return _netUtil.put(url, body: {'username': username, 'password': password}).then((response) {
+    return _netUtil.put(url, body: {'username': username, 'password': password, 'full_name': fullName}).then((response) {
       if (response['status'] == '200') {
         print('Registration success');
         return login(username, password);

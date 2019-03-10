@@ -62,7 +62,7 @@ DROP TABLE IF EXISTS `mydb`.`User_info` ;
 CREATE TABLE IF NOT EXISTS `mydb`.`User_info` (
   `user_id` INT NOT NULL,
   `name` VARCHAR(45) NOT NULL,
-  `created` DATETIME NOT NULL,
+  `created` DATE NOT NULL,
   INDEX `fk_User_info_User1_idx` (`user_id` ASC),
   PRIMARY KEY (`user_id`),
   CONSTRAINT `fk_User_info_User1`

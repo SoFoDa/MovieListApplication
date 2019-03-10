@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:public/services/authentication.dart';
 
 class _RegisterData {
-  String username = '';
+  String username = '';  
   String password = '';
+  String fullName = '';
 }
 
 class RegisterPage extends StatefulWidget {
@@ -20,7 +21,7 @@ class Register extends State<RegisterPage> {
   void submit() {
     if (this._formKey.currentState.validate()) {
       _formKey.currentState.save();
-      _auth.register(this._data.username, this._data.password).then((userId) {
+      _auth.register(this._data.username, this._data.password, this._data.fullName).then((userId) {
         if (userId != null) {
           setState(() {
             _errorText = "";
@@ -58,6 +59,20 @@ class Register extends State<RegisterPage> {
                 padding: EdgeInsets.only(top: 10.0, left: 25.0, right: 25.0),
                 child: TextFormField(                 
                   decoration:InputDecoration(                        
+                    labelText: 'full name',               
+                  ), onSaved: (String value) {
+                      this._data.fullName = value;
+                  }, validator: (value) {
+                    if (!value.contains(" ")) {
+                      return ('First name and last name needs to be included');
+                    }
+                  }, 
+                )
+              ),
+              Container(
+                padding: EdgeInsets.only(top: 10.0, left: 25.0, right: 25.0),
+                child: TextFormField(                 
+                  decoration:InputDecoration(                        
                     labelText: 'username',               
                   ), onSaved: (String value) {
                       this._data.username = value;
@@ -78,7 +93,7 @@ class Register extends State<RegisterPage> {
                       this._data.password = value;
                   }, validator: (value) {
                     if (value.length < 8) {
-                      return ('Username has to be at least 8 characters.');
+                      return ('Password has to be at least 8 characters.');
                     }
                   }, 
                 )
