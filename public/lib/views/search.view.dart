@@ -84,13 +84,13 @@ class Search extends State<SearchPage> {
                 style: TextStyle(fontSize: 10, color: Colors.white),             
               ),
             ),          
-            Expanded(
-              child: ListView.builder(          
+            Expanded(              
+              child: ListView.builder(                         
                 itemCount: _movies.length,          
                 itemBuilder: (context, index) {
                   final movie = _movies[index];                  
                   if (movie != null) {
-                    return ListTile(                                      
+                    return ListTile(                                                        
                       subtitle: SearchCard(movie['title'], movie['release_year'], movie['genres'], movie['directors'], movie['runtime'], movie['poster_path']),
                       onTap: () => {
                         Navigator.push(

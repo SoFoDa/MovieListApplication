@@ -2,6 +2,8 @@ DROP PROCEDURE getUserActivity;
 DROP PROCEDURE getSeenMovies;
 DROP PROCEDURE getDirectors;
 DROP PROCEDURE getGenres;
+DROP PROCEDURE getUserInfo;
+DROP PROCEDURE getFollowerAmount;
 
 
 DELIMITER //
@@ -33,16 +35,15 @@ CREATE PROCEDURE getSeenMovies
 (IN id CHAR(30))
 BEGIN
   SELECT
+    m.movie_id,
     title,
-    runtime,
-    genre,
-    release_year,
-    director,
-    poster_path
+    runtime,    
+    release_year,    
+    poster_path    
   FROM
     Movie as m
-    INNER JOIN Seen as s ON m.movie_id = s.movie_id
-    INNER JOIN User as u ON u.user_id = s.user_id
+    JOIN Seen as s ON m.movie_id = s.movie_id
+    JOIN User as u ON u.user_id = s.user_id    
   WHERE
     u.user_id = id;
 END //
@@ -71,6 +72,31 @@ BEGIN
     JOIN Movie as m ON m.movie_id = mg.movie_id
   WHERE
     mg.movie_id = id;
+END //
+
+CREATE PROCEDURE getUserInfo
+(IN id CHAR(30))
+BEGIN
+  SELECT
+    usr.username,
+    uinf.name,
+    uinf.created as join_date
+  FROM
+    User as usr   
+    Join User_info as uinf on usr.user_id = uinf.user_id  
+  WHERE
+    usr.user_id = id;  
+END //
+
+CREATE PROCEDURE getFollowerAmount
+(IN id CHAR(30))
+BEGIN
+  SELECT  
+    COUNT(ufri.friend_id) as follower_amount
+  FROM    
+    User_friend as ufri
+  WHERE
+    ufri.user_id = id;  
 END //
 
 DELIMITER ;

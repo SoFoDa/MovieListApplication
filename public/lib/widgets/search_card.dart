@@ -85,7 +85,7 @@ class SearchCard extends StatelessWidget {
       child: Stack(
         children: <Widget>[                          
           // background card 
-          BaseCard(MediaQuery.of(context).size.width, _card_height, EdgeInsets.all(0)),
+          BaseCard(MediaQuery.of(context).size.width, _card_height, EdgeInsets.only(bottom: 10)),
           // title
           Positioned(
             top: 10,

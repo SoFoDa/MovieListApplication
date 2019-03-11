@@ -32,7 +32,8 @@ sequelize
 const User = sequelize.define('User', {
     user_id: {
         type: Sequelize.INTEGER,
-        primaryKey: true
+        primaryKey: true,
+        autoIncrement: true
     },
     password: {
         type: Sequelize.STRING
@@ -66,6 +67,7 @@ const User_friend = sequelize.define('User_friend', {
 const User_info = sequelize.define('User_info', {
     user_id: {
         type: Sequelize.INTEGER,
+        primaryKey: true,
      
         references: {
           model: 'User',
@@ -283,10 +285,15 @@ module.exports.getUser = (username) => {
     })
 }
 
-module.exports.registerUser = (regUsername, regPassword) => {
-    return User.create({username: regUsername, password: regPassword}).then(result => {
-        console.log('Db registration success!');
-        return true;
+module.exports.registerUser = (regFullName, regUsername, regPassword) => {
+    return User.create({username: regUsername, password: regPassword}).then(user => {                           
+        return User_info.create({user_id: user.user_id, name: regFullName, created: new Date()}).then(result => {
+            console.log('Db registration success!');
+            return true;
+        }).catch(err => {
+            console.log(err);
+            return false;
+        }) 
     }).catch(err => {
         console.log(err);
         return false;
@@ -295,6 +302,14 @@ module.exports.registerUser = (regUsername, regPassword) => {
 
 module.exports.getUserActivity = (user_id) => {
     return sequelize.query("CALL getUserActivity(?);", { replacements: [user_id], type: sequelize.QueryTypes.SELECT });
+}
+
+module.exports.getUserInfo = (user_id) => {
+    return sequelize.query("CALL getUserInfo(?);", { replacements: [user_id], type: sequelize.QueryTypes.SELECT });
+}
+
+module.exports.getFollowerAmount = (user_id) => {
+    return sequelize.query("CALL getFollowerAmount(?);", { replacements: [user_id], type: sequelize.QueryTypes.SELECT });
 }
 
 module.exports.getMovieFromId = (id) => {
