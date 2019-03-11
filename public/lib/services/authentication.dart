@@ -125,7 +125,12 @@ class Authentication {
     
     var url = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/handshake');
     return _netUtil.post(url, header: header, body: body).then((response) {
-      return response['status'] == '200';
+      if (response['status'] == '200') {
+        userID = int.parse(userId);
+        token = storedToken;
+        return true;
+      }
+      return false;
     });
   }
 }

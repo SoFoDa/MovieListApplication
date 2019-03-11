@@ -35,7 +35,7 @@ CREATE PROCEDURE getSeenMovies
 (IN id CHAR(30))
 BEGIN
   SELECT
-    movie_id,
+    m.movie_id,
     title,
     runtime,    
     release_year,    

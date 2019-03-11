@@ -16,7 +16,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   String joinDate = "";     
   int followers = 0;  
   List<dynamic> _userInfo = []; 
-  List<dynamic> _seenMovies = [];
+  Map<String, dynamic> _seenMovies = {};
   int seenLen = 0;
 
   NetworkUtility _netUtil = new NetworkUtility();
@@ -33,10 +33,10 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
     var url = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/getUserInfo', params);      
     print(url);      
     _netUtil.get(url).then((res) => {
-      this.setState(() {                    
-          username = res['data'][0]['0']['username'];
-          name = res['data'][0]['0']['name'];
-          joinDate = res['data'][0]['0']['join_date'].toString();          
+      this.setState(() {  
+        username = res['data']['username'];
+        name = res['data']['name'];
+        joinDate = res['data']['join_date'].toString();          
       }) :_userInfo
     });    
 
@@ -44,18 +44,18 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
     var url2 = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/getFollowerAmount', params);      
     print(url2);      
     _netUtil.get(url2).then((res) => {
-      this.setState(() {                            
-          followers = res['data'][0]['0']['follower_amount'];                    
+      this.setState(() {                           
+        followers = res['data']['follower_amount'];                    
       }) :followers
     }); 
 
     // Get seen movies
     var url3 = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/seenMovies', params);                
     print(url3);      
-    _netUtil.get(url3).then((res) => {      
-      this.setState(() {                   
-          _seenMovies = res['data'];            
-          seenLen = _seenMovies[0].length;
+    _netUtil.get(url3).then((res) => {       
+      this.setState(() {               
+        _seenMovies = res['data'];            
+        seenLen = _seenMovies.length;
       }) :_seenMovies
     });        
   }  
@@ -184,7 +184,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
               ),
               itemCount: seenLen,          
               itemBuilder: (context, index) {
-                final seenMovie = _seenMovies[0][index.toString()];   
+                final seenMovie = _seenMovies[index.toString()];   
                 if(_seenMovies != null){                                    
                   return ListTile(                                      
                     dense: true,                     

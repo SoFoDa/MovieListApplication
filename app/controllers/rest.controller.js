@@ -95,11 +95,11 @@ router.get('/getMovieFromId', function(req, res) {
 * @user_id: ID of the user.
 */
 router.get('/getUserInfo', function(req, res) {  
-  model.getUserInfo(req.query.user_id).then(function(data) {
+  model.getUserInfo(req.query.user_id).spread(function(data, metadata) {
     if(data != undefined) {
       res.json({
         status: '200',
-        data: data
+        data: data[0]
       });
     }
   });
@@ -111,7 +111,7 @@ router.get('/getUserInfo', function(req, res) {
 * TODO make protected
 */
 router.get('/seenMovies', function(req, res) {
-  model.getSeenMovies(req.query.user_id).then(function(data) {
+  model.getSeenMovies(req.query.user_id).spread(function(data, metadata) {
     if(data != undefined) {
       res.json({
         status: '200',
@@ -153,11 +153,11 @@ router.get('/getMovieGenres', function(req, res) {
 * @user_id: ID of the user.
 */
 router.get('/getFollowerAmount', function(req, res) {  
-  model.getFollowerAmount(req.query.user_id).then(function(data) {
+  model.getFollowerAmount(req.query.user_id).spread(function(data, metadata) {
     if(data != undefined) {
       res.json({
         status: '200',
-        data: data
+        data: data[0]
       });
     }
   });
