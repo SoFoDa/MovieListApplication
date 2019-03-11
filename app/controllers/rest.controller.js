@@ -258,11 +258,7 @@ const verifyToken = (req, res, next) => {
         });
       } else {
         req.decoded = decoded;
-        console.log(decoded.user_id);
-        console.log(decoded.device_id);
-        console.log(req.headers.user_id);
-        console.log(req.headers.device_id);
-        if (req.headers.device_id == decoded.device_id && req.headers.user_id == decoded.user_id) {
+        if (req.headers.device_id === decoded.device_id && parseInt(req.headers.user_id) === decoded.user_id) {
           console.log('Verified token user');
           next();
         } else {
@@ -306,6 +302,7 @@ router.post('/handshake', verifyToken, function (req, res) {
 router.get('/friendsActivity', verifyToken, function(req, res) {
   model.getUserActivity(req.headers.user_id).spread(function(result, metadata) {
     if(result != undefined) {
+      console.log(result[0]['date']);
       res.json({
         status: '200',
         data: result

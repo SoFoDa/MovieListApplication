@@ -120,14 +120,14 @@ class Authentication {
     String deviceId = await _getDeviceIdentity();
     String storedToken = await _getStorageValue(_storageKeyMobileToken);
     String userId = await _getStorageValue(_storageKeyMobileUID);
-    Map<String, String> header = {'device_id': deviceId, 'authorization': 'Bearer ' + storedToken.toString()};
-    Map<String, String> body = {'user_id': userId};
+    Map<String, String> header = {'device_id': deviceId, 'authorization': 'Bearer ' + storedToken.toString(), 'user_id': userId};
     
     var url = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/handshake');
-    return _netUtil.post(url, header: header, body: body).then((response) {
+    return _netUtil.post(url, header: header).then((response) {
       if (response['status'] == '200') {
         userID = int.parse(userId);
         token = storedToken;
+        deviceIdLocal = deviceId;
         return true;
       }
       return false;

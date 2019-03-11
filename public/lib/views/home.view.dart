@@ -87,16 +87,24 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin{
         itemCount: _activityLen,
         itemBuilder: (context, index) {
           var activity =_activities[index.toString()];
-          Activity listItem = null;
+          Activity listItem;
           if (activity['friend_username'] != null) {
-            listItem = new Activity(activity['username'], 'friend', activity['date'], null, ActivityFriend(activity['friend_username']));
+            listItem = new Activity(activity['username'], 'friend', activity['date'],
+              null, ActivityFriend(activity['friend_username']));
           } else {
             listItem = new Activity(activity['username'], 'movie', activity['date'], 
-              new ActivityMovie(activity['type'], activity['title'], 'Sci-Fi', '2017'), null);
+              new ActivityMovie(activity['type'], activity['title'], activity['release_year'].toString(), activity['poster_path']), null);
           }
           return ListTile(    
             title: checkPrevDate(listItem.date, index),
-            subtitle: activity_card.ActivityCard(listItem),                                      
+            subtitle: activity_card.ActivityCard(listItem),   
+            onTap: () {
+              if (activity['friend_username'] != null) {
+
+              } else {
+
+              }
+            },                                   
           );
         },
       ),     
