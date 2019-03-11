@@ -55,6 +55,7 @@ INSERT INTO Movie_director (movie_id, director_id) VALUES (1, 1);
 INSERT INTO Movie_director (movie_id, director_id) VALUES (2, 2);
 
 INSERT INTO Seen (user_id, movie_id, date) VALUES (1, 1, NOW());
+INSERT INTO Seen (user_id, movie_id, date) VALUES (1, 2, NOW());
 INSERT INTO Seen (user_id, movie_id, date) VALUES (2, 1, NOW());
 INSERT INTO Seen (user_id, movie_id, date) VALUES (2, 2, NOW());
 INSERT INTO Seen (user_id, movie_id, date) VALUES (3, 2, NOW());

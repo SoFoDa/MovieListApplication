@@ -35,16 +35,15 @@ CREATE PROCEDURE getSeenMovies
 (IN id CHAR(30))
 BEGIN
   SELECT
+    movie_id,
     title,
-    runtime,
-    genre,
-    release_year,
-    director,
-    poster_path
+    runtime,    
+    release_year,    
+    poster_path    
   FROM
     Movie as m
-    INNER JOIN Seen as s ON m.movie_id = s.movie_id
-    INNER JOIN User as u ON u.user_id = s.user_id
+    JOIN Seen as s ON m.movie_id = s.movie_id
+    JOIN User as u ON u.user_id = s.user_id    
   WHERE
     u.user_id = id;
 END //

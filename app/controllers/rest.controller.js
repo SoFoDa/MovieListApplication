@@ -108,6 +108,49 @@ router.get('/getUserInfo', function(req, res) {
 
 /* URL params: 
 * @user_id: ID of the user.
+* TODO make protected
+*/
+router.get('/seenMovies', function(req, res) {
+  model.getSeenMovies(req.query.user_id).then(function(data) {
+    if(data != undefined) {
+      res.json({
+        status: '200',
+        data: data
+      });
+    }
+  });
+});
+
+/* URL params: 
+* @movie_id: ID of the movie.
+*/
+router.get('/getMovieDirectors', function(req, res) {
+  model.getMovieDirectors(req.query.movie_id).then(function(data) {
+    if(data != undefined) {
+      res.json({
+        status: '200',
+        data: data
+      });
+    }
+  });
+});
+
+/* URL params: 
+* @movie_id: ID of the movie.
+*/
+router.get('/getMovieGenres', function(req, res) {
+  model.getMovieGenres(req.query.movie_id).then(function(data) {
+    if(data != undefined) {
+      res.json({
+        status: '200',
+        data: data
+      });
+    }
+  });
+});
+
+/* URL params: 
+* @user_id: ID of the user.
 */
 router.get('/getFollowerAmount', function(req, res) {  
   model.getFollowerAmount(req.query.user_id).then(function(data) {
@@ -275,6 +318,7 @@ router.get('/userActivity', verifyToken, function(req, res) {
 * @user_id: The user id
 * @username: The username
 */
+/*
 router.get('/seenMovies', verifyToken, function(req, res) {
   model.getSeenMovies(req.body.user_id).spread(function(result, metadata) {
     if(result != undefined) {
@@ -285,6 +329,7 @@ router.get('/seenMovies', verifyToken, function(req, res) {
     }
   });
 });
+*/
 
 /* Body params: 
 * @user_id: The user id
