@@ -16,9 +16,7 @@ BEGIN
     fusr.username as friend_username,    
     acm.type,
     mov.title,
-    mov.genre,
-    mov.release_year,
-    mov.director
+    mov.release_year
   FROM
     Activity as ac    
     LEFT JOIN User as usr ON ac.user_id = usr.user_id
@@ -28,7 +26,8 @@ BEGIN
     LEFT JOIN Movie as mov ON acm.movie_id = mov.movie_id
   WHERE 
     ac.user_id != user     
-  ORDER BY ac.date ASC; 
+  ORDER BY ac.date ASC 
+  LIMIT 25; 
 END //
 
 CREATE PROCEDURE getSeenMovies

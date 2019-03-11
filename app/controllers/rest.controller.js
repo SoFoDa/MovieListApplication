@@ -258,7 +258,7 @@ const verifyToken = (req, res, next) => {
         });
       } else {
         req.decoded = decoded;
-        if (req.headers.device_id == decoded.device_id && req.body.user_id == decoded.user_id) {
+        if (req.headers.device_id == decoded.device_id && req.headers.user_id == decoded.user_id) {
           console.log('Verified token user');
           next();
         } else {
@@ -300,7 +300,7 @@ router.post('/handshake', verifyToken, function (req, res) {
 * @username: The username
 */
 router.get('/userActivity', verifyToken, function(req, res) {
-  model.getUserActivity(req.body.user_id).spread(function(result, metadata) {
+  model.getUserActivity(req.headers.user_id).spread(function(result, metadata) {
     if(result != undefined) {
       res.json({
         status: '200',
@@ -317,28 +317,11 @@ router.get('/userActivity', verifyToken, function(req, res) {
 /* Body params: 
 * @user_id: The user id
 * @username: The username
-*/
-/*
-router.get('/seenMovies', verifyToken, function(req, res) {
-  model.getSeenMovies(req.body.user_id).spread(function(result, metadata) {
-    if(result != undefined) {
-      res.json({
-        status: '200',
-        data: result
-      });
-    }
-  });
-});
-*/
-
-/* Body params: 
-* @user_id: The user id
-* @username: The username
 * @movie_id: The movie
 * @seen_status: true -> seen, false -> not seen
 */
 router.post('/setSeen', verifyToken, function(req, res) {
-  model.setSeenMovie(req.body.user_id, req.body.movie_id, req.body.seen_status);
+  model.setSeenMovie(req.headers.user_id, req.body.movie_id, req.body.seen_status);
   res.json({
     status: '200'
   })
