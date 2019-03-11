@@ -3,6 +3,7 @@ import 'package:public/util/network_utility.dart';
 import 'package:public/services/authentication.dart';
 import 'package:public/config.dart';
 import '../widgets/base_card.dart';
+import '../widgets/seen_card.dart';
 
 class Profile extends StatefulWidget {  
   @override
@@ -14,13 +15,17 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   String name = ""; 
   String joinDate = "";     
   int followers = 0;  
-  dynamic _userInfo = []; 
+  List<dynamic> _userInfo = []; 
+  List<dynamic> _seenMovies = [];
+  int seenLen = 0;
 
   NetworkUtility _netUtil = new NetworkUtility();
   Authentication _auth = new Authentication();    
   
   @override
-  void initState(){             
+  void initState(){      
+    super.initState();    
+
     // Request parameters    
     var params = { 'user_id': _auth.userID.toString()};
 
@@ -31,8 +36,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
       this.setState(() {                    
           username = res['data'][0]['0']['username'];
           name = res['data'][0]['0']['name'];
-          joinDate = res['data'][0]['0']['join_date'].toString();
-          print(joinDate);
+          joinDate = res['data'][0]['0']['join_date'].toString();          
       }) :_userInfo
     });    
 
@@ -43,13 +47,18 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
       this.setState(() {                            
           followers = res['data'][0]['0']['follower_amount'];                    
       }) :followers
-    });            
-        
-           
-    name = "todo";
-    //followers = 5;
-    super.initState();    
-  }
+    }); 
+
+    // Get seen movies
+    var url3 = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/seenMovies', params);                
+    print(url3);      
+    _netUtil.get(url3).then((res) => {      
+      this.setState(() {                   
+          _seenMovies = res['data'];            
+          seenLen = _seenMovies[0].length;
+      }) :_seenMovies
+    });        
+  }  
 
   @override
   void dispose(){               
@@ -149,8 +158,8 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
             ],
           ),          
           Container(
-            margin: EdgeInsets.only(top: 20),
-            child: RaisedButton(              
+            margin: EdgeInsets.only(top: 20),            
+            child: RaisedButton(                           
               child: Text('Log out'),
               onPressed: () {
                 Authentication _auth = new Authentication();
@@ -158,6 +167,38 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                 Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
               }
             ),            
+          ),          
+          Container(            
+            margin: EdgeInsets.only(top: 20),
+            child: Text(
+              "Seen " + seenLen.toString() + " movies",
+              style: TextStyle(
+                color: Colors.white,
+              )
+            ),
+          ),
+          Expanded(
+            child: ListView.separated(    
+              separatorBuilder: (context, index) => Divider(
+                color: Colors.white,                
+              ),
+              itemCount: seenLen,          
+              itemBuilder: (context, index) {
+                final seenMovie = _seenMovies[0][index.toString()];   
+                if(_seenMovies != null){                                    
+                  return ListTile(                                      
+                    dense: true,                     
+                    title: SeenCard(
+                      seenMovie['title'], 
+                      seenMovie['release_year'],                      
+                      seenMovie['runtime'], 
+                      seenMovie['poster_path']
+                    ),                                                                     
+                  );
+                }                
+              },
+            ),
+            
           ),           
         ],
       ),  
