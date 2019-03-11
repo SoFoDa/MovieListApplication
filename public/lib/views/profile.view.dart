@@ -7,6 +7,9 @@ import '../widgets/seen_card.dart';
 import 'package:public/views/movie.view.dart';
 
 class Profile extends StatefulWidget {  
+  final int userId;
+  Profile({Key key, @required this.userId}) : super(key: key);
+
   @override
   _ProfileState createState() => _ProfileState();  
 }
@@ -28,7 +31,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
     super.initState();    
 
     // Request parameters    
-    var params = { 'user_id': _auth.userID.toString()};
+    var params = { 'user_id': widget.userId.toString()};
 
     // Get user information
     var url = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/getUserInfo', params);      

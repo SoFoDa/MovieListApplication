@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:public/models/activity.dart';
 import '../widgets/base_card.dart';
 import 'package:public/config.dart';
+import 'package:intl/intl.dart';
 
 class ActivityCard extends StatelessWidget {
   // Positional values

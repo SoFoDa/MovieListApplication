@@ -14,7 +14,9 @@ BEGIN
     fusr.username,
     ac.date,
     acfu.username as friend_username,
+    acfu.user_id as friend_id,
     acm.type,
+    mov.movie_id,
     mov.title,
     mov.release_year,
     mov.poster_path
@@ -30,7 +32,7 @@ BEGIN
   WHERE
     usr.user_id = user
   ORDER BY
-    ac.date ASC
+    ac.date DESC
   LIMIT
     25;
 END //

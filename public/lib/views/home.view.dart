@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../widgets/activity_card.dart' as activity_card;
 import 'package:public/models/activity.dart';
 import 'package:public/util/network_utility.dart';
 import 'package:public/config.dart';
 import 'package:public/services/authentication.dart';
+import 'package:public/views/profile.view.dart';
+import 'package:public/views/movie.view.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -13,6 +16,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> with SingleTickerProviderStateMixin{  
   NetworkUtility _netUtil = new NetworkUtility();
   Authentication _auth = new Authentication();
+  var _formatter = new DateFormat('yyyy-MM-dd');
   Map<String, dynamic> _activities;
   int _activityLen = 0;
   String previousDate;
@@ -28,6 +32,8 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin{
   */
 
   Column checkPrevDate(String date, int index) {  
+    DateTime ldate = DateTime.parse(date);
+    date = _formatter.format(ldate);
     if(index == 0) {
       previousDate = date;
       return Column(children: <Widget>[Container(margin: EdgeInsets.only(top: 13), child: Text(date, style: TextStyle(fontSize: 10, color: Colors.white),))]);
@@ -99,10 +105,13 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin{
             title: checkPrevDate(listItem.date, index),
             subtitle: activity_card.ActivityCard(listItem),   
             onTap: () {
-              if (activity['friend_username'] != null) {
-
-              } else {
-
+              if (activity['friend_username'] == null) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MoviePage(movieId: activity['movie_id'].toString()),
+                  ),
+                );
               }
             },                                   
           );
