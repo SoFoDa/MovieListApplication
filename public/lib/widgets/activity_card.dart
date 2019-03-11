@@ -105,24 +105,10 @@ class ActivityCard extends StatelessWidget {
             child: Opacity(
               opacity: (activity.type == 'movie' ? 1.0 : 0.0),
               child: Row(
-                children: <Widget>[   
-                  // genre icon            
-                  Icon(
-                    Icons.theaters, 
-                    color: Color(0xFFd6dceb), 
-                    size: 12
-                  ),  
-                  // genre
-                  Text(
-                    (activity.type == 'movie' ? ' ${activity.activityMovie.genre}' : ' '),
-                    style: TextStyle(
-                      color: Color(0xFFd6dceb), 
-                      fontSize: 11,
-                    )                    
-                  ), 
+                children: <Widget>[    
                   // release year icon
                   Container(
-                    margin:EdgeInsets.only(left: 15),
+                    margin:EdgeInsets.only(left: 0),
                     child: Icon(
                       Icons.calendar_today, 
                       color: Color(0xFFd6dceb), 

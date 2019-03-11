@@ -16,7 +16,8 @@ BEGIN
     fusr.username as friend_username,    
     acm.type,
     mov.title,
-    mov.release_year
+    mov.release_year,
+    mov.poster_path
   FROM
     Activity as ac    
     LEFT JOIN User as usr ON ac.user_id = usr.user_id
