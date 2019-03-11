@@ -27,6 +27,8 @@ class Register extends State<RegisterPage> {
             _errorText = "";
           });
           Navigator.pushNamed(context, '/home');
+        } else {
+          _errorText = "Username taken!";
         }
       });
     }
@@ -40,7 +42,8 @@ class Register extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: new Container(
+      resizeToAvoidBottomPadding: false,
+      body: Container(
         child: new Form(
           key: this._formKey,
           child: Column(

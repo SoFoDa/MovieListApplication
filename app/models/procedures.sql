@@ -45,7 +45,9 @@ BEGIN
     JOIN Seen as s ON m.movie_id = s.movie_id
     JOIN User as u ON u.user_id = s.user_id    
   WHERE
-    u.user_id = id;
+    u.user_id = id 
+  ORDER BY
+    m.title;
 END //
 
 CREATE PROCEDURE getDirectors
