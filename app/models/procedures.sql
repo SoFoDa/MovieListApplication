@@ -4,6 +4,9 @@ DROP PROCEDURE getDirectors;
 DROP PROCEDURE getGenres;
 DROP PROCEDURE getUserInfo;
 DROP PROCEDURE getFollowerAmount;
+DROP PROCEDURE getSummedRuntime;
+DROP PROCEDURE getMostWatchedGenre;
+DROP PROCEDURE getMostWatchedDirector;
 
 
 DELIMITER //
@@ -105,6 +108,63 @@ BEGIN
     User_friend as ufri
   WHERE
     ufri.user_id = id;  
+END //
+
+CREATE PROCEDURE getMostWatchedDirector
+(IN id CHAR(30))
+BEGIN
+  SELECT
+    name,
+    COUNT(name) as count
+  FROM
+    User as u
+    JOIN Seen as s ON u.user_id = s.user_id
+    JOIN Movie as m ON m.movie_id = s.movie_id
+    JOIN Movie_director as mv ON mv.movie_id = m.movie_id
+    JOIN Director as d ON d.director_id = mv.director_id
+  WHERE
+    u.user_id = id
+  GROUP BY
+    name
+  ORDER BY
+    COUNT(name) DESC
+  LIMIT
+    1;
+END //
+
+CREATE PROCEDURE getMostWatchedGenre
+(IN id CHAR(30))
+BEGIN
+  SELECT
+    genre_type,
+    COUNT(genre_type) as count
+  FROM
+    User as u
+    JOIN Seen as s ON u.user_id = s.user_id
+    JOIN Movie as m ON m.movie_id = s.movie_id
+    JOIN Movie_genre as mv ON mv.movie_id = m.movie_id
+    JOIN Genre as g ON g.genre_id = mv.genre_id
+  WHERE
+    u.user_id = id
+  GROUP BY
+    genre_type
+  ORDER BY
+    COUNT(genre_type) DESC
+  LIMIT
+    1;
+END //
+
+CREATE PROCEDURE getSummedRuntime
+(IN id CHAR(30))
+BEGIN
+  SELECT
+    SUM(m.runtime)
+  FROM
+    Movie as m
+    JOIN Seen as s ON m.movie_id = s.movie_id
+    JOIN User as u ON s.user_id = u.user_id
+  WHERE
+    u.user_id = id;
 END //
 
 DELIMITER ;
