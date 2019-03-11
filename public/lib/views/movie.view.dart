@@ -15,9 +15,11 @@ class MoviePage extends StatefulWidget {
 class Movie extends State<MoviePage> {
   NetworkUtility _netUtil = new NetworkUtility();
   dynamic _movie;
+  String _genres = "";
+  String _directors = "";
   int runtime = 0;
   int _hours = 0;
-  int _minutes = 0;
+  int _minutes = 0;  
 
   @override
   void initState() {
@@ -26,8 +28,7 @@ class Movie extends State<MoviePage> {
     var url = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/getMovieFromId', params);
     _netUtil.get(url).then((movie) => {
       this.setState(() {
-          _movie = movie['data'];          
-          print(_movie);
+          _movie = movie['data'];                    
           
           // Get runtime values
           int runtime = _movie["runtime"];
@@ -37,7 +38,33 @@ class Movie extends State<MoviePage> {
           }
           _minutes = runtime;           
       }) :_movie
-    });    
+    });      
+
+    // Get first three genres
+    var url2 = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/getMovieGenres', params);
+    _netUtil.get(url2).then((genres) => {
+      this.setState(() {          
+          dynamic genreList = genres['data'][0];                                  
+          _genres += genreList["0"]["genre_type"]; 
+          int len = 3; 
+          if(genreList.length < len) {len = genreList.length;}        
+          for(int i = 1; i < len; i++) { 
+            _genres += " / " + genreList[i.toString()]["genre_type"];
+          }                           
+      }) :_genres
+    });  
+    
+    // Get directors
+    var url3 = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/getMovieDirectors', params);
+    _netUtil.get(url3).then((dirs) => {
+      this.setState(() {          
+          dynamic dirList = dirs['data'][0];              
+          _directors += dirList["0"]["name"];          
+          for(int i = 1; i < dirList.length; i++) { 
+            _directors += " / " + dirList[i.toString()]["name"];
+          }                    
+      }) :_directors
+    });  
   }
 
   @override
@@ -100,7 +127,7 @@ class Movie extends State<MoviePage> {
                 ),        
               ),  
               Positioned(
-                top: 150,
+                top: 165,
                 left: 30,
                 child: Container(                     
                   height: 180,
@@ -146,7 +173,7 @@ class Movie extends State<MoviePage> {
                 )                                                               
               ),
               Positioned(
-                top: 258,
+                top: 304,
                 left: 161,
                 child: Row(
                   children: <Widget>[
@@ -166,7 +193,7 @@ class Movie extends State<MoviePage> {
                 ),               
               ), 
               Positioned(
-                top: 280,
+                top: 326,
                 left: 161,
                 child: Row(
                   children: <Widget>[
@@ -184,7 +211,47 @@ class Movie extends State<MoviePage> {
                     ),
                   ],
                 ),
-              ),              
+              ),     
+              Positioned(
+                top: 260,
+                left: 161,
+                child: Row(
+                  children: <Widget>[
+                    Icon(
+                      Icons.theaters, 
+                      color: Colors.white,
+                      size: 13,
+                    ),
+                    Text(                      
+                      " " + _genres,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 13,
+                      )
+                    ),
+                  ],
+                ),
+              ),    
+              Positioned(
+                top: 282,
+                left: 161,
+                child: Row(
+                  children: <Widget>[
+                    Icon(
+                      Icons.movie_creation, 
+                      color: Colors.white,
+                      size: 13,
+                    ),
+                    Text(                      
+                      " " + _directors,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 13,
+                      )
+                    ),
+                  ],
+                ),
+              ),                                    
             ],            
           )
         ),
