@@ -4,6 +4,7 @@ import 'package:public/services/authentication.dart';
 import 'package:public/config.dart';
 import '../widgets/base_card.dart';
 import '../widgets/seen_card.dart';
+import 'package:public/views/movie.view.dart';
 
 class Profile extends StatefulWidget {  
   @override
@@ -193,7 +194,15 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                       seenMovie['release_year'],                      
                       seenMovie['runtime'], 
                       seenMovie['poster_path']
-                    ),                                                                     
+                    ),   
+                    onTap: () => {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MoviePage(movieId: seenMovie['movie_id'].toString()),
+                        ),
+                      ) : context
+                    },                                                                
                   );
                 }                
               },
