@@ -444,3 +444,26 @@ module.exports.getMovieGenres = async (movie_id) => {
 module.exports.getMovieDirectors = async (movie_id) => {
     return sequelize.query("CALL getDirectors(?);", { replacements: [movie_id], type: sequelize.QueryTypes.SELECT });
 }
+
+module.exports.getUserStats = async (user_id) => {
+  // returns runtime
+  let totalRuntime = await sequelize.query(
+    "CALL getSummedRuntime(?);", 
+    { replacements: [user_id], type: sequelize.QueryTypes.SELECT }
+  );
+  // returns genre name, count 
+  let mostWatchedGenre = await sequelize.query(
+    "CALL getMostWatchedGenre(?);", 
+    { replacements: [user_id], type: sequelize.QueryTypes.SELECT }
+  );
+  // returns director name, count 
+  let mostWatchedDirector = await sequelize.query(
+    "CALL getMostWatchedDirector(?);", 
+    { replacements: [user_id], type: sequelize.QueryTypes.SELECT }
+  );
+  return {
+    runtime: totalRuntime[0]['0']['SUM(m.runtime)'],
+    genre: mostWatchedGenre[0]['0'],
+    director: mostWatchedDirector[0]['0'],
+  }
+}

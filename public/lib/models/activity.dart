@@ -18,15 +18,15 @@ class Activity {
 class ActivityMovie {
   final String _type;
   final String _movieName;  
-  final String _genre;
   final String _releaseYear;
+  final String _posterPath;
 
-  ActivityMovie(this._type, this._movieName, this._genre, this._releaseYear);
+  ActivityMovie(this._type, this._movieName, this._releaseYear, this._posterPath);
 
   String get type => _type;
   String get movieName => _movieName;
-  String get genre => _genre;
   String get releaseYear => _releaseYear;
+  String get posterPath => _posterPath;
 }
 
 class ActivityFriend {

@@ -4,8 +4,12 @@ import 'package:public/services/authentication.dart';
 import 'package:public/config.dart';
 import '../widgets/base_card.dart';
 import '../widgets/seen_card.dart';
+import 'package:public/views/movie.view.dart';
 
 class Profile extends StatefulWidget {  
+  final int userId;
+  Profile({Key key, @required this.userId}) : super(key: key);
+
   @override
   _ProfileState createState() => _ProfileState();  
 }
@@ -27,37 +31,44 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
     super.initState();    
 
     // Request parameters    
-    var params = { 'user_id': _auth.userID.toString()};
+    var params = { 'user_id': widget.userId.toString()};
 
     // Get user information
     var url = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/getUserInfo', params);      
-    print(url);      
-    _netUtil.get(url).then((res) => {
-      this.setState(() {  
-        username = res['data']['username'];
-        name = res['data']['name'];
-        joinDate = res['data']['join_date'].toString();          
-      }) :_userInfo
-    });    
+    print(url);    
+      _netUtil.get(url).then((res) {
+        if (this.mounted) {  
+          setState(() {  
+            username = res['data']['username'];
+            name = res['data']['name'];
+            joinDate = res['data']['join_date'].toString();          
+          });
+        }
+      });    
 
     // Get follower amount 
     var url2 = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/getFollowerAmount', params);      
-    print(url2);      
-    _netUtil.get(url2).then((res) => {
-      this.setState(() {                           
-        followers = res['data']['follower_amount'];                    
-      }) :followers
-    }); 
+    print(url2);    
+    _netUtil.get(url2).then((res) {
+      if (this.mounted) {  
+        this.setState(() {                           
+          followers = res['data']['follower_amount'];                    
+        });
+      }
+    });
+  
 
     // Get seen movies
     var url3 = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/seenMovies', params);                
     print(url3);      
-    _netUtil.get(url3).then((res) => {       
-      this.setState(() {               
-        _seenMovies = res['data'];            
-        seenLen = _seenMovies.length;
-      }) :_seenMovies
-    });        
+    _netUtil.get(url3).then((res) {      
+      if (this.mounted) {
+        this.setState(() {               
+          _seenMovies = res['data'];            
+          seenLen = _seenMovies.length;
+        });
+      } 
+    });  
   }  
 
   @override
@@ -193,12 +204,19 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                       seenMovie['release_year'],                      
                       seenMovie['runtime'], 
                       seenMovie['poster_path']
-                    ),                                                                     
+                    ),   
+                    onTap: () => {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MoviePage(movieId: seenMovie['movie_id'].toString()),
+                        ),
+                      ) : context
+                    },                                                                
                   );
                 }                
               },
             ),
-            
           ),           
         ],
       ),  

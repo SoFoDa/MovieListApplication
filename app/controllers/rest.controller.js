@@ -288,7 +288,11 @@ const verifyToken = (req, res, next) => {
         });
       } else {
         req.decoded = decoded;
-        if (req.headers.device_id == decoded.device_id && req.body.user_id == decoded.user_id) {
+        console.log(req.headers.device_id);
+        console.log(decoded.device_id);
+        console.log(parseInt(req.headers.user_id));
+        console.log(decoded.user_id);
+        if (req.headers.device_id === decoded.device_id && parseInt(req.headers.user_id) === decoded.user_id) {
           console.log('Verified token user');
           next();
         } else {
@@ -325,13 +329,13 @@ router.post('/handshake', verifyToken, function (req, res) {
 // username: $username
 // user_id: $user id
 
-/* Body params: 
-* @user_id: The user
-* @username: The username
+/* 
+* Get the users followers activity
 */
-router.get('/userActivity', verifyToken, function(req, res) {
-  model.getUserActivity(req.body.user_id).spread(function(result, metadata) {
+router.get('/friendsActivity', verifyToken, function(req, res) {
+  model.getUserActivity(req.headers.user_id).spread(function(result, metadata) {
     if(result != undefined) {
+      console.log(result[0]['date']);
       res.json({
         status: '200',
         data: result
@@ -344,34 +348,33 @@ router.get('/userActivity', verifyToken, function(req, res) {
   });
 });
 
-/* Body params: 
-* @user_id: The user id
-* @username: The username
-*/
-/*
-router.get('/seenMovies', verifyToken, function(req, res) {
-  model.getSeenMovies(req.body.user_id).spread(function(result, metadata) {
-    if(result != undefined) {
-      res.json({
-        status: '200',
-        data: result
-      });
-    }
-  });
-});
-*/
-
-/* Body params: 
-* @user_id: The user id
-* @movie_id: The movie
-* @seen_status: true -> seen, false -> not seen
+/* 
+* Set a movie to seen for user
 */
 router.post('/setSeen', verifyToken, function(req, res) {
-  model.setSeenMovie(req.body.user_id, req.body.movie_id, req.body.seen_status);
+  model.setSeenMovie(req.headers.user_id, req.body.movie_id, req.body.seen_status);
   res.json({
     status: '200'
   })
 });
 
+/* 
+* Get user stats
+*/
+router.get('/userStats', verifyToken, function(req, res) {
+  model.getUserStats(req.headers.user_id).then(function(result) {
+    if(result != undefined) {
+      console.log(result.runtime);
+      res.json({
+        status: '200',
+        data: result
+      });
+    } else {
+      res.json({
+        status: '500',
+      })
+    }
+  });
+});
 
 module.exports = router;

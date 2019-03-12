@@ -4,6 +4,9 @@ DROP PROCEDURE getDirectors;
 DROP PROCEDURE getGenres;
 DROP PROCEDURE getUserInfo;
 DROP PROCEDURE getFollowerAmount;
+DROP PROCEDURE getSummedRuntime;
+DROP PROCEDURE getMostWatchedGenre;
+DROP PROCEDURE getMostWatchedDirector;
 DROP PROCEDURE isSeen;
 DROP PROCEDURE getSeenFollowed;
 
@@ -13,24 +16,30 @@ CREATE PROCEDURE getUserActivity
 (IN user CHAR(30))
 BEGIN
   SELECT
-    usr.username,
-    ac.date, 
-    fusr.username as friend_username,    
+    fusr.username,
+    ac.date,
+    acfu.username as friend_username,
+    acfu.user_id as friend_id,
     acm.type,
+    mov.movie_id,
     mov.title,
-    mov.genre,
     mov.release_year,
-    mov.director
+    mov.poster_path
   FROM
-    Activity as ac    
-    LEFT JOIN User as usr ON ac.user_id = usr.user_id
+    User as usr
+    LEFT JOIN User_friend as usf ON usf.user_id = usr.user_id
+    LEFT JOIN Activity as ac ON ac.user_id = usf.friend_id
     LEFT JOIN Activity_friend as acf ON ac.activity_id = acf.activity_id
-    LEFT JOIN User as fusr ON acf.friend_id = fusr.user_id      
-    LEFT JOIN Activity_movie as acm ON ac.activity_id = acm.activity_id 
+    LEFT JOIN User as acfu ON acfu.user_id = acf.friend_id 
+    LEFT JOIN Activity_movie as acm ON ac.activity_id = acm.activity_id
     LEFT JOIN Movie as mov ON acm.movie_id = mov.movie_id
-  WHERE 
-    ac.user_id != user     
-  ORDER BY ac.date ASC; 
+    LEFT JOIN User as fusr ON fusr.user_id = usf.friend_id
+  WHERE
+    usr.user_id = user
+  ORDER BY
+    ac.date DESC
+  LIMIT
+    25;
 END //
 
 CREATE PROCEDURE getSeenMovies
@@ -47,7 +56,9 @@ BEGIN
     JOIN Seen as s ON m.movie_id = s.movie_id
     JOIN User as u ON u.user_id = s.user_id    
   WHERE
-    u.user_id = id;
+    u.user_id = id 
+  ORDER BY
+    m.title;
 END //
 
 CREATE PROCEDURE getDirectors
@@ -101,6 +112,62 @@ BEGIN
     ufri.user_id = id;  
 END //
 
+CREATE PROCEDURE getMostWatchedDirector
+(IN id CHAR(30))
+BEGIN
+  SELECT
+    name,
+    COUNT(name) as count
+  FROM
+    User as u
+    JOIN Seen as s ON u.user_id = s.user_id
+    JOIN Movie as m ON m.movie_id = s.movie_id
+    JOIN Movie_director as mv ON mv.movie_id = m.movie_id
+    JOIN Director as d ON d.director_id = mv.director_id
+  WHERE
+    u.user_id = id
+  GROUP BY
+    name
+  ORDER BY
+    COUNT(name) DESC
+  LIMIT
+    1;
+END //
+
+CREATE PROCEDURE getMostWatchedGenre
+(IN id CHAR(30))
+BEGIN
+  SELECT
+    genre_type,
+    COUNT(genre_type) as count
+  FROM
+    User as u
+    JOIN Seen as s ON u.user_id = s.user_id
+    JOIN Movie as m ON m.movie_id = s.movie_id
+    JOIN Movie_genre as mv ON mv.movie_id = m.movie_id
+    JOIN Genre as g ON g.genre_id = mv.genre_id
+  WHERE
+    u.user_id = id
+  GROUP BY
+    genre_type
+  ORDER BY
+    COUNT(genre_type) DESC
+  LIMIT
+    1;
+END //
+
+CREATE PROCEDURE getSummedRuntime
+(IN id CHAR(30))
+BEGIN
+  SELECT
+    SUM(m.runtime)
+  FROM
+    Movie as m
+    JOIN Seen as s ON m.movie_id = s.movie_id
+    JOIN User as u ON s.user_id = u.user_id
+  WHERE
+    u.user_id = id;
+=======
 CREATE PROCEDURE isSeen
 (IN u_id CHAR(30), IN m_id CHAR(30))
 BEGIN
