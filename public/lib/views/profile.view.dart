@@ -229,7 +229,9 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
             margin: EdgeInsets.only(top: 20),            
             child: RaisedButton(      
               color: Colors.blue,                     
-              child: (widget.myProfile ? Text('Log out') : (_isFollower ? Text('Following') : Text('Follow'))),
+              child: (widget.myProfile ? 
+                      Text('Log out', style: TextStyle(color: Colors.white)) : 
+                      (_isFollower ? Text('Following', style: TextStyle(color: Colors.white)) : Text('Follow', style: TextStyle(color: Colors.white)))),
               onPressed: () {
                 if (widget.myProfile) {
                   _auth.logout();
