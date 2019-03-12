@@ -9,7 +9,7 @@ DROP PROCEDURE getMostWatchedGenre;
 DROP PROCEDURE getMostWatchedDirector;
 DROP PROCEDURE isSeen;
 DROP PROCEDURE getSeenFollowed;
-
+DROP PROCEDURE deleteMovieActivity;
 
 DELIMITER //
 CREATE PROCEDURE getUserActivity
@@ -195,6 +195,37 @@ BEGIN
   WHERE
     u.user_id = u_id
     AND s.movie_id = m_id;  
+END //
+
+CREATE PROCEDURE deleteMovieActivity
+(IN u_id CHAR(30), IN m_id CHAR(30))
+BEGIN
+  DELETE FROM
+    Activity_movie
+  WHERE
+    activity_id IN (
+      SELECT
+        a.activity_id
+      FROM
+        Activity as a
+        JOIN (SELECT * FROM Activity_movie) as acm ON acm.activity_id = a.activity_id
+      WHERE
+        a.user_id = u_id
+        AND acm.movie_id = m_id
+    );
+  DELETE FROM
+    Activity
+  WHERE
+    activity_id IN (
+      SELECT
+        a.activity_id
+      FROM
+        (SELECT * FROM Activity) as a
+        JOIN Activity_movie as acm ON acm.activity_id = a.activity_id
+      WHERE
+        a.user_id = u_id
+        AND acm.movie_id = m_id
+    );
 END //
 
 DELIMITER ;

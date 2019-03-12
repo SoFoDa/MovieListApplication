@@ -35,7 +35,7 @@ class Movie extends State<MoviePage> {
     var params = { 'movie_id': widget.movieId,};
 
     var url = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/getMovieFromId', params);
-    _netUtil.get(url).then((movie) => {
+    _netUtil.get(url).then((movie) {
       this.setState(() {
           _movie = movie['data'];                    
           
@@ -46,8 +46,9 @@ class Movie extends State<MoviePage> {
             _hours++;
           }
           _minutes = runtime;           
-      }) :_movie
-    });      
+      });
+    });    
+    if (_movie==null) return;  
 
     // Get first three genres
     var url2 = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/getMovieGenres', params);
@@ -125,8 +126,8 @@ class Movie extends State<MoviePage> {
       _movie['poster_path'] = 'noposter.jpg';
       }
       return new Scaffold(
-        appBar: AppBar(          
-          bottomOpacity: 0,          
+        appBar: new AppBar(           
+          bottomOpacity: 0,         
           title: Text(            
             _movie['title'],
             maxLines: 3,
@@ -135,7 +136,8 @@ class Movie extends State<MoviePage> {
               fontWeight: FontWeight.bold,
               wordSpacing: 3,
             ),
-          ),                    
+          ), 
+          leading: IconButton(icon:Icon(Icons.chevron_left),onPressed:() => Navigator.pop(context, true),)                 
         ),
         body: new Container( 
           decoration: BoxDecoration(
@@ -396,7 +398,7 @@ class Movie extends State<MoviePage> {
                     separatorBuilder: (context, index) => Divider(
                       color: Colors.white,                
                     ),
-                    itemCount: _seenFollowers.length,          
+                    itemCount: _seenFollowersLength,          
                     itemBuilder: (context, index) {                                                                       
                       return ListTile(                                                          
                         dense: true,                     

@@ -10,11 +10,19 @@ class ActivityCard extends StatelessWidget {
   final double _LEFT_MARGIN = 10;
   final double _MOVIE_TOP = 30;
   final double _FRIEND_TOP = 15;
+  String _imageUrl;
   
   Activity activity;  
 
   ActivityCard(this.activity){
     activity = this.activity;
+    if (activity.type == 'movie') {
+      var posterPath = activity.activityMovie.posterPath;
+      if (posterPath == null) {
+        posterPath = "noposter.jpg";
+      }
+      _imageUrl = ("http://${serverProperties['HOST']}${serverProperties['PORT']}/posters/${posterPath}");
+    }
   }
 
   @override
@@ -52,7 +60,7 @@ class ActivityCard extends StatelessWidget {
             decoration: BoxDecoration(  
               border: Border.all(color: Colors.grey),                  
               image: new DecorationImage(
-                image: new NetworkImage('http://' + serverProperties['HOST'] + serverProperties['PORT'] + '/posters/' + activity.activityMovie.posterPath),
+                image: new NetworkImage(_imageUrl),
                 fit: BoxFit.cover
               ),                                       
             ),                                             

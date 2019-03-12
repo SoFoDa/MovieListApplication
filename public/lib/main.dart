@@ -135,10 +135,9 @@ class MovieListAppState extends State<MovieListApp> with SingleTickerProviderSta
   }
 
   void _search(String queryString) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => search.SearchPage(search: queryString),
+    Navigator.of(context).push(
+      new MaterialPageRoute(
+        builder: (_) => search.SearchPage(search: queryString),
       ),
     );
   }

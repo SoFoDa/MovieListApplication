@@ -24,12 +24,9 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   int seenLen = 0;
 
   NetworkUtility _netUtil = new NetworkUtility();
-  Authentication _auth = new Authentication();    
-  
-  @override
-  void initState(){      
-    super.initState();    
+  Authentication _auth = new Authentication();  
 
+  void updateInformation() {
     // Request parameters    
     var params = { 'user_id': widget.userId.toString()};
 
@@ -69,6 +66,12 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
         });
       } 
     });  
+  }  
+  
+  @override
+  void initState(){      
+    super.initState();    
+    updateInformation();
   }  
 
   @override
@@ -206,12 +209,13 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                       seenMovie['poster_path']
                     ),   
                     onTap: () => {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MoviePage(movieId: seenMovie['movie_id'].toString()),
+                      Navigator.of(context).push(
+                        new MaterialPageRoute(
+                          builder: (_) => MoviePage(movieId: seenMovie['movie_id'].toString()),
                         ),
-                      ) : context
+                      ).then((val) {
+                        if(val != null) val ? updateInformation() : null;
+                      }) : context
                     },                                                                
                   );
                 }                

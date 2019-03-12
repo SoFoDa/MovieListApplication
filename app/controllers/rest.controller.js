@@ -248,9 +248,10 @@ router.get('/searchMovie', async function(req, res) {
       console.log('Movie not in db, trying to add...');
       if(omdbEntry !== null) {
         let mov = await model.addMovie(omdbEntry);
-        let omdbInDbEntry = await model.getMoviesFromTitle(omdbEntry.title);
-        omdbEntry['movie_id'] = mov.movie_id;
-        jsonObject.unshift(omdbEntry);
+        if (mov !== undefined) {
+          omdbEntry['movie_id'] = mov.movie_id;
+          jsonObject.unshift(omdbEntry);
+        }
       }
     }
     res.json({
