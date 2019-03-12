@@ -26,6 +26,8 @@ class Movie extends State<MoviePage> {
   bool _isSeen = false;
   dynamic _seenFollowers;
 
+  final double _TOP_MARGIN = 150;
+
   @override
   void initState() {
     super.initState();
@@ -173,7 +175,7 @@ class Movie extends State<MoviePage> {
                 ),        
               ),  
               Positioned(
-                top: 165,
+                top: _TOP_MARGIN,
                 left: 25,
                 child: Container(                     
                   height: 180,
@@ -194,7 +196,7 @@ class Movie extends State<MoviePage> {
                 )                
               ),
               Positioned(
-                top: 166,
+                top: _TOP_MARGIN + 1,
                 left: 155,
                 child: Container(
                   alignment: Alignment(-1, 1),                                    
@@ -219,7 +221,7 @@ class Movie extends State<MoviePage> {
                 )                                                               
               ),
               Positioned(
-                top: 304,
+                top: _TOP_MARGIN + 139,
                 left: 155,
                 child: Row(
                   children: <Widget>[
@@ -239,7 +241,7 @@ class Movie extends State<MoviePage> {
                 ),               
               ), 
               Positioned(
-                top: 326,
+                top: _TOP_MARGIN + 161,
                 left: 155,
                 child: Row(
                   children: <Widget>[
@@ -259,7 +261,7 @@ class Movie extends State<MoviePage> {
                 ),
               ),     
               Positioned(
-                top: 260,
+                top: _TOP_MARGIN + 95,
                 left: 155,
                 child: Row(
                   children: <Widget>[
@@ -279,7 +281,7 @@ class Movie extends State<MoviePage> {
                 ),
               ),    
               Positioned(
-                top: 282,
+                top: _TOP_MARGIN + 117,
                 left: 155,
                 child: Row(
                   children: <Widget>[
@@ -299,7 +301,7 @@ class Movie extends State<MoviePage> {
                 ),
               ),              
               Positioned(   
-                top: 300,
+                top: _TOP_MARGIN + 135,
                 right: 20,
                 child: Container(                  
                   child: SizedBox(
@@ -316,7 +318,35 @@ class Movie extends State<MoviePage> {
                 ),                             
               ),
               Positioned(
-                top: 360,
+                top: _TOP_MARGIN + 190,
+                left: 25,
+                child: Container(
+                  width: MediaQuery.of(context).size.width - 35, 
+                  child: RichText(
+                    text: TextSpan(
+                      children: <TextSpan> [
+                        TextSpan(
+                          text: "Plot\n",
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: Colors.white,                          
+                          ),
+                        ),
+                        TextSpan(
+                          text: "This is placeholder text for future...",
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: Colors.white70,  
+                            fontStyle: FontStyle.italic,                        
+                          ),
+                        )
+                      ],                    
+                    ),
+                  ),                
+                ),                
+              ),
+              Positioned(
+                top: _TOP_MARGIN + 285,
                 child: Container(                  
                   height: 40,
                   width: MediaQuery.of(context).size.width,  
@@ -338,7 +368,7 @@ class Movie extends State<MoviePage> {
                   child: Center(
                     child: Text(
                       _seenFollowers.length.toString() + " "
-                      + (_seenFollowers.length.toString() == 1 ? "friend" : "friends")
+                      + (_seenFollowers.length == 1 ? "friend" : "friends")
                       + " have seen this movie",
                       style: TextStyle(
                         color: Colors.white,
@@ -349,7 +379,7 @@ class Movie extends State<MoviePage> {
                 ),
               ),
               Positioned(
-                top: 400,
+                top: _TOP_MARGIN + 325,
                 child: Container(
                   width: MediaQuery.of(context).size.width,  
                   height: 500,            
