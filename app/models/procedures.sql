@@ -167,7 +167,8 @@ BEGIN
     JOIN User as u ON s.user_id = u.user_id
   WHERE
     u.user_id = id;
-=======
+END //
+
 CREATE PROCEDURE isSeen
 (IN u_id CHAR(30), IN m_id CHAR(30))
 BEGIN

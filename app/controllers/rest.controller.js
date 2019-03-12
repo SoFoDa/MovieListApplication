@@ -290,7 +290,7 @@ const verifyToken = (req, res, next) => {
         req.decoded = decoded;
         console.log(req.headers.device_id);
         console.log(decoded.device_id);
-        console.log(parseInt(req.headers.user_id));
+        console.log(req.headers.user_id);
         console.log(decoded.user_id);
         if (req.headers.device_id === decoded.device_id && parseInt(req.headers.user_id) === decoded.user_id) {
           console.log('Verified token user');

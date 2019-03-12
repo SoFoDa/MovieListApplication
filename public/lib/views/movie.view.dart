@@ -25,6 +25,7 @@ class Movie extends State<MoviePage> {
   int _minutes = 0;  
   bool _isSeen = false;
   dynamic _seenFollowers;
+  int _seenFollowersLength;
 
   final double _TOP_MARGIN = 150;
 
@@ -97,11 +98,11 @@ class Movie extends State<MoviePage> {
   void makeSeen() {  
     var header = <String, String>{
       'authorization' : _auth.token,
+      'user_id' : _auth.userID.toString(),
       'device_id' : _auth.deviceIdLocal,      
     };
 
     var body = <String, String>{
-      'user_id' : _auth.userID.toString(),
       'movie_id' : widget.movieId,
       'seen_status' : true.toString()
     };
@@ -116,6 +117,9 @@ class Movie extends State<MoviePage> {
 
   @override
   Widget build(BuildContext context) {
+    if (_seenFollowers == null) {
+      _seenFollowersLength = 0;
+    }
     if (_movie != null) {
       if (_movie['poster_path'] == '') {
       _movie['poster_path'] = 'noposter.jpg';
@@ -367,8 +371,8 @@ class Movie extends State<MoviePage> {
                   ),
                   child: Center(
                     child: Text(
-                      _seenFollowers.length.toString() + " "
-                      + (_seenFollowers.length == 1 ? "friend" : "friends")
+                      _seenFollowersLength.toString() + " "
+                      + (_seenFollowersLength == 1 ? "friend" : "friends")
                       + " have seen this movie",
                       style: TextStyle(
                         color: Colors.white,
