@@ -179,6 +179,21 @@ router.get('/isSeen', function(req, res) {
 });
 
 /* URL params: 
+* @user_id: ID of the user.
+* @movie_id: ID of the movie
+*/
+router.get('/getSeenFollowed', function(req, res) {  
+  model.getSeenFollowed(req.query.user_id, req.query.movie_id).spread(function(data) {
+    if(data != undefined) {
+      res.json({
+        status: '200',
+        data: data
+      });
+    }
+  });
+});
+
+/* URL params: 
 * @title: Title of the movie
 */
 router.get('/searchMovie', async function(req, res) {
