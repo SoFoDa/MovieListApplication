@@ -164,6 +164,36 @@ router.get('/getFollowerAmount', function(req, res) {
 });
 
 /* URL params: 
+* @user_id: ID of the user.
+* @movie_id: ID of the movie
+*/
+router.get('/isSeen', function(req, res) {  
+  model.isSeen(req.query.user_id, req.query.movie_id).spread(function(data) {
+    if(data != undefined) {
+      res.json({
+        status: '200',
+        data: data[0]
+      });
+    }
+  });
+});
+
+/* URL params: 
+* @user_id: ID of the user.
+* @movie_id: ID of the movie
+*/
+router.get('/getSeenFollowed', function(req, res) {  
+  model.getSeenFollowed(req.query.user_id, req.query.movie_id).spread(function(data) {
+    if(data != undefined) {
+      res.json({
+        status: '200',
+        data: data
+      });
+    }
+  });
+});
+
+/* URL params: 
 * @title: Title of the movie
 */
 router.get('/searchMovie', async function(req, res) {
@@ -218,9 +248,10 @@ router.get('/searchMovie', async function(req, res) {
       console.log('Movie not in db, trying to add...');
       if(omdbEntry !== null) {
         let mov = await model.addMovie(omdbEntry);
-        let omdbInDbEntry = await model.getMoviesFromTitle(omdbEntry.title);
-        omdbEntry['movie_id'] = mov.movie_id;
-        jsonObject.unshift(omdbEntry);
+        if (mov !== undefined) {
+          omdbEntry['movie_id'] = mov.movie_id;
+          jsonObject.unshift(omdbEntry);
+        }
       }
     }
     res.json({
@@ -258,7 +289,11 @@ const verifyToken = (req, res, next) => {
         });
       } else {
         req.decoded = decoded;
-        if (req.headers.device_id == decoded.device_id && req.body.user_id == decoded.user_id) {
+        //console.log(req.headers.device_id);
+        //console.log(decoded.device_id);
+        //console.log(req.headers.user_id);
+        //console.log(decoded.user_id);
+        if (req.headers.device_id === decoded.device_id && parseInt(req.headers.user_id) === decoded.user_id) {
           console.log('Verified token user');
           next();
         } else {
@@ -295,12 +330,11 @@ router.post('/handshake', verifyToken, function (req, res) {
 // username: $username
 // user_id: $user id
 
-/* Body params: 
-* @user_id: The user
-* @username: The username
+/* 
+* Get the users followers activity
 */
-router.get('/userActivity', verifyToken, function(req, res) {
-  model.getUserActivity(req.body.user_id).spread(function(result, metadata) {
+router.get('/friendsActivity', verifyToken, function(req, res) {
+  model.getUserActivity(req.headers.user_id).spread(function(result, metadata) {
     if(result != undefined) {
       res.json({
         status: '200',
@@ -314,35 +348,33 @@ router.get('/userActivity', verifyToken, function(req, res) {
   });
 });
 
-/* Body params: 
-* @user_id: The user id
-* @username: The username
-*/
-/*
-router.get('/seenMovies', verifyToken, function(req, res) {
-  model.getSeenMovies(req.body.user_id).spread(function(result, metadata) {
-    if(result != undefined) {
-      res.json({
-        status: '200',
-        data: result
-      });
-    }
-  });
-});
-*/
-
-/* Body params: 
-* @user_id: The user id
-* @username: The username
-* @movie_id: The movie
-* @seen_status: true -> seen, false -> not seen
+/* 
+* Set a movie to seen for user
 */
 router.post('/setSeen', verifyToken, function(req, res) {
-  model.setSeenMovie(req.body.user_id, req.body.movie_id, req.body.seen_status);
+  model.setSeenMovie(req.headers.user_id, req.body.movie_id, req.body.seen_status);
   res.json({
     status: '200'
   })
 });
 
+/* 
+* Get user stats
+*/
+router.get('/userStats', verifyToken, function(req, res) {
+  model.getUserStats(req.headers.user_id).then(function(result) {
+    if(result != undefined) {
+      console.log(result.runtime);
+      res.json({
+        status: '200',
+        data: result
+      });
+    } else {
+      res.json({
+        status: '500',
+      })
+    }
+  });
+});
 
 module.exports = router;

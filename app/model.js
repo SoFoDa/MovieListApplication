@@ -201,7 +201,7 @@ const Seen = sequelize.define('Seen', {
     }
 }, {timestamps: false, freezeTableName: true})
 
-const Activity = sequelize.define('Movie', {
+const Activity = sequelize.define('Activity', {
     user_id: {
         type: Sequelize.INTEGER,
      
@@ -213,6 +213,8 @@ const Activity = sequelize.define('Movie', {
     },
     activity_id: {
         type: Sequelize.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
      
         references: {
           model: 'Activity_friend',
@@ -249,6 +251,7 @@ const Activity_friend = sequelize.define('Activity_friend', {
 const Activity_movie = sequelize.define('Activity_movie', {
     activity_id: {
         type: Sequelize.INTEGER,
+        primaryKey: true,
      
         references: {
           model: 'Activity',
@@ -312,6 +315,14 @@ module.exports.getFollowerAmount = (user_id) => {
     return sequelize.query("CALL getFollowerAmount(?);", { replacements: [user_id], type: sequelize.QueryTypes.SELECT });
 }
 
+module.exports.isSeen = (user_id, movie_id) => {
+    return sequelize.query("CALL isSeen(?, ?);", { replacements: [user_id, movie_id], type: sequelize.QueryTypes.SELECT });
+}
+
+module.exports.getSeenFollowed = (user_id, movie_id) => {
+    return sequelize.query("CALL getSeenFollowed(?, ?);", { replacements: [user_id, movie_id], type: sequelize.QueryTypes.SELECT });
+}
+
 module.exports.getMovieFromId = (id) => {
     return Movie.findOne({
         where: {
@@ -337,29 +348,55 @@ module.exports.getSeenMovies = (user_id) => {
 }
 
 module.exports.setSeenMovie = (muser_id, mmovie_id, mseen) => {
-    let type = (mseen == 'true');
-    Seen.findOne({
-        where: {
+  let type = (mseen == 'true');
+  Seen.findOne({
+    where: {
+      movie_id: mmovie_id,
+      user_id: muser_id
+    }
+  }).then((entry) => {
+    console.log(entry != undefined);
+    console.log(!type);
+    if (entry != undefined && !type) {
+      console.log('DELETING SEEN AND ACTIVITY');
+      return sequelize.transaction(async function (t) {
+        return Seen.destroy({
+          where: {
             movie_id: mmovie_id,
             user_id: muser_id
-        }
-    }).then((entry) => {
-        if (entry != undefined && !type) {
-            Seen.destroy({
-                where: {
-                    movie_id: mmovie_id,
-                    user_id: muser_id
-                }
-            })
-        } else if (entry == undefined && type) {
-            const newEntry = Seen.build({
-                user_id: muser_id,
-                movie_id: mmovie_id,
-                date: Date.now()
+          }
+        }).then((_) => {
+          return sequelize.query("CALL deleteMovieActivity(?,?);", { 
+            replacements: [muser_id,mmovie_id], type: sequelize.QueryTypes.DELETE 
+          });
+        });
+      });
+    } else if (entry == undefined && type) {
+      console.log('ADDING SEEN AND ACTIVITY');
+      return sequelize.transaction(async function (t) {
+        let date = new Date();
+        return Seen.create({
+          user_id: muser_id,
+          movie_id: mmovie_id,
+          date: date
+        }).then((movEntry) => {
+          // create activity
+          return Activity.create({
+            user_id: muser_id,
+            date: date
+          }).then((acEntry) => {
+            return Activity_movie.create({
+              activity_id: acEntry.activity_id,
+              type: 'seen',
+              movie_id: mmovie_id,
+            }).then((acmEntry) => {
+              return true;
             });
-            newEntry.save();
-        }
-    })
+          });
+        });
+      });
+    }
+  });
 }
 
 module.exports.addMovie = async (dbEntry) => {
@@ -435,4 +472,27 @@ module.exports.getMovieGenres = async (movie_id) => {
 
 module.exports.getMovieDirectors = async (movie_id) => {
     return sequelize.query("CALL getDirectors(?);", { replacements: [movie_id], type: sequelize.QueryTypes.SELECT });
+}
+
+module.exports.getUserStats = async (user_id) => {
+  // returns runtime
+  let totalRuntime = await sequelize.query(
+    "CALL getSummedRuntime(?);", 
+    { replacements: [user_id], type: sequelize.QueryTypes.SELECT }
+  );
+  // returns genre name, count 
+  let mostWatchedGenre = await sequelize.query(
+    "CALL getMostWatchedGenre(?);", 
+    { replacements: [user_id], type: sequelize.QueryTypes.SELECT }
+  );
+  // returns director name, count 
+  let mostWatchedDirector = await sequelize.query(
+    "CALL getMostWatchedDirector(?);", 
+    { replacements: [user_id], type: sequelize.QueryTypes.SELECT }
+  );
+  return {
+    runtime: totalRuntime[0]['0']['SUM(m.runtime)'],
+    genre: mostWatchedGenre[0]['0'],
+    director: mostWatchedDirector[0]['0'],
+  }
 }

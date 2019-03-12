@@ -8,7 +8,7 @@ import './views/home.view.dart' as home;
 import './views/profile.view.dart' as profile;
 import './views/stats.view.dart' as stats;
 import './views/search.view.dart' as search;
-import './views/movie.view.dart' as movie;
+import 'package:public/services/authentication.dart';
 
 void main() => runApp(MyApp());
 
@@ -42,6 +42,7 @@ class MovieListAppState extends State<MovieListApp> with SingleTickerProviderSta
   TabController tabController;  
   Text currentTitle;
   bool activeSearch;
+  Authentication _auth = new Authentication();
 
   @override
   void initState(){    
@@ -88,7 +89,7 @@ class MovieListAppState extends State<MovieListApp> with SingleTickerProviderSta
           controller: tabController,
           children: <Widget>[          
             home.Home(),    
-            profile.Profile(),                  
+            profile.Profile(userId: _auth.userID),                  
             stats.Stats(),                     
           ]
         ),
@@ -123,6 +124,7 @@ class MovieListAppState extends State<MovieListApp> with SingleTickerProviderSta
     } else {
       return new AppBar(        
         title: currentTitle,
+        automaticallyImplyLeading: false,
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.search),
@@ -134,10 +136,9 @@ class MovieListAppState extends State<MovieListApp> with SingleTickerProviderSta
   }
 
   void _search(String queryString) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => search.SearchPage(search: queryString),
+    Navigator.of(context).push(
+      new MaterialPageRoute(
+        builder: (_) => search.SearchPage(search: queryString),
       ),
     );
   }

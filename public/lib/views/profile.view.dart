@@ -7,6 +7,9 @@ import '../widgets/seen_card.dart';
 import 'package:public/views/movie.view.dart';
 
 class Profile extends StatefulWidget {  
+  final int userId;
+  Profile({Key key, @required this.userId}) : super(key: key);
+
   @override
   _ProfileState createState() => _ProfileState();  
 }
@@ -21,14 +24,11 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   int seenLen = 0;
 
   NetworkUtility _netUtil = new NetworkUtility();
-  Authentication _auth = new Authentication();    
-  
-  @override
-  void initState(){      
-    super.initState();    
+  Authentication _auth = new Authentication();  
 
+  void updateInformation() {
     // Request parameters    
-    var params = { 'user_id': _auth.userID.toString()};
+    var params = { 'user_id': widget.userId.toString()};
 
     // Get user information
     var url = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/getUserInfo', params);      
@@ -66,6 +66,12 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
         });
       } 
     });  
+  }  
+  
+  @override
+  void initState(){      
+    super.initState();    
+    updateInformation();
   }  
 
   @override
@@ -203,12 +209,13 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                       seenMovie['poster_path']
                     ),   
                     onTap: () => {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MoviePage(movieId: seenMovie['movie_id'].toString()),
+                      Navigator.of(context).push(
+                        new MaterialPageRoute(
+                          builder: (_) => MoviePage(movieId: seenMovie['movie_id'].toString()),
                         ),
-                      ) : context
+                      ).then((val) {
+                        if(val != null) val ? updateInformation() : null;
+                      }) : context
                     },                                                                
                   );
                 }                

@@ -37,7 +37,7 @@ class Search extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {    
     return new Scaffold(           
-      appBar: AppBar(
+      appBar: new AppBar(
         title: RichText(
           text: TextSpan(
             style: TextStyle(
@@ -57,7 +57,8 @@ class Search extends State<SearchPage> {
             ],
           ), 
         ),  
-        elevation: 0,        
+        elevation: 0,  
+        leading: IconButton(icon:Icon(Icons.chevron_left),onPressed:() => Navigator.pop(context, true),)       
       ),
       body: new Container(
         decoration: BoxDecoration(
