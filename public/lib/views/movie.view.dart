@@ -152,7 +152,7 @@ class Movie extends State<MoviePage> {
               Positioned(   
                 top: -50,                             
                 child: Container(
-                  height: 300,
+                  height: _TOP_MARGIN + 138,
                   width: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(  
                     boxShadow: [BoxShadow(
