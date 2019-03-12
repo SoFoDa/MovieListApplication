@@ -95,7 +95,7 @@ class Movie extends State<MoviePage> {
   
 
   // Set movie as seen
-  void makeSeen() {  
+  void makeSeen(bool status) {  
     var header = <String, String>{
       'authorization' : _auth.token,
       'user_id' : _auth.userID.toString(),
@@ -104,7 +104,7 @@ class Movie extends State<MoviePage> {
 
     var body = <String, String>{
       'movie_id' : widget.movieId,
-      'seen_status' : true.toString()
+      'seen_status' : status.toString()
     };
 
     var url = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/setSeen');
@@ -313,9 +313,14 @@ class Movie extends State<MoviePage> {
                     child: RaisedButton(  
                       color: (_isSeen ? Colors.redAccent : Colors.blue),                                                        
                       child: Text("Seen", style: TextStyle(color: Colors.white),),
-                      onPressed: () {                                                      
-                        makeSeen();
-                        setState(() => _isSeen = true);  
+                      onPressed: () {
+                        if (_isSeen) {
+                          makeSeen(false);
+                          setState(() => _isSeen = false);  
+                        } else {
+                          makeSeen(true);
+                          setState(() => _isSeen = true);  
+                        }                                                
                       },
                     ),
                   ),
