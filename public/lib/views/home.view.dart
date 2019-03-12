@@ -102,6 +102,13 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin{
                     builder: (context) => MoviePage(movieId: activity['movie_id'].toString()),
                   ),
                 );
+              } else {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Profile(userId: activity['friend_id'], myProfile: false,),
+                  ),
+                );
               }
             },                                   
           );

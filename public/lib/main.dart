@@ -89,7 +89,7 @@ class MovieListAppState extends State<MovieListApp> with SingleTickerProviderSta
           controller: tabController,
           children: <Widget>[          
             home.Home(),    
-            profile.Profile(userId: _auth.userID),                  
+            profile.Profile(userId: _auth.userID, myProfile: true),                  
             stats.Stats(),                     
           ]
         ),
