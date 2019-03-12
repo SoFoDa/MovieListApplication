@@ -8,7 +8,8 @@ import 'package:public/views/movie.view.dart';
 
 class Profile extends StatefulWidget {  
   final int userId;
-  Profile({Key key, @required this.userId}) : super(key: key);
+  final bool myProfile;
+  Profile({Key key, @required this.userId, @required this.myProfile}) : super(key: key);
 
   @override
   _ProfileState createState() => _ProfileState();  
@@ -29,7 +30,6 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   void updateInformation() {
     // Request parameters    
     var params = { 'user_id': widget.userId.toString()};
-
     // Get user information
     var url = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/getUserInfo', params);      
     print(url);    
@@ -80,7 +80,20 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   }
 
   @override
-  Widget build(BuildContext context) {    
+  Widget build(BuildContext context) {   
+    if (widget.myProfile) {
+      return profileWidget();
+    } else {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(username),
+        ),
+        body: profileWidget(),
+    );  
+    }     
+  }
+
+  Widget profileWidget() {
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -223,7 +236,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
             ),
           ),           
         ],
-      ),  
-    );       
+      ),
+    );
   }
-}
+ }
