@@ -312,6 +312,14 @@ module.exports.getFollowerAmount = (user_id) => {
     return sequelize.query("CALL getFollowerAmount(?);", { replacements: [user_id], type: sequelize.QueryTypes.SELECT });
 }
 
+module.exports.isSeen = (user_id, movie_id) => {
+    return sequelize.query("CALL isSeen(?, ?);", { replacements: [user_id, movie_id], type: sequelize.QueryTypes.SELECT });
+}
+
+module.exports.getSeenFollowed = (user_id, movie_id) => {
+    return sequelize.query("CALL getSeenFollowed(?, ?);", { replacements: [user_id, movie_id], type: sequelize.QueryTypes.SELECT });
+}
+
 module.exports.getMovieFromId = (id) => {
     return Movie.findOne({
         where: {

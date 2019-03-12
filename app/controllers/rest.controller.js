@@ -164,6 +164,36 @@ router.get('/getFollowerAmount', function(req, res) {
 });
 
 /* URL params: 
+* @user_id: ID of the user.
+* @movie_id: ID of the movie
+*/
+router.get('/isSeen', function(req, res) {  
+  model.isSeen(req.query.user_id, req.query.movie_id).spread(function(data) {
+    if(data != undefined) {
+      res.json({
+        status: '200',
+        data: data[0]
+      });
+    }
+  });
+});
+
+/* URL params: 
+* @user_id: ID of the user.
+* @movie_id: ID of the movie
+*/
+router.get('/getSeenFollowed', function(req, res) {  
+  model.getSeenFollowed(req.query.user_id, req.query.movie_id).spread(function(data) {
+    if(data != undefined) {
+      res.json({
+        status: '200',
+        data: data
+      });
+    }
+  });
+});
+
+/* URL params: 
 * @title: Title of the movie
 */
 router.get('/searchMovie', async function(req, res) {
