@@ -24,6 +24,7 @@ class Movie extends State<MoviePage> {
   int _hours = 0;
   int _minutes = 0;  
   bool _isSeen = false;
+  dynamic _seenFollowers;
 
   @override
   void initState() {
@@ -79,7 +80,16 @@ class Movie extends State<MoviePage> {
           if(seen['data']["is_seen"] == 1) {_isSeen = true;}                                           
       }) :_isSeen
     });  
+
+    // Get friends who have seen the movie        
+    var url5 = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/getSeenFollowed', params2);
+    _netUtil.get(url5).then((seen) => {
+      this.setState(() {                         
+          _seenFollowers = seen["data"];          
+      }) :_seenFollowers
+    });  
   }
+  
 
   // Set movie as seen
   void makeSeen() {  
@@ -113,6 +123,7 @@ class Movie extends State<MoviePage> {
           bottomOpacity: 0,          
           title: Text(            
             _movie['title'],
+            maxLines: 3,
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -134,7 +145,7 @@ class Movie extends State<MoviePage> {
               tileMode: TileMode.clamp,
             ),
           ),                             
-          child:Stack(
+          child: Stack(
             children: <Widget>[  
               Positioned(   
                 top: -50,                             
@@ -303,9 +314,79 @@ class Movie extends State<MoviePage> {
                     ),
                   ),
                 ),                             
-              ),                                    
+              ),
+              Positioned(
+                top: 360,
+                child: Container(                  
+                  height: 40,
+                  width: MediaQuery.of(context).size.width,  
+                  decoration: BoxDecoration( 
+                    border: Border(top: BorderSide(color: Colors.grey), bottom: BorderSide(color: Colors.grey)),                   
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,            
+                      stops: [0.0, 0.2, 0.5, 0.8, 1.0],
+                      colors: [                        
+                        Color(0x22FFFFFF),
+                        Color(0x00FFFFFF),
+                        Color(0x00FFFFFF),
+                        Color(0x00FFFFFF),
+                        Color(0x22FFFFFF),
+                      ]
+                    )
+                  ),
+                  child: Center(
+                    child: Text(
+                      _seenFollowers.length.toString() + " "
+                      + (_seenFollowers.length.toString() == 1 ? "friend" : "friends")
+                      + " have seen this movie",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 10,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                top: 400,
+                child: Container(
+                  width: MediaQuery.of(context).size.width,  
+                  height: 500,            
+                  child: ListView.separated(
+                    separatorBuilder: (context, index) => Divider(
+                      color: Colors.white,                
+                    ),
+                    itemCount: _seenFollowers.length,          
+                    itemBuilder: (context, index) {                                                                       
+                      return ListTile(                                                          
+                        dense: true,                     
+                        title: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              _seenFollowers[index.toString()]["username"],
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold
+                              ),
+                            ),  
+                            Text(                              
+                              _seenFollowers[index.toString()]["date"],
+                              textAlign: TextAlign.right,
+                              style: TextStyle(
+                                color: Colors.white70,
+                              ),
+                            ),      
+                          ]
+                        )                          
+                      );                    
+                    }
+                  )
+                ),             
+              ),                                     
             ],            
-          )
+          ),
         ),
       );
     } else {
