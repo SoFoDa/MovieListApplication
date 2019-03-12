@@ -169,7 +169,7 @@ class Movie extends State<MoviePage> {
                   child: BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
                     child: Container(
-                      color: Colors.white.withAlpha(50),
+                      color: Colors.white.withAlpha(0),
                     ),
                   ),                                    
                 ),        
