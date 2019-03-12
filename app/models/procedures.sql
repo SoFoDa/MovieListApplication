@@ -4,6 +4,7 @@ DROP PROCEDURE getDirectors;
 DROP PROCEDURE getGenres;
 DROP PROCEDURE getUserInfo;
 DROP PROCEDURE getFollowerAmount;
+DROP PROCEDURE isSeen;
 
 
 DELIMITER //
@@ -97,6 +98,18 @@ BEGIN
     User_friend as ufri
   WHERE
     ufri.user_id = id;  
+END //
+
+CREATE PROCEDURE isSeen
+(IN u_id CHAR(30), IN m_id CHAR(30))
+BEGIN
+  SELECT  
+    COUNT(*) as is_seen
+  FROM    
+    Seen as s
+  WHERE
+    s.user_id = u_id
+    AND s.movie_id = m_id;  
 END //
 
 DELIMITER ;
