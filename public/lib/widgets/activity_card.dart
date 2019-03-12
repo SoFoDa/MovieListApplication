@@ -74,13 +74,14 @@ class ActivityCard extends StatelessWidget {
             text: TextSpan(
               style: TextStyle(
                 color: Colors.white,                    
-                fontSize: 15,                                              
+                fontSize: 13,                                              
               ), 
               children: <TextSpan>[
                 TextSpan(text: 
                   '${activity.username} ', 
-                  style: TextStyle(fontWeight: 
-                  FontWeight.bold)
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,                    
+                  )
                 ),
                 TextSpan(text: 
                   'has seen', 
@@ -92,9 +93,56 @@ class ActivityCard extends StatelessWidget {
         ),
         // activity name
         Positioned(      
-          top: _MOVIE_TOP + 20,
+          top: _MOVIE_TOP + 18,
           left:_LEFT_MARGIN + 95,                              
-          child: Text(
+          child: Container(            
+            height: 88,
+            width: 220,                     
+            child: Column(
+              children: <Widget>[   
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Container( 
+                    child: Text(                  
+                      '${activity.activityMovie.movieName}',   
+                      textAlign: TextAlign.left,                             
+                      style: TextStyle(
+                        color: Colors.white,                    
+                        fontSize: 18, 
+                        fontWeight: FontWeight.bold,                                                                                 
+                      ), 
+                    ),  
+                  ),
+                ),                             
+                Container(
+                  height: 7,
+                ),
+                Row(
+                  children: <Widget>[    
+                    // release year icon
+                    Container(
+                      margin:EdgeInsets.only(left: 0),
+                      child: Icon(
+                        Icons.calendar_today, 
+                        color: Color(0xFFd6dceb), 
+                        size: 12
+                      ), 
+                    ),                 
+                    // release year
+                    Text(
+                      ' ${activity.activityMovie.releaseYear}',
+                      style: TextStyle(
+                        color: Color(0xFFd6dceb), 
+                        fontSize: 11,
+                      )                    
+                    ),                                                 
+                  ],
+                ),   
+              ],
+            ),
+          ),
+          /*
+          Text(
             '${activity.activityMovie.movieName}',              
             style: TextStyle(
               color: Colors.white,                    
@@ -102,33 +150,9 @@ class ActivityCard extends StatelessWidget {
               fontWeight: FontWeight.bold,                                                             
             ),  
           ),
+          */
         ),
-        // movie information
-        Positioned(
-          top: _MOVIE_TOP + 50,
-          left: _LEFT_MARGIN + 95, 
-          child: Row(
-            children: <Widget>[    
-              // release year icon
-              Container(
-                margin:EdgeInsets.only(left: 0),
-                child: Icon(
-                  Icons.calendar_today, 
-                  color: Color(0xFFd6dceb), 
-                  size: 12
-                ), 
-              ),                 
-              // release year
-              Text(
-                ' ${activity.activityMovie.releaseYear}',
-                style: TextStyle(
-                  color: Color(0xFFd6dceb), 
-                  fontSize: 11,
-                )                    
-              ),                                                 
-            ],
-          ),   
-        ),                
+        // movie information        
       ],
     );
   }
@@ -159,7 +183,7 @@ class ActivityCard extends StatelessWidget {
             text: TextSpan(
               style: TextStyle(
                 color: Colors.white,                    
-                fontSize: 15,                                              
+                fontSize: 13,                                              
               ), 
               children: <TextSpan>[
                 TextSpan(text: 
@@ -177,7 +201,7 @@ class ActivityCard extends StatelessWidget {
         ),
         // activity name
         Positioned(      
-          top: _FRIEND_TOP + 20,
+          top: _FRIEND_TOP + 16,
           left:_LEFT_MARGIN + 95,                              
           child: Text(
             '${activity.activityFriend.friendUsername}',              
