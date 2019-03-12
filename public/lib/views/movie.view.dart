@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:public/util/network_utility.dart';
+import 'package:public/services/authentication.dart';
 import 'package:public/config.dart';
 import 'dart:ui';
+import 'dart:convert';
 
 class MoviePage extends StatefulWidget {
   final String movieId;
@@ -14,17 +16,20 @@ class MoviePage extends StatefulWidget {
 
 class Movie extends State<MoviePage> {
   NetworkUtility _netUtil = new NetworkUtility();
+  Authentication _auth = new Authentication();    
   dynamic _movie;
   String _genres = "";
   String _directors = "";
   int runtime = 0;
   int _hours = 0;
   int _minutes = 0;  
+  bool _isSeen = false;
 
   @override
   void initState() {
     super.initState();
     var params = { 'movie_id': widget.movieId,};
+
     var url = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/getMovieFromId', params);
     _netUtil.get(url).then((movie) => {
       this.setState(() {
@@ -65,6 +70,36 @@ class Movie extends State<MoviePage> {
           }                    
       }) :_directors
     });  
+
+    // Check if seen    
+    var params2 = {'user_id': _auth.userID.toString(), 'movie_id': widget.movieId,};
+    var url4 = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/isSeen', params2);
+    _netUtil.get(url4).then((seen) => {
+      this.setState(() {               
+          if(seen['data']["is_seen"] == 1) {_isSeen = true;}                                           
+      }) :_isSeen
+    });  
+  }
+
+  // Set movie as seen
+  void makeSeen() {  
+    var header = <String, String>{
+      'authorization' : _auth.token,
+      'device_id' : _auth.deviceIdLocal,      
+    };
+
+    var body = <String, String>{
+      'user_id' : _auth.userID.toString(),
+      'movie_id' : widget.movieId,
+      'seen_status' : true.toString()
+    };
+
+    var url = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/setSeen');
+    _netUtil.post(
+      url, 
+      header: header,
+      body: body,
+    ).then((res) => {});
   }
 
   @override
@@ -128,7 +163,7 @@ class Movie extends State<MoviePage> {
               ),  
               Positioned(
                 top: 165,
-                left: 30,
+                left: 25,
                 child: Container(                     
                   height: 180,
                   width: 120,
@@ -149,11 +184,11 @@ class Movie extends State<MoviePage> {
               ),
               Positioned(
                 top: 166,
-                left: 160,
+                left: 155,
                 child: Container(
                   alignment: Alignment(-1, 1),                                    
                   height: 80,
-                  width: 200,
+                  width: 205,
                   //color: Colors.redAccent,
                   child: Text(
                     _movie['title'],
@@ -174,7 +209,7 @@ class Movie extends State<MoviePage> {
               ),
               Positioned(
                 top: 304,
-                left: 161,
+                left: 155,
                 child: Row(
                   children: <Widget>[
                     Icon(
@@ -194,7 +229,7 @@ class Movie extends State<MoviePage> {
               ), 
               Positioned(
                 top: 326,
-                left: 161,
+                left: 155,
                 child: Row(
                   children: <Widget>[
                     Icon(
@@ -214,7 +249,7 @@ class Movie extends State<MoviePage> {
               ),     
               Positioned(
                 top: 260,
-                left: 161,
+                left: 155,
                 child: Row(
                   children: <Widget>[
                     Icon(
@@ -234,7 +269,7 @@ class Movie extends State<MoviePage> {
               ),    
               Positioned(
                 top: 282,
-                left: 161,
+                left: 155,
                 child: Row(
                   children: <Widget>[
                     Icon(
@@ -251,13 +286,34 @@ class Movie extends State<MoviePage> {
                     ),
                   ],
                 ),
+              ),              
+              Positioned(   
+                top: 300,
+                right: 20,
+                child: Container(                  
+                  child: SizedBox(
+                    width: 70,
+                    child: RaisedButton(  
+                      color: (_isSeen ? Colors.redAccent : Colors.blue),                                                        
+                      child: Text("Seen", style: TextStyle(color: Colors.white),),
+                      onPressed: () {                                                      
+                        makeSeen();
+                        setState(() => _isSeen = true);  
+                      },
+                    ),
+                  ),
+                ),                             
               ),                                    
             ],            
           )
         ),
       );
     } else {
-      return new Scaffold();
+      return new Scaffold(
+        body: Center(
+          child: Text('No movie found'),
+        ),
+      );
     }
   }
 }
