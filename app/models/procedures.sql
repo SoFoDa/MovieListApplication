@@ -27,13 +27,13 @@ BEGIN
     mov.poster_path
   FROM
     User as usr
-    LEFT JOIN User_friend as usf ON usf.user_id = usr.user_id
-    LEFT JOIN Activity as ac ON ac.user_id = usf.friend_id
+    JOIN User_friend as usf ON usf.user_id = usr.user_id
+    JOIN Activity as ac ON ac.user_id = usf.friend_id
     LEFT JOIN Activity_friend as acf ON ac.activity_id = acf.activity_id
     LEFT JOIN User as acfu ON acfu.user_id = acf.friend_id 
     LEFT JOIN Activity_movie as acm ON ac.activity_id = acm.activity_id
     LEFT JOIN Movie as mov ON acm.movie_id = mov.movie_id
-    LEFT JOIN User as fusr ON fusr.user_id = usf.friend_id
+    JOIN User as fusr ON fusr.user_id = usf.friend_id
   WHERE
     usr.user_id = user
   ORDER BY
@@ -200,11 +200,7 @@ END //
 CREATE PROCEDURE deleteMovieActivity
 (IN u_id CHAR(30), IN m_id CHAR(30))
 BEGIN
-  DELETE FROM
-    Activity_movie
-  WHERE
-    activity_id IN (
-      SELECT
+  SET @activity_id = (SELECT
         a.activity_id
       FROM
         Activity as a
@@ -214,18 +210,14 @@ BEGIN
         AND acm.movie_id = m_id
     );
   DELETE FROM
+    Activity_movie
+  WHERE
+    activity_id = @activity_id;
+
+  DELETE FROM
     Activity
   WHERE
-    activity_id IN (
-      SELECT
-        a.activity_id
-      FROM
-        (SELECT * FROM Activity) as a
-        JOIN Activity_movie as acm ON acm.activity_id = a.activity_id
-      WHERE
-        a.user_id = u_id
-        AND acm.movie_id = m_id
-    );
+    activity_id = @activity_id;
 END //
 
 DELIMITER ;

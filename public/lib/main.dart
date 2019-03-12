@@ -124,6 +124,7 @@ class MovieListAppState extends State<MovieListApp> with SingleTickerProviderSta
     } else {
       return new AppBar(        
         title: currentTitle,
+        automaticallyImplyLeading: false,
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.search),

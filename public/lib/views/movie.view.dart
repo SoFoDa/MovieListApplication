@@ -47,51 +47,51 @@ class Movie extends State<MoviePage> {
           }
           _minutes = runtime;           
       });
-    });    
-    if (_movie==null) return;  
 
-    // Get first three genres
-    var url2 = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/getMovieGenres', params);
-    _netUtil.get(url2).then((genres) => {
-      this.setState(() {          
-          dynamic genreList = genres['data'][0];                                  
-          _genres += genreList["0"]["genre_type"]; 
-          int len = 3; 
-          if(genreList.length < len) {len = genreList.length;}        
-          for(int i = 1; i < len; i++) { 
-            _genres += " / " + genreList[i.toString()]["genre_type"];
-          }                           
-      }) :_genres
-    });  
-    
-    // Get directors
-    var url3 = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/getMovieDirectors', params);
-    _netUtil.get(url3).then((dirs) => {
-      this.setState(() {          
-          dynamic dirList = dirs['data'][0];              
-          _directors += dirList["0"]["name"];          
-          for(int i = 1; i < dirList.length; i++) { 
-            _directors += " / " + dirList[i.toString()]["name"];
-          }                    
-      }) :_directors
-    });  
+      if (_movie==null) return;
+      // Get first three genres
+      var url2 = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/getMovieGenres', params);
+      _netUtil.get(url2).then((genres) => {
+        this.setState(() {          
+            dynamic genreList = genres['data'][0];                                  
+            _genres += genreList["0"]["genre_type"]; 
+            int len = 3; 
+            if(genreList.length < len) {len = genreList.length;}        
+            for(int i = 1; i < len; i++) { 
+              _genres += " / " + genreList[i.toString()]["genre_type"];
+            }                           
+        }) :_genres
+      });  
+      
+      // Get directors
+      var url3 = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/getMovieDirectors', params);
+      _netUtil.get(url3).then((dirs) => {
+        this.setState(() {          
+            dynamic dirList = dirs['data'][0];              
+            _directors += dirList["0"]["name"];          
+            for(int i = 1; i < dirList.length; i++) { 
+              _directors += " / " + dirList[i.toString()]["name"];
+            }                    
+        }) :_directors
+      });  
 
-    // Check if seen    
-    var params2 = {'user_id': _auth.userID.toString(), 'movie_id': widget.movieId,};
-    var url4 = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/isSeen', params2);
-    _netUtil.get(url4).then((seen) => {
-      this.setState(() {               
-          if(seen['data']["is_seen"] == 1) {_isSeen = true;}                                           
-      }) :_isSeen
-    });  
+      // Check if seen    
+      var params2 = {'user_id': _auth.userID.toString(), 'movie_id': widget.movieId,};
+      var url4 = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/isSeen', params2);
+      _netUtil.get(url4).then((seen) => {
+        this.setState(() {               
+            if(seen['data']["is_seen"] == 1) {_isSeen = true;}                                           
+        }) :_isSeen
+      });  
 
-    // Get friends who have seen the movie        
-    var url5 = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/getSeenFollowed', params2);
-    _netUtil.get(url5).then((seen) => {
-      this.setState(() {                         
-          _seenFollowers = seen["data"];          
-      }) :_seenFollowers
-    });  
+      // Get friends who have seen the movie        
+      var url5 = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/getSeenFollowed', params2);
+      _netUtil.get(url5).then((seen) => {
+        this.setState(() {                         
+            _seenFollowers = seen["data"];          
+        }) :_seenFollowers
+      });  
+    });      
   }
   
 
@@ -316,6 +316,7 @@ class Movie extends State<MoviePage> {
                       color: (_isSeen ? Colors.redAccent : Colors.blue),                                                        
                       child: Text("Seen", style: TextStyle(color: Colors.white),),
                       onPressed: () {
+                        print(_isSeen);
                         if (_isSeen) {
                           makeSeen(false);
                           setState(() => _isSeen = false);  

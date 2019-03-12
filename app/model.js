@@ -355,7 +355,10 @@ module.exports.setSeenMovie = (muser_id, mmovie_id, mseen) => {
       user_id: muser_id
     }
   }).then((entry) => {
+    console.log(entry != undefined);
+    console.log(!type);
     if (entry != undefined && !type) {
+      console.log('DELETING SEEN AND ACTIVITY');
       return sequelize.transaction(async function (t) {
         return Seen.destroy({
           where: {
@@ -369,6 +372,7 @@ module.exports.setSeenMovie = (muser_id, mmovie_id, mseen) => {
         });
       });
     } else if (entry == undefined && type) {
+      console.log('ADDING SEEN AND ACTIVITY');
       return sequelize.transaction(async function (t) {
         let date = new Date();
         return Seen.create({
