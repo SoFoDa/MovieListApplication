@@ -5,6 +5,7 @@ DROP PROCEDURE getGenres;
 DROP PROCEDURE getUserInfo;
 DROP PROCEDURE getFollowerAmount;
 DROP PROCEDURE isSeen;
+DROP PROCEDURE getSeenFollowed;
 
 
 DELIMITER //
@@ -109,6 +110,22 @@ BEGIN
     Seen as s
   WHERE
     s.user_id = u_id
+    AND s.movie_id = m_id;  
+END //
+
+CREATE PROCEDURE getSeenFollowed
+(IN u_id CHAR(30), IN m_id CHAR(30))
+BEGIN
+  SELECT  
+    u2.username,
+    s.date
+  FROM    
+    User as u
+    JOIN User_friend as uf ON u.user_id = uf.user_id
+    JOIN User as u2 ON uf.friend_id = u2.user_id
+    JOIN Seen as s ON uf.friend_id = s.user_id
+  WHERE
+    u.user_id = u_id
     AND s.movie_id = m_id;  
 END //
 
