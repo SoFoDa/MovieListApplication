@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:public/util/network_utility.dart';
-import 'package:public/services/authentication.dart';
 import '../widgets/search_card.dart';
 import 'package:public/config.dart';
 import 'package:public/views/movie.view.dart';
@@ -16,8 +15,8 @@ class SearchPage extends StatefulWidget {
 
 class Search extends State<SearchPage> {
   NetworkUtility _netUtil = new NetworkUtility();
-  Authentication _auth = new Authentication();
   List<dynamic> _movies = []; 
+  Map<String, dynamic> _users = {};
 
   @override
   void initState() {
@@ -31,6 +30,16 @@ class Search extends State<SearchPage> {
           _movies = movies['data'];
           print(movies['data']);
       }) :_movies
+    });
+    params = {
+      'username': widget.search,
+    };
+    url = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/searchUser', params);
+    _netUtil.get(url).then((users) => {
+      this.setState(() {
+          _users = users['data'];
+          print(users['data']);
+      }) :_users
     });
   }
 

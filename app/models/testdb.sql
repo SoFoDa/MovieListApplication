@@ -54,28 +54,6 @@ INSERT INTO Movie_genre (movie_id, genre_id) VALUES (2, 7);
 INSERT INTO Movie_director (movie_id, director_id) VALUES (1, 1);
 INSERT INTO Movie_director (movie_id, director_id) VALUES (2, 2);
 
-INSERT INTO Seen (user_id, movie_id, date) VALUES (1, 1, NOW());
-INSERT INTO Seen (user_id, movie_id, date) VALUES (1, 2, NOW());
-INSERT INTO Seen (user_id, movie_id, date) VALUES (2, 1, NOW());
-INSERT INTO Seen (user_id, movie_id, date) VALUES (2, 2, NOW());
-INSERT INTO Seen (user_id, movie_id, date) VALUES (3, 2, NOW());
-INSERT INTO Seen (user_id, movie_id, date) VALUES (4, 1, NOW());
-
-INSERT INTO Activity (user_id, date) VALUES (1, NOW());
-INSERT INTO Activity_friend (activity_id, friend_id) VALUES (1, 2);
-INSERT INTO Activity (user_id, date) VALUES (1, NOW());
-INSERT INTO Activity_friend (activity_id, friend_id) VALUES (2, 3);
-INSERT INTO Activity (user_id, date) VALUES (2, '2019-03-10');
-INSERT INTO Activity_friend (activity_id, friend_id) VALUES (3, 1);
-INSERT INTO Activity (user_id, date) VALUES (1, NOW());
-INSERT INTO Activity_movie (activity_id, movie_id, type) VALUES (4, 1, 'rate');
-INSERT INTO Activity (user_id, date) VALUES (2, '2019-03-11');
-INSERT INTO Activity_movie (activity_id, movie_id, type) VALUES (5, 2, 'seen');
-INSERT INTO Activity (user_id, date) VALUES (3, NOW());
-INSERT INTO Activity_movie (activity_id, movie_id, type) VALUES (6, 1, 'favourite');
-INSERT INTO Activity (user_id, date) VALUES (4, NOW());
-INSERT INTO Activity_movie (activity_id, movie_id, type) VALUES (7, 2, 'seen');
-
 
 
 

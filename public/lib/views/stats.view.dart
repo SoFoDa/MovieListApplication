@@ -11,7 +11,7 @@ class Stats extends StatefulWidget {
 class StatsPage extends State<Stats> {
   NetworkUtility _netUtil = new NetworkUtility();
   Authentication _auth = new Authentication();
-  Map<String, dynamic> _stats;
+  Map<String, dynamic> _stats = {};
 
   void initState() { 
     super.initState();
@@ -21,18 +21,18 @@ class StatsPage extends State<Stats> {
     print(url);  
     _netUtil.get(url, header: headers).then((res) {
       if (this.mounted) {  
-        res = res['data'];
-        print(res);
-        setState(() {  
-          _stats = res;  
+        res = res['data'];        
+        setState(() {            
+          _stats = res;
+          print(_stats);
         });
       }
     });   
   }
 
   @override
-  Widget build(BuildContext context) {
-    if (_stats != null) {
+  Widget build(BuildContext context) {    
+    if (_stats["runtime"] != null) {      
       return Container(      
         child: Center(        
           child: Text('Total runtime: ' + _stats['runtime'] + 
@@ -42,7 +42,11 @@ class StatsPage extends State<Stats> {
         ),
       );
     } else {
-      return Container();
+      return Container(
+        child: Center(
+          child: Text("No stats available")
+        ),        
+      );
     }
     
   }
