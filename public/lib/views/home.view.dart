@@ -103,12 +103,15 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin{
                   ),
                 );
               } else {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => Profile(userId: activity['friend_id'], myProfile: false,),
-                  ),
-                );
+                if (_auth.userID != activity['friend_id']) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => Profile(userId: activity['friend_id'], myProfile: false,),
+                    ),
+                  ).then((val) {
+                    if(val != null) val ? getActivities() : null;
+                  });
+                }
               }
             },                                   
           );

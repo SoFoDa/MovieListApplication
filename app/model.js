@@ -46,6 +46,7 @@ const User = sequelize.define('User', {
 const User_friend = sequelize.define('User_friend', {
     user_id: {
         type: Sequelize.INTEGER,
+        primaryKey: true,
      
         references: {
           model: 'User',
@@ -230,6 +231,7 @@ const Activity = sequelize.define('Activity', {
 const Activity_friend = sequelize.define('Activity_friend', {
     activity_id: {
         type: Sequelize.INTEGER,
+        primaryKey: true,
      
         references: {
           model: 'Activity',
@@ -355,8 +357,6 @@ module.exports.setSeenMovie = (muser_id, mmovie_id, mseen) => {
       user_id: muser_id
     }
   }).then((entry) => {
-    console.log(entry != undefined);
-    console.log(!type);
     if (entry != undefined && !type) {
       console.log('DELETING SEEN AND ACTIVITY');
       return sequelize.transaction(async function (t) {
@@ -495,4 +495,67 @@ module.exports.getUserStats = async (user_id) => {
     genre: mostWatchedGenre[0]['0'],
     director: mostWatchedDirector[0]['0'],
   }
+}
+
+module.exports.isFollowing = async (user_id, follow_user_id) => {
+  return User_friend.findAndCountAll({
+    where: {
+      user_id: user_id,
+      friend_id: follow_user_id,
+    }
+  });
+}
+
+module.exports.followUser = async (user_id, follow_user_id, status) => {
+  let type = (status == 'true');
+  return User_friend.findOne({
+    where: {
+      user_id: user_id,
+      friend_id: follow_user_id
+    }
+  }).then((entry) => {
+    console.log(entry);
+    console.log(entry != undefined);
+    console.log(!type);
+    if (entry != undefined && !type) {
+      console.log('DELETING SEEN AND ACTIVITY');
+      return sequelize.transaction(async function (t) {
+        return User_friend.destroy({
+          where: {
+            user_id: user_id,
+            friend_id: follow_user_id
+          }
+        }).then((_) => {
+          return sequelize.query("CALL deleteFriendActivity(?,?);", { 
+            replacements: [user_id,follow_user_id], type: sequelize.QueryTypes.DELETE 
+          });
+        });
+      });
+    } else if (entry == undefined && type) {
+      console.log('ADDING FOLLOW AND ACTIVITY');
+      return sequelize.transaction(async function (t) {
+        let date = new Date();
+        return User_friend.create({
+          user_id: user_id,
+          friend_id: follow_user_id,
+          date: date
+        }).then((friendEntry) => {
+          // create activity
+          return Activity.create({
+            user_id: user_id,
+            date: date
+          }).then((acEntry) => {
+            return Activity_friend.create({
+              activity_id: acEntry.activity_id,
+              friend_id: follow_user_id,
+            }).then((acmEntry) => {
+              return true;
+            });
+          });
+        });
+      });
+    }
+  }).catch(err => {
+    console.log(err);
+  });
 }

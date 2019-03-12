@@ -193,6 +193,27 @@ router.get('/getSeenFollowed', function(req, res) {
   });
 });
 
+/* URL params
+* @username: username to search for.
+*/
+router.get('/searchUser', async function(req, res) {
+  return model.getUser(req.query.username).then(function(result) {
+    if (result !== undefined) {
+      model.getUserInfo(result.user_id).spread(function(data,metadata) {
+        res.json({
+          status: '200',
+          data: data
+        });
+      });
+    } else {
+      res.json({
+        status: '200',
+        data: null
+      });
+    }
+  });
+});
+
 /* URL params: 
 * @title: Title of the movie
 */
@@ -356,6 +377,37 @@ router.post('/setSeen', verifyToken, function(req, res) {
   res.json({
     status: '200'
   })
+});
+
+/* 
+* Follow a user
+*/
+router.post('/followUser', verifyToken, function(req, res) {
+  model.followUser(req.headers.user_id, req.body.follow_user_id, req.body.status).then((result) => {
+    res.json({
+      status: '200'
+    });
+  });
+});
+
+/* 
+* Check if user is following another user
+* @follow_user_id: are we following this user?
+*/
+router.post('/isFollowing', verifyToken, function(req, res) {
+  model.isFollowing(req.headers.user_id, req.body.follow_user_id).then((result) => {
+    if (result['count']>0) {
+      res.json({
+        data: {'is_follower':true},
+        status: '200'
+      });
+    } else {
+      res.json({
+        data: {'is_follower':false},
+        status: '200'
+      });
+    }
+  });
 });
 
 /* 

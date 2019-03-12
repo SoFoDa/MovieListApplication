@@ -175,7 +175,7 @@ DROP TABLE IF EXISTS `mydb`.`Activity` ;
 CREATE TABLE IF NOT EXISTS `mydb`.`Activity` (
   `activity_id` INT NOT NULL AUTO_INCREMENT,
   `user_id` INT NOT NULL,
-  `date` DATE NOT NULL,
+  `date` DATETIME NOT NULL,
   INDEX `fk_Activity_User1_idx` (`user_id` ASC),
   PRIMARY KEY (`activity_id`),
   CONSTRAINT `fk_Activity_User1`

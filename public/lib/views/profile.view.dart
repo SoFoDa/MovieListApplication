@@ -23,6 +23,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   List<dynamic> _userInfo = []; 
   Map<String, dynamic> _seenMovies = {};
   int seenLen = 0;
+  bool _isFollower = false;
 
   NetworkUtility _netUtil = new NetworkUtility();
   Authentication _auth = new Authentication();  
@@ -66,6 +67,24 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
         });
       } 
     });  
+
+    // not on our own profile
+    if(widget.userId != _auth.userID) {
+      print('Not the users profile!');
+      var header = <String, String>{
+        'authorization' : _auth.token,
+        'user_id' : _auth.userID.toString(),
+        'device_id' : _auth.deviceIdLocal,      
+      };
+      // get following status
+      var body = {'follow_user_id': widget.userId.toString()};
+      var url4 = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/isFollowing');
+      _netUtil.post(url4,  header: header, body: body).then((seen) {
+        this.setState(() {            
+          _isFollower = seen['data']["is_follower"];                                       
+        });
+      }); 
+    }
   }  
   
   @override
@@ -79,6 +98,27 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
     super.dispose();
   }
 
+  // Set movie as seen
+  void followUser(bool status) {  
+    var header = <String, String>{
+      'authorization' : _auth.token,
+      'user_id' : _auth.userID.toString(),
+      'device_id' : _auth.deviceIdLocal,      
+    };
+
+    var body = <String, String>{
+      'follow_user_id' : widget.userId.toString(),
+      'status': status.toString(),
+    };
+
+    var url = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/followUser');
+    _netUtil.post(
+      url, 
+      header: header,
+      body: body,
+    ).then((res) => {});
+  }
+
   @override
   Widget build(BuildContext context) {   
     if (widget.myProfile) {
@@ -87,6 +127,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
       return Scaffold(
         appBar: AppBar(
           title: Text(username),
+          leading: IconButton(icon:Icon(Icons.chevron_left),onPressed:() => Navigator.pop(context, true),)
         ),
         body: profileWidget(),
     );  
@@ -186,12 +227,18 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
           ),          
           Container(
             margin: EdgeInsets.only(top: 20),            
-            child: RaisedButton(                           
-              child: Text('Log out'),
+            child: RaisedButton(      
+              color: Colors.blue,                     
+              child: (widget.myProfile ? Text('Log out') : (_isFollower ? Text('Following') : Text('Follow'))),
               onPressed: () {
-                Authentication _auth = new Authentication();
-                _auth.logout();
-                Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
+                if (widget.myProfile) {
+                  _auth.logout();
+                  Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
+                } else {
+                  print(_isFollower);
+                  followUser(!_isFollower);
+                  setState(() => _isFollower = !_isFollower);   
+                }
               }
             ),            
           ),          

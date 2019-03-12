@@ -10,6 +10,7 @@ DROP PROCEDURE getMostWatchedDirector;
 DROP PROCEDURE isSeen;
 DROP PROCEDURE getSeenFollowed;
 DROP PROCEDURE deleteMovieActivity;
+DROP PROCEDURE deleteFriendActivity;
 
 DELIMITER //
 CREATE PROCEDURE getUserActivity
@@ -19,6 +20,7 @@ BEGIN
     fusr.username,
     ac.date,
     acfu.username as friend_username,
+    fusr.user_id as tuser_id,
     acfu.user_id as friend_id,
     acm.type,
     mov.movie_id,
@@ -105,11 +107,11 @@ CREATE PROCEDURE getFollowerAmount
 (IN id CHAR(30))
 BEGIN
   SELECT  
-    COUNT(ufri.friend_id) as follower_amount
+    COUNT(*) as follower_amount
   FROM    
     User_friend as ufri
   WHERE
-    ufri.user_id = id;  
+    ufri.friend_id = id;  
 END //
 
 CREATE PROCEDURE getMostWatchedDirector
@@ -211,6 +213,30 @@ BEGIN
     );
   DELETE FROM
     Activity_movie
+  WHERE
+    activity_id = @activity_id;
+
+  DELETE FROM
+    Activity
+  WHERE
+    activity_id = @activity_id;
+END //
+
+
+CREATE PROCEDURE deleteFriendActivity
+(IN u_id CHAR(30), IN f_id CHAR(30))
+BEGIN
+  SET @activity_id = (SELECT
+        a.activity_id
+      FROM
+        Activity as a
+        JOIN (SELECT * FROM Activity_friend) as acf ON acf.activity_id = a.activity_id
+      WHERE
+        a.user_id = u_id
+        AND acf.friend_id = f_id
+    );
+  DELETE FROM
+    Activity_friend
   WHERE
     activity_id = @activity_id;
 
