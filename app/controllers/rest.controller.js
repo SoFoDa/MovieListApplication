@@ -437,4 +437,13 @@ router.get('/userStats', verifyToken, function(req, res) {
   });
 });
 
+router.get('/test', function(req, res) {
+  model.getFollowers(req.query.user_id).then(function(result) {
+    res.json({
+      data: result,
+    });
+  });
+});
+
+
 module.exports = router;

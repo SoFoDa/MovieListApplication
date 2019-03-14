@@ -11,6 +11,8 @@ DROP PROCEDURE isSeen;
 DROP PROCEDURE getSeenFollowed;
 DROP PROCEDURE deleteMovieActivity;
 DROP PROCEDURE deleteFriendActivity;
+DROP PROCEDURE getFollowers;
+
 
 DELIMITER //
 CREATE PROCEDURE getUserActivity
@@ -245,6 +247,17 @@ BEGIN
     Activity
   WHERE
     activity_id = @activity_id;
+END //
+
+CREATE PROCEDURE getFollowers
+(IN id CHAR(30))
+BEGIN
+  SELECT  
+    ufri.friend_id
+  FROM    
+    User_friend as ufri
+  WHERE
+    ufri.user_id = id;  
 END //
 
 DELIMITER ;

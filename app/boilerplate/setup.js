@@ -5,7 +5,6 @@
 require('better-logging')(console);
 const path = require('path');
 const expressSession = require('express-session');
-const sharedSession = require('express-socket.io-session');
 const express = require('express');
 const http = require('http');
 
@@ -26,7 +25,7 @@ require('isomorphic-fetch');
 module.exports = () => {
     const app = express(); // Creates express app
     const httpServer = http.Server(app); // Express usually does this for us, but socket.io needs the httpServer directly
-    const io = require('socket.io').listen(httpServer); // Creates socket.io app
+    var expressWs = require('express-ws')(app, httpServer);
 
     // Setup express
     app.use((req, res, next) => {
@@ -59,10 +58,9 @@ module.exports = () => {
         saveUninitialized: true,
     });
     app.use(session);
-    io.use(sharedSession(session));
 
     return {
-        app, io,
+        app,
         listen: (port, cb) => httpServer.listen(port, cb)
     }    
 }

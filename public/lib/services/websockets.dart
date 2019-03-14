@@ -1,21 +1,18 @@
-import 'package:flutter/foundation.dart';
+
 import 'package:web_socket_channel/io.dart';
+import 'package:flutter/foundation.dart';
+import 'dart:convert';
 
-WebSocketConfig socket = new WebSocketConfig();
+class Websocket {
+  static final Websocket _sockets = new Websocket._internal();
+  ObserverList<Function> _listeners = new ObserverList<Function>();
+  var _channel;
 
-const String _server_address = "ws://localhost:8989";
-
-class WebSocketConfig {
-  static final WebSocketConfig _sockets = new WebSocketConfig._internal();
-
-  factory WebSocketConfig(){
+  factory Websocket(){
     return _sockets;
   }
 
-  WebSocketConfig._internal();  
-  IOWebSocketChannel _channel;
-
-  ObserverList<Function> _listeners = new ObserverList<Function>();
+  Websocket._internal();  
 
   // Connection established
   bool _connected = false;
@@ -24,8 +21,9 @@ class WebSocketConfig {
   initCommunication() async {        
     close();    
     try {
-      _channel = new IOWebSocketChannel.connect(_server_address);      
+      _channel = new IOWebSocketChannel.connect("ws://localhost:8989");      
       _channel.stream.listen(_onReception);
+      _connected = true;
     } catch(e){
       // TODO error handling
     }
@@ -42,10 +40,12 @@ class WebSocketConfig {
   }
 
   // Send websocket message  
-  send(String message){
+  send(Map<String, dynamic> message){ 
     if (_channel != null){
-      if (_channel.sink != null && _connected){
-        _channel.sink.add(message);
+      if (_channel.sink != null && _connected) {
+        String json = jsonEncode(message);
+        print("Sending: " + json);
+        _channel.sink.add(json);
       }
     }
   }
@@ -60,6 +60,7 @@ class WebSocketConfig {
 
   _onReception(message){
     _connected = true;
+    print("LENGTH: =====" + _listeners.length.toString());
     _listeners.forEach((Function callback){
       callback(message);
     });
