@@ -55,7 +55,8 @@ class Search extends State<SearchPage> {
             print(users['data']);
             if(users['data'] != null) {              
               userLen += _users.length;  
-              _listItems.add(_users[0]);                
+              _listItems.add(_users[0]);   
+              print(_listItems);          
             }                      
           });
         });            
@@ -118,7 +119,7 @@ class Search extends State<SearchPage> {
               child: ListView.builder(                         
                 itemCount: movieLen + userLen,          
                 itemBuilder: (context, index) {                  
-                  final _listItem = _listItems[index];                                                   
+                  final _listItem = _listItems[index];                                                  
                   return ListTile(                                                        
                     subtitle: (index < movieLen ? 
                     SearchCard(_listItem['title'], _listItem['release_year'], _listItem['genres'], _listItem['directors'], _listItem['runtime'], _listItem['poster_path']) :

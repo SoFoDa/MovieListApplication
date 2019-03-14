@@ -19,7 +19,11 @@ module.exports = (socket, users) => {
             console.log("Follower: " + followerId);
             let followerSocket = users[followerId];
             if (followerSocket !== undefined) {
-              followerSocket.send(JSON.stringify({action:'update'}));
+              try {
+                followerSocket.send(JSON.stringify({action:'update'}));
+              } catch (err) {
+                console.log('User not logged in: ' + followerId); 
+              }
             }
           }
         });

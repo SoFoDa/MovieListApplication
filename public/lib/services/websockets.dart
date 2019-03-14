@@ -18,7 +18,8 @@ class Websocket {
   bool _connected = false;
     
   // Initialize websocket connection  
-  initCommunication() async {        
+  initCommunication() async {  
+    print('Init web socket connection');      
     close();    
     try {
       _channel = new IOWebSocketChannel.connect("ws://localhost:8989");      
