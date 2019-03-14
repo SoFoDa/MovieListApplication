@@ -45,19 +45,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
           joinDate = res['data']['join_date'].toString();          
         });
       }
-    });        
-
-    // Get seen movies
-    var url3 = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/seenMovies', params);                
-    print(url3);      
-    _netUtil.get(url3).then((res) {      
-      if (this.mounted) {
-        this.setState(() {               
-          _seenMovies = res['data'];            
-          seenLen = _seenMovies.length;
-        });
-      } 
-    });  
+    });            
 
     // not on our own profile
     if(widget.userId != _auth.userID) {
@@ -78,6 +66,20 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
     }
   }  
 
+  void getSeenMovies(){
+    // Get seen movies
+    var url3 = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/seenMovies', { 'user_id': widget.userId.toString()});                
+    print(url3);      
+    _netUtil.get(url3).then((res) {      
+      if (this.mounted) {
+        this.setState(() {               
+          _seenMovies = res['data'];            
+          seenLen = _seenMovies.length;
+        });
+      } 
+    });  
+  }
+
   void getFollowerAmount() {
     // Get follower amount 
     var url2 = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/getFollowerAmount', { 'user_id': widget.userId.toString()});           
@@ -91,11 +93,12 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   }
 
   void _webSocketFunction(String message) {
-    Map<String, dynamic> response = jsonDecode(message);
-    print("RESPONSE: " + response['action']);
+    Map<String, dynamic> response = jsonDecode(message);    
     switch (response['action']) {
-      case 'updateFollow':
-        print("YEEEEEEEEEES");
+      case 'update': 
+        getSeenMovies();
+        break;
+      case 'updateFollow':        
         getFollowerAmount();
         break;
       default:
@@ -108,6 +111,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
     _ws.addListener(_webSocketFunction);   
     updateInformation();
     getFollowerAmount();  
+    getSeenMovies();
   }  
 
   @override
