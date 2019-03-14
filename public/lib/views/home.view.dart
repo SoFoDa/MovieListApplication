@@ -55,6 +55,11 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin{
     });   
   }
 
+  Future<void> refresh() async {
+    _ws.initCommunication();
+    getActivities();
+  }
+
   void _webSocketFunction(String message) {
     Map<String, dynamic> response = jsonDecode(message);
     switch (response['action']) {
@@ -73,7 +78,8 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin{
   }
 
   @override
-  void dispose(){               
+  void dispose(){  
+    _ws.removeListener(_webSocketFunction);        
     super.dispose();
   }
 
@@ -95,43 +101,46 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin{
           ],
         ),
       ),             
-      child: ListView.builder(
-        itemCount: _activityLen,
-        itemBuilder: (context, index) {
-          var activity =_activities[index.toString()];
-          Activity listItem;
-          if (activity['friend_username'] != null) {
-            listItem = new Activity(activity['username'], 'friend', activity['date'],
-              null, ActivityFriend(activity['friend_username']));
-          } else {
-            listItem = new Activity(activity['username'], 'movie', activity['date'], 
-              new ActivityMovie(activity['type'], activity['title'], activity['release_year'].toString(), activity['poster_path']), null);
-          }
-          return ListTile(    
-            title: checkPrevDate(listItem.date, index),
-            subtitle: activity_card.ActivityCard(listItem),   
-            onTap: () {
-              if (activity['friend_username'] == null) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MoviePage(movieId: activity['movie_id'].toString()),
-                  ),
-                );
-              } else {
-                if (_auth.userID != activity['friend_id']) {
-                  Navigator.of(context).push(
+      child: new RefreshIndicator(
+        onRefresh: refresh,
+        child: ListView.builder(
+          itemCount: _activityLen,
+          itemBuilder: (context, index) {
+            var activity =_activities[index.toString()];
+            Activity listItem;
+            if (activity['friend_username'] != null) {
+              listItem = new Activity(activity['username'], 'friend', activity['date'],
+                null, ActivityFriend(activity['friend_username']));
+            } else {
+              listItem = new Activity(activity['username'], 'movie', activity['date'], 
+                new ActivityMovie(activity['type'], activity['title'], activity['release_year'].toString(), activity['poster_path']), null);
+            }
+            return ListTile(    
+              title: checkPrevDate(listItem.date, index),
+              subtitle: activity_card.ActivityCard(listItem),   
+              onTap: () {
+                if (activity['friend_username'] == null) {
+                  Navigator.push(
+                    context,
                     MaterialPageRoute(
-                      builder: (_) => Profile(userId: activity['friend_id'], myProfile: false,),
+                      builder: (context) => MoviePage(movieId: activity['movie_id'].toString()),
                     ),
-                  ).then((val) {
-                    if(val != null) val ? getActivities() : null;
-                  });
+                  );
+                } else {
+                  if (_auth.userID != activity['friend_id']) {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => Profile(userId: activity['friend_id'], myProfile: false,),
+                      ),
+                    ).then((val) {
+                      if(val != null) val ? getActivities() : null;
+                    });
+                  }
                 }
-              }
-            },                                   
-          );
-        },
+              },                                   
+            );
+          },
+        ),
       ),     
     );                
   }

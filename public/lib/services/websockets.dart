@@ -3,6 +3,7 @@ import 'package:web_socket_channel/io.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:convert';
 import 'package:public/config.dart';
+import 'package:public/services/authentication.dart';
 
 class Websocket {
   static final Websocket _sockets = new Websocket._internal();
@@ -17,6 +18,7 @@ class Websocket {
 
   // Connection established
   bool _connected = false;
+  Authentication _auth = new Authentication();
     
   // Initialize websocket connection  
   initCommunication() async {  
@@ -26,6 +28,7 @@ class Websocket {
       _channel = new IOWebSocketChannel.connect("ws://" + serverProperties['HOST'] + serverProperties["PORT"]);      
       _channel.stream.listen(_onReception);
       _connected = true;
+      send({'action': 'handshake', 'user': _auth.userID});
     } catch(e){
       // TODO error handling
     }

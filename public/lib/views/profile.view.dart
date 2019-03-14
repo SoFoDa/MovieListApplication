@@ -240,6 +240,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
               onPressed: () {
                 if (widget.myProfile) {
                   _auth.logout();
+                  _ws.close();
                   Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
                 } else {
                   followUser(!_isFollower);

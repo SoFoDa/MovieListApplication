@@ -52,8 +52,7 @@ class MovieListAppState extends State<MovieListApp> with SingleTickerProviderSta
   @override
   void initState(){    
     super.initState();  
-    _ws.initCommunication(); 
-    _ws.send({'action': 'handshake', 'user': _auth.userID});      
+    _ws.initCommunication();       
     tabController = new TabController(vsync: this, length: 3);
     currentTitle = appBarTitles[0];
     tabController.addListener(_handleTitle);
