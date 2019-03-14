@@ -35,17 +35,12 @@ class Search extends State<SearchPage> {
     var url = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/searchMovie', params);
     _netUtil.get(url).then((movies) {
       this.setState(() {
-        _movies = movies['data'];
-        print("result1");           
+        _movies = movies['data'];                
         print(movies['data']);           
         if(movies['data'] != null) {
           movieLen += _movies.length; 
-          _listItems.add(_movies);    
-          print("list1");    
-          print(_listItems);          
-          _listItems = _listItems.expand((x) => x).toList();    
-          print("list2");    
-          print(_listItems);
+          _listItems.add(_movies);              
+          _listItems = _listItems.expand((x) => x).toList();              
         }  
 
         // Get user search results
@@ -56,17 +51,11 @@ class Search extends State<SearchPage> {
         url = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/searchUser', params);
         _netUtil.get(url).then((users) {      
           this.setState(() {
-            _users = users['data'];
-            print("result2");           
+            _users = users['data'];                    
             print(users['data']);
             if(users['data'] != null) {              
               userLen += _users.length;  
-              _listItems.add(_users[0]);  
-              print("list3");    
-              print(_listItems);            
-              //_listItems = _listItems.expand((x) => x).toList();              
-              print("list4");    
-              print(_listItems); 
+              _listItems.add(_users[0]);                
             }                      
           });
         });            
