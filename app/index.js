@@ -2,7 +2,7 @@ require('dotenv').load();
 
 const setupBoilerplate = require('./boilerplate/setup');
 
-const { app, io, listen } =  setupBoilerplate();
+const { app, listen } =  setupBoilerplate();
 
 const port = process.env.PORT;
 
@@ -12,8 +12,10 @@ app.use('/api', router);
 
 // Registers socket.io controller
 const socketController = require('./controllers/socket.controller.js');
-io.on('connection', socket => {
-    socketController(socket, io);
+
+app.ws('/', function(ws, req) {
+  console.log("A user connected");
+  socketController(ws, app);
 });
 
 const model = require('./model.js');

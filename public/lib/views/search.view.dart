@@ -25,21 +25,21 @@ class Search extends State<SearchPage> {
       'title': widget.search,
     };
     var url = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/searchMovie', params);
-    _netUtil.get(url).then((movies) => {
+    _netUtil.get(url).then((movies) {
       this.setState(() {
           _movies = movies['data'];
           print(movies['data']);
-      }) :_movies
+      });
     });
     params = {
       'username': widget.search,
     };
     url = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/searchUser', params);
-    _netUtil.get(url).then((users) => {
+    _netUtil.get(url).then((users) {
       this.setState(() {
           _users = users['data'];
           print(users['data']);
-      }) :_users
+      });
     });
   }
 

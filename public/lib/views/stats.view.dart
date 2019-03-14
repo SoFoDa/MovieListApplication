@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:public/util/network_utility.dart';
 import 'package:public/config.dart';
 import 'package:public/services/authentication.dart';
+import 'package:public/services/websockets.dart';
 
 class Stats extends StatefulWidget {  
   @override
@@ -11,6 +12,7 @@ class Stats extends StatefulWidget {
 class StatsPage extends State<Stats> {
   NetworkUtility _netUtil = new NetworkUtility();
   Authentication _auth = new Authentication();
+  Websocket ws = new Websocket();
   Map<String, dynamic> _stats = {};
 
   void initState() { 
@@ -31,7 +33,8 @@ class StatsPage extends State<Stats> {
   }
 
   @override
-  Widget build(BuildContext context) {    
+  Widget build(BuildContext context) {  
+    ws.send("hello");  
     if (_stats["runtime"] != null) {      
       return Container(      
         child: Center(        

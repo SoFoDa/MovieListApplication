@@ -10,6 +10,8 @@ import './views/stats.view.dart' as stats;
 import './views/search.view.dart' as search;
 import 'package:public/services/authentication.dart';
 
+import 'package:public/services/websockets.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {  
@@ -37,7 +39,8 @@ class MovieListApp extends StatefulWidget {
   MovieListAppState createState() => MovieListAppState();
 }
 
-class MovieListAppState extends State<MovieListApp> with SingleTickerProviderStateMixin{    
+class MovieListAppState extends State<MovieListApp> with SingleTickerProviderStateMixin {
+  Websocket ws = new Websocket();    
   final List<Text> appBarTitles = [Text('Home'), Text('Profile'), Text('Stats')];
   TabController tabController;  
   Text currentTitle;
@@ -46,7 +49,8 @@ class MovieListAppState extends State<MovieListApp> with SingleTickerProviderSta
 
   @override
   void initState(){    
-    super.initState();        
+    super.initState();  
+    ws.initCommunication();      
     tabController = new TabController(vsync: this, length: 3);
     currentTitle = appBarTitles[0];
     tabController.addListener(_handleTitle);
