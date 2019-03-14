@@ -292,7 +292,7 @@ module.exports.getUser = (username) => {
 
 module.exports.registerUser = (regFullName, regUsername, regPassword) => {
     return User.create({username: regUsername, password: regPassword}).then(user => {                           
-        return User_info.create({user_id: user.user_id, name: regFullName, created: new Date()}).then(result => {
+        return User_info.create({user_id: user.user_id, name: regFullName, created: new Date().toISOString().slice(0, 19).replace('T', ' ')}).then(result => {
             console.log('Db registration success!');
             return true;
         }).catch(err => {
@@ -374,7 +374,7 @@ module.exports.setSeenMovie = (muser_id, mmovie_id, mseen) => {
     } else if (entry == undefined && type) {
       console.log('ADDING SEEN AND ACTIVITY');
       return sequelize.transaction(async function (t) {
-        let date = new Date();
+        let date = new Date().toISOString().slice(0, 19).replace('T', ' ');
         return Seen.create({
           user_id: muser_id,
           movie_id: mmovie_id,
@@ -534,7 +534,7 @@ module.exports.followUser = async (user_id, follow_user_id, status) => {
     } else if (entry == undefined && type) {
       console.log('ADDING FOLLOW AND ACTIVITY');
       return sequelize.transaction(async function (t) {
-        let date = new Date();
+        let date = new Date().toISOString().slice(0, 19).replace('T', ' ');
         return User_friend.create({
           user_id: user_id,
           friend_id: follow_user_id,
