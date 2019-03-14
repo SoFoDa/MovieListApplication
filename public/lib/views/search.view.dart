@@ -112,8 +112,8 @@ class Search extends State<SearchPage> {
               margin: EdgeInsets.symmetric(vertical: 10),
               child: Text(     
                 // Format search result amount text
-                (_movies.contains(null) ? '0 search results' : _movies.length.toString() + 
-                (_movies.length > 1 ? ' search results' : ' search result')), 
+                (_listItems.length == 0 ? '0 search results' : _listItems.length.toString() + 
+                (_listItems.length > 1 ? ' search results' : ' search result')), 
                 style: TextStyle(fontSize: 10, color: Colors.white),             
               ),
             ),          
