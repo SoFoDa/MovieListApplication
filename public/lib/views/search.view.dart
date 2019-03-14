@@ -41,7 +41,11 @@ class Search extends State<SearchPage> {
         if(movies['data'] != null) {
           movieLen += _movies.length; 
           _listItems.add(_movies);    
+          print("list1");    
+          print(_listItems);          
           _listItems = _listItems.expand((x) => x).toList();    
+          print("list2");    
+          print(_listItems);
         }  
 
         // Get user search results
@@ -57,9 +61,13 @@ class Search extends State<SearchPage> {
             print(users['data']);
             if(users['data'] != null) {              
               userLen += _users.length;  
-              _listItems.add(_users);              
-              _listItems = _listItems.expand((x) => x).toList();              
-            }          
+              _listItems.add(_users[0]);  
+              print("list3");    
+              print(_listItems);            
+              //_listItems = _listItems.expand((x) => x).toList();              
+              print("list4");    
+              print(_listItems); 
+            }                      
           });
         });            
       });
