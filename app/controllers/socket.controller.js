@@ -33,6 +33,14 @@ module.exports = (socket, users) => {
               }
             }
         });
+        break; 
+      case 'updateFollow':
+        console.log("upfate followers for user " + req.user); 
+        console.log("follow_id: " + req.follow_id);
+        let followSocket = users[req.follow_id];  
+        if(followSocket != undefined) {
+          followSocket.send(JSON.stringify({action: 'updateFollow'}));
+        }  
         break;
     }
   });
