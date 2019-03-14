@@ -198,11 +198,11 @@ router.get('/getSeenFollowed', function(req, res) {
 */
 router.get('/searchUser', async function(req, res) {
   return model.getUser(req.query.username).then(function(result) {
-    if (result !== undefined) {
-      model.getUserInfo(result.user_id).spread(function(data,metadata) {
+    if (result !== null) {
+      model.getUserInfo(result.user_id).spread(function(data,metadata) {        
         res.json({
           status: '200',
-          data: data
+          data: [data]
         });
       });
     } else {

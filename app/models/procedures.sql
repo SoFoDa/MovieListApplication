@@ -93,6 +93,7 @@ CREATE PROCEDURE getUserInfo
 (IN id CHAR(30))
 BEGIN
   SELECT
+    id,
     usr.username,
     uinf.name,
     uinf.created as join_date
