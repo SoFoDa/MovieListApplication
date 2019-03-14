@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:public/util/network_utility.dart';
+import 'package:public/services/authentication.dart';
 import '../widgets/search_card.dart';
 import '../widgets/base_card.dart';
 import 'package:public/config.dart';
@@ -16,7 +17,8 @@ class SearchPage extends StatefulWidget {
 }
 
 class Search extends State<SearchPage> {
-  NetworkUtility _netUtil = new NetworkUtility();
+  NetworkUtility _netUtil = new NetworkUtility();  
+  Authentication _auth = new Authentication();
   List<dynamic> _listItems = [];
   List<dynamic> _movies = []; 
   List<dynamic> _users = [];
@@ -27,7 +29,7 @@ class Search extends State<SearchPage> {
   void initState() {
     super.initState();
     // Get movie search results
-    var params = {
+    var params = {      
       'title': widget.search,
     };
     var url = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/searchMovie', params);
@@ -43,8 +45,9 @@ class Search extends State<SearchPage> {
         }  
 
         // Get user search results
-        params = {
+        params = {           
           'username': widget.search,
+          'own_user_id': _auth.userID.toString(),
         };
         url = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/searchUser', params);
         _netUtil.get(url).then((users) {      
@@ -126,12 +129,12 @@ class Search extends State<SearchPage> {
                       children: <Widget>[
                         BaseCard(MediaQuery.of(context).size.width, 70, EdgeInsets.zero),
                         Positioned(
-                          top: 10,
+                          top: 12,
                           left: 10,
                           child: Text(_listItem["0"]["username"], style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),)
                         ), 
                         Positioned(
-                          top: 35,
+                          top: 37,
                           left: 10,
                           child: Text(_listItem["0"]["name"], style: TextStyle(fontSize: 15, color: Colors.white70),)
                         ),                        
@@ -143,7 +146,7 @@ class Search extends State<SearchPage> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => (index < movieLen ? MoviePage(movieId: _listItem['movie_id'].toString()) :
-                          Profile(userId: int.parse(_listItem["0"]["id"]), myProfile: false)),
+                          Profile(userId: int.parse(_listItem["0"]["user_id"]), myProfile: false)),
                         ),
                       ) : context
                     },

@@ -195,16 +195,24 @@ router.get('/getSeenFollowed', function(req, res) {
 
 /* URL params
 * @username: username to search for.
+* @own_user_id: user id of the searching user
 */
 router.get('/searchUser', async function(req, res) {
   return model.getUser(req.query.username).then(function(result) {
     if (result !== null) {
-      model.getUserInfo(result.user_id).spread(function(data,metadata) {        
+      if(result.user_id != req.query.own_user_id) {        
+        model.getUserInfo(result.user_id).spread(function(data,metadata) {        
+          res.json({
+            status: '200',
+            data: [data]
+          });
+        });
+      } else { 
         res.json({
           status: '200',
-          data: [data]
+          data: null
         });
-      });
+      }     
     } else {
       res.json({
         status: '200',
