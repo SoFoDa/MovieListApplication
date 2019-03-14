@@ -28,7 +28,8 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   bool _isFollower = false;
 
   NetworkUtility _netUtil = new NetworkUtility();
-  Authentication _auth = new Authentication();  
+  Authentication _auth = new Authentication();
+  Websocket _ws = new Websocket();  
 
   void updateInformation() {
     // Request parameters    
@@ -118,7 +119,9 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
       url, 
       header: header,
       body: body,
-    ).then((res) => {});
+    ).then((res) {
+      _ws.send({'action': 'update', 'user': _auth.userID});
+    });
   }
 
   @override
@@ -239,9 +242,8 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                   _auth.logout();
                   Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
                 } else {
-                  print(_isFollower);
                   followUser(!_isFollower);
-                  setState(() => _isFollower = !_isFollower);   
+                  setState(() => _isFollower = !_isFollower);    
                 }
               }
             ),            

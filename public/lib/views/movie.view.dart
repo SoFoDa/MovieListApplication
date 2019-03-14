@@ -3,7 +3,6 @@ import 'package:public/util/network_utility.dart';
 import 'package:public/services/authentication.dart';
 import 'package:public/config.dart';
 import 'dart:ui';
-import 'dart:convert';
 
 import 'package:public/services/websockets.dart';
 

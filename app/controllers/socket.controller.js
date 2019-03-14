@@ -11,8 +11,6 @@ module.exports = (socket, users) => {
         break;
       case 'update':
         console.log('updating user followers: ' + req.user);
-        // TODO get model people follow
-        // send singal
         model.getFollowers(req.user).then((followers) => {
           for (let key in followers) {
             let followerId = followers[key].friend_id;
@@ -26,6 +24,14 @@ module.exports = (socket, users) => {
               }
             }
           }
+          let userSocket = users[req.user];
+            if (userSocket !== undefined) {
+              try {
+                userSocket.send(JSON.stringify({action:'update'}));
+              } catch (err) {
+                console.log('User not logged in: ' + followerId); 
+              }
+            }
         });
         break;
     }
