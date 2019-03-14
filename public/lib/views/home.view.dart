@@ -73,7 +73,8 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin{
   }
 
   @override
-  void dispose(){               
+  void dispose(){  
+    _ws.removeListener(_webSocketFunction);        
     super.dispose();
   }
 
