@@ -2,6 +2,7 @@
 import 'package:web_socket_channel/io.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:convert';
+import 'package:public/config.dart';
 
 class Websocket {
   static final Websocket _sockets = new Websocket._internal();
@@ -18,10 +19,11 @@ class Websocket {
   bool _connected = false;
     
   // Initialize websocket connection  
-  initCommunication() async {        
+  initCommunication() async {  
+    print('Init web socket connection');      
     close();    
     try {
-      _channel = new IOWebSocketChannel.connect("ws://localhost:8989");      
+      _channel = new IOWebSocketChannel.connect("ws://" + serverProperties['HOST'] + serverProperties["PORT"]);      
       _channel.stream.listen(_onReception);
       _connected = true;
     } catch(e){
