@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:public/util/network_utility.dart';
+import 'package:public/services/authentication.dart';
 import '../widgets/search_card.dart';
+import '../widgets/base_card.dart';
 import 'package:public/config.dart';
 import 'package:public/views/movie.view.dart';
+import 'package:public/views/profile.view.dart';
 
 class SearchPage extends StatefulWidget {
   final String search;
@@ -14,33 +17,50 @@ class SearchPage extends StatefulWidget {
 }
 
 class Search extends State<SearchPage> {
-  NetworkUtility _netUtil = new NetworkUtility();
+  NetworkUtility _netUtil = new NetworkUtility();  
+  Authentication _auth = new Authentication();
+  List<dynamic> _listItems = [];
   List<dynamic> _movies = []; 
-  Map<String, dynamic> _users = {};
+  List<dynamic> _users = [];
+  int movieLen = 0;
+  int userLen = 0;
 
   @override
   void initState() {
     super.initState();
-    var params = {
+    // Get movie search results
+    var params = {      
       'title': widget.search,
     };
     var url = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/searchMovie', params);
     _netUtil.get(url).then((movies) {
       this.setState(() {
-          _movies = movies['data'];
-          print(movies['data']);
+        _movies = movies['data'];                
+        print(movies['data']);           
+        if(movies['data'] != null) {
+          movieLen += _movies.length; 
+          _listItems.add(_movies);              
+          _listItems = _listItems.expand((x) => x).toList();              
+        }  
+
+        // Get user search results
+        params = {           
+          'username': widget.search,
+          'own_user_id': _auth.userID.toString(),
+        };
+        url = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/searchUser', params);
+        _netUtil.get(url).then((users) {      
+          this.setState(() {
+            _users = users['data'];                    
+            print(users['data']);
+            if(users['data'] != null) {              
+              userLen += _users.length;  
+              _listItems.add(_users[0]);                
+            }                      
+          });
+        });            
       });
-    });
-    params = {
-      'username': widget.search,
-    };
-    url = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/searchUser', params);
-    _netUtil.get(url).then((users) {
-      this.setState(() {
-          _users = users['data'];
-          print(users['data']);
-      });
-    });
+    });    
   }
 
   @override
@@ -89,29 +109,46 @@ class Search extends State<SearchPage> {
               margin: EdgeInsets.symmetric(vertical: 10),
               child: Text(     
                 // Format search result amount text
-                (_movies.contains(null) ? '0 search results' : _movies.length.toString() + 
-                (_movies.length > 1 ? ' search results' : ' search result')), 
+                (_listItems.length == 0 ? '0 search results' : _listItems.length.toString() + 
+                (_listItems.length > 1 ? ' search results' : ' search result')), 
                 style: TextStyle(fontSize: 10, color: Colors.white),             
               ),
             ),          
             Expanded(              
               child: ListView.builder(                         
-                itemCount: _movies.length,          
-                itemBuilder: (context, index) {
-                  final movie = _movies[index];                  
-                  if (movie != null) {
-                    return ListTile(                                                        
-                      subtitle: SearchCard(movie['title'], movie['release_year'], movie['genres'], movie['directors'], movie['runtime'], movie['poster_path']),
-                      onTap: () => {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => MoviePage(movieId: movie['movie_id'].toString()),
-                          ),
-                        ) : context
-                      },
-                    );
-                  }
+                itemCount: movieLen + userLen,          
+                itemBuilder: (context, index) {                  
+                  final _listItem = _listItems[index];                                                   
+                  return ListTile(                                                        
+                    subtitle: (index < movieLen ? 
+                    SearchCard(_listItem['title'], _listItem['release_year'], _listItem['genres'], _listItem['directors'], _listItem['runtime'], _listItem['poster_path']) :
+                    Stack(
+                      children: <Widget>[
+                        BaseCard(MediaQuery.of(context).size.width, 70, EdgeInsets.zero),
+                        Positioned(
+                          top: 12,
+                          left: 10,
+                          child: Text(_listItem["0"]["username"], style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),)
+                        ), 
+                        Positioned(
+                          top: 37,
+                          left: 10,
+                          child: Text(_listItem["0"]["name"], style: TextStyle(fontSize: 15, color: Colors.white70),)
+                        ),                        
+                      ],
+                    )
+                    ),                                            
+                    onTap: () => {                      
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => (index < movieLen ? MoviePage(movieId: _listItem['movie_id'].toString()) :
+                          Profile(userId: int.parse(_listItem["0"]["user_id"]), myProfile: false)),
+                        ),
+                      ) : context
+                    },
+                  );
+                
                 },
               ),
             ),

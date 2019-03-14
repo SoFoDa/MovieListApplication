@@ -142,7 +142,7 @@ class MovieListAppState extends State<MovieListApp> with SingleTickerProviderSta
           ),
           onSubmitted: _search,
           decoration: InputDecoration.collapsed(                           
-            hintText: "search for movie...",
+            hintText: "search...",
             hintStyle: TextStyle(
               color: Colors.white70,
             )
