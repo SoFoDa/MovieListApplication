@@ -7,7 +7,6 @@ const path = require('path');
 const expressSession = require('express-session');
 const express = require('express');
 const http = require('http');
-const WebSocket = require('ws');
 
 require('es6-promise').polyfill();
 require('isomorphic-fetch');

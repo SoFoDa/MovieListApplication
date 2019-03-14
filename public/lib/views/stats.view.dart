@@ -33,8 +33,7 @@ class StatsPage extends State<Stats> {
   }
 
   @override
-  Widget build(BuildContext context) {  
-    ws.send("hello");  
+  Widget build(BuildContext context) {   
     if (_stats["runtime"] != null) {      
       return Container(      
         child: Center(        

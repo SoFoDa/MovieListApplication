@@ -559,3 +559,9 @@ module.exports.followUser = async (user_id, follow_user_id, status) => {
     console.log(err);
   });
 }
+
+module.exports.getFollowers = (user_id) => {
+  return sequelize.query("CALL getFollowers(?);", { replacements: [user_id], type: sequelize.QueryTypes.SELECT }).spread((data, meta) => {
+    return data;
+  });
+}

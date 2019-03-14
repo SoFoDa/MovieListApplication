@@ -7,6 +7,9 @@ import 'package:public/config.dart';
 import 'package:public/services/authentication.dart';
 import 'package:public/views/profile.view.dart';
 import 'package:public/views/movie.view.dart';
+import 'dart:convert';
+
+import 'package:public/services/websockets.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -16,6 +19,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> with SingleTickerProviderStateMixin{  
   NetworkUtility _netUtil = new NetworkUtility();
   Authentication _auth = new Authentication();
+  Websocket _ws = new Websocket();
   var _formatter = new DateFormat('yyyy-MM-dd');
   Map<String, dynamic> _activities;
   int _activityLen = 0;
@@ -36,6 +40,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin{
   }
 
   void getActivities() {
+    print('Updaing activities...');
     var url = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/friendsActivity');
     Map<String, String> headers = {'authorization': 'Bearer ' + _auth.token, 'user_id': _auth.userID.toString(), 'device_id': _auth.deviceIdLocal};      
     print(url);  
@@ -50,9 +55,20 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin{
     });   
   }
 
+  void _webSocketFunction(String message) {
+    Map<String, dynamic> response = jsonDecode(message);
+    switch (response['action']) {
+      case 'update':
+        getActivities();
+        break;
+      default:
+    }
+  }
+
   @override
   void initState(){      
-    super.initState();  
+    super.initState(); 
+    _ws.addListener(_webSocketFunction); 
     getActivities();
   }
 

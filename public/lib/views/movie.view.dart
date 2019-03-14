@@ -5,6 +5,8 @@ import 'package:public/config.dart';
 import 'dart:ui';
 import 'dart:convert';
 
+import 'package:public/services/websockets.dart';
+
 class MoviePage extends StatefulWidget {
   final String movieId;
 
@@ -17,6 +19,7 @@ class MoviePage extends StatefulWidget {
 class Movie extends State<MoviePage> {
   NetworkUtility _netUtil = new NetworkUtility();
   Authentication _auth = new Authentication();    
+  Websocket _ws = new Websocket();
   dynamic _movie;
   String _genres = "";
   String _directors = "";
@@ -116,7 +119,9 @@ class Movie extends State<MoviePage> {
       url, 
       header: header,
       body: body,
-    ).then((res) => {});
+    ).then((res) {
+      _ws.send({'action': 'update', 'user': _auth.userID});   
+    });
   }
 
   @override
@@ -325,7 +330,7 @@ class Movie extends State<MoviePage> {
                         } else {
                           makeSeen(true);
                           setState(() => _isSeen = true);  
-                        }                                                
+                        }                                             
                       },
                     ),
                   ),

@@ -1,6 +1,7 @@
 
 import 'package:web_socket_channel/io.dart';
 import 'package:flutter/foundation.dart';
+import 'dart:convert';
 
 class Websocket {
   static final Websocket _sockets = new Websocket._internal();
@@ -39,11 +40,12 @@ class Websocket {
   }
 
   // Send websocket message  
-  send(String message){ 
+  send(Map<String, dynamic> message){ 
     if (_channel != null){
-      if (_channel.sink != null && _connected){
-        print("Sending: " + message);
-        _channel.sink.add(message);
+      if (_channel.sink != null && _connected) {
+        String json = jsonEncode(message);
+        print("Sending: " + json);
+        _channel.sink.add(json);
       }
     }
   }
@@ -58,6 +60,7 @@ class Websocket {
 
   _onReception(message){
     _connected = true;
+    print("LENGTH: =====" + _listeners.length.toString());
     _listeners.forEach((Function callback){
       callback(message);
     });

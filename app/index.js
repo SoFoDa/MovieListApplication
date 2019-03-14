@@ -13,9 +13,11 @@ app.use('/api', router);
 // Registers socket.io controller
 const socketController = require('./controllers/socket.controller.js');
 
+// keep track of users and sockets in a dictionary
+var users = {};
 app.ws('/', function(ws, req) {
   console.log("A user connected");
-  socketController(ws, app);
+  socketController(ws, users);
 });
 
 const model = require('./model.js');
