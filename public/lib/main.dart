@@ -11,6 +11,8 @@ import './views/search.view.dart' as search;
 import 'package:public/services/authentication.dart';
 
 import 'package:public/services/websockets.dart';
+import 'dart:convert';
+import 'package:public/services/websockets.dart';
 
 void main() => runApp(MyApp());
 
@@ -40,18 +42,20 @@ class MovieListApp extends StatefulWidget {
 }
 
 class MovieListAppState extends State<MovieListApp> with SingleTickerProviderStateMixin {
-  Websocket ws = new Websocket();    
+  Websocket _ws = new Websocket();    
   final List<Text> appBarTitles = [Text('Home'), Text('Profile'), Text('Stats')];
   TabController tabController;  
   Text currentTitle;
   bool activeSearch;
   Authentication _auth = new Authentication();
+  bool _newFeedItems = false;
 
   @override
   void initState(){    
     super.initState();  
-    ws.initCommunication(); 
-    ws.send({'action': 'handshake', 'user': _auth.userID});      
+    _ws.initCommunication(); 
+    _ws.send({'action': 'handshake', 'user': _auth.userID}); 
+    _ws.addListener(_webSocketFunction);     
     tabController = new TabController(vsync: this, length: 3);
     currentTitle = appBarTitles[0];
     tabController.addListener(_handleTitle);
@@ -62,13 +66,38 @@ class MovieListAppState extends State<MovieListApp> with SingleTickerProviderSta
     setState(() {
       currentTitle = appBarTitles[tabController.index];
     });
+  }
 
+  void _webSocketFunction(String message) {
+    Map<String, dynamic> response = jsonDecode(message);
+    switch (response['action']) {
+      case 'update':
+        print('Updating icon...');
+        setState(() {
+          _newFeedItems = true;
+        });
+        break;
+      default:
+    }
   }
 
   @override
   void dispose(){    
     tabController.dispose();
     super.dispose();
+  }
+
+  Widget homeIcon() {
+    if (!_newFeedItems) {
+      return new Container(
+                child: new Icon(Icons.home)
+              );
+    } else {
+      return new Container(
+                color: Colors.red,
+                child: new Icon(Icons.home)
+              );
+    }
   }
 
   @override
@@ -84,9 +113,7 @@ class MovieListAppState extends State<MovieListApp> with SingleTickerProviderSta
           child: new TabBar(
             controller: tabController,          
             tabs: <Tab>[
-              new Tab(icon: new Container(
-                child: new Icon(Icons.home)
-              )),                               
+              new Tab(icon: homeIcon()),                               
               new Tab(icon: new Icon(Icons.person)), 
               new Tab(icon: new Icon(Icons.insert_chart)),                           
             ]

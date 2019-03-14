@@ -5,6 +5,8 @@ import 'package:public/config.dart';
 import '../widgets/base_card.dart';
 import '../widgets/seen_card.dart';
 import 'package:public/views/movie.view.dart';
+import 'dart:convert';
+import 'package:public/services/websockets.dart';
 
 class Profile extends StatefulWidget {  
   final int userId;
