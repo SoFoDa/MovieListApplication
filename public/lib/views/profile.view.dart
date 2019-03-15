@@ -5,8 +5,8 @@ import 'package:public/config.dart';
 import '../widgets/base_card.dart';
 import '../widgets/seen_card.dart';
 import 'package:public/views/movie.view.dart';
-import 'dart:convert';
 import 'package:public/services/websockets.dart';
+import 'dart:convert';
 
 class Profile extends StatefulWidget {  
   final int userId;
@@ -28,8 +28,8 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   bool _isFollower = false;
 
   NetworkUtility _netUtil = new NetworkUtility();
-  Authentication _auth = new Authentication();
-  Websocket _ws = new Websocket();  
+  Authentication _auth = new Authentication();  
+  Websocket _ws = new Websocket();
 
   void updateInformation() {
     // Request parameters    
@@ -37,39 +37,15 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
     // Get user information
     var url = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/getUserInfo', params);      
     print(url);    
-      _netUtil.get(url).then((res) {
-        if (this.mounted) {  
-          setState(() {  
-            username = res['data']['username'];
-            name = res['data']['name'];
-            joinDate = res['data']['join_date'].toString();          
-          });
-        }
-      });    
-
-    // Get follower amount 
-    var url2 = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/getFollowerAmount', params);      
-    print(url2);    
-    _netUtil.get(url2).then((res) {
+    _netUtil.get(url).then((res) {
       if (this.mounted) {  
-        this.setState(() {                           
-          followers = res['data']['follower_amount'];                    
+        setState(() {  
+          username = res['data']['username'];
+          name = res['data']['name'];
+          joinDate = res['data']['join_date'].toString();          
         });
       }
-    });
-  
-
-    // Get seen movies
-    var url3 = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/seenMovies', params);                
-    print(url3);      
-    _netUtil.get(url3).then((res) {      
-      if (this.mounted) {
-        this.setState(() {               
-          _seenMovies = res['data'];            
-          seenLen = _seenMovies.length;
-        });
-      } 
-    });  
+    });            
 
     // not on our own profile
     if(widget.userId != _auth.userID) {
@@ -89,15 +65,58 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
       }); 
     }
   }  
+
+  void getSeenMovies(){
+    // Get seen movies
+    var url3 = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/seenMovies', { 'user_id': widget.userId.toString()});                
+    print(url3);      
+    _netUtil.get(url3).then((res) {      
+      if (this.mounted) {
+        this.setState(() {               
+          _seenMovies = res['data'];            
+          seenLen = _seenMovies.length;
+        });
+      } 
+    });  
+  }
+
+  void getFollowerAmount() {
+    // Get follower amount 
+    var url2 = Uri.http(serverProperties['HOST'] + serverProperties['PORT'], serverProperties['API_ENDPOINT'] + '/getFollowerAmount', { 'user_id': widget.userId.toString()});           
+    _netUtil.get(url2).then((res) {
+      if (this.mounted) {  
+        this.setState(() {                           
+          followers = res['data']['follower_amount'];                    
+        });
+      }
+    });
+  }
+
+  void _webSocketFunction(String message) {
+    Map<String, dynamic> response = jsonDecode(message);    
+    switch (response['action']) {
+      case 'update': 
+        getSeenMovies();
+        break;
+      case 'updateFollow':        
+        getFollowerAmount();
+        break;
+      default:
+    }
+  }
   
   @override
   void initState(){      
-    super.initState();    
+    super.initState();  
+    _ws.addListener(_webSocketFunction);   
     updateInformation();
+    getFollowerAmount();  
+    getSeenMovies();
   }  
 
   @override
-  void dispose(){               
+  void dispose(){     
+    _ws.removeListener(_webSocketFunction);           
     super.dispose();
   }
 
@@ -120,7 +139,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
       header: header,
       body: body,
     ).then((res) {
-      _ws.send({'action': 'update', 'user': _auth.userID});
+      _ws.send({'action': 'updateFollow', 'user_id': _auth.userID, 'follow_id': widget.userId});
     });
   }
 
@@ -243,8 +262,9 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                   _ws.close();
                   Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
                 } else {
+                  print(_isFollower);
                   followUser(!_isFollower);
-                  setState(() => _isFollower = !_isFollower);    
+                  setState(() => _isFollower = !_isFollower);   
                 }
               }
             ),            
@@ -294,3 +314,4 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
     );
   }
  }
+
