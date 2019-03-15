@@ -12,6 +12,7 @@ module.exports = (socket, users) => {
       case 'update':
         console.log('updating user followers: ' + req.user);
         model.getFollowers(req.user).then((followers) => {
+          console.log('Got followers');
           for (let key in followers) {
             let followerId = followers[key].friend_id;
             console.log("Follower: " + followerId);
@@ -38,7 +39,11 @@ module.exports = (socket, users) => {
         console.log("upfate followers for user " + req.user);         
         let followSocket = users[req.follow_id];  
         if(followSocket != undefined) {
-          followSocket.send(JSON.stringify({action: 'updateFollow'}));
+          try {
+            followSocket.send(JSON.stringify({action: 'updateFollow'}));
+          } catch (err) {
+            console.log('User not logged in: ' + followerId); 
+          }
         }  
         break;
     }

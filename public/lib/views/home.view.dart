@@ -62,8 +62,12 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin{
 
   void _webSocketFunction(String message) {
     Map<String, dynamic> response = jsonDecode(message);
+    print(message);
     switch (response['action']) {
       case 'update':
+        getActivities();
+        break;
+      case 'updateFollow':
         getActivities();
         break;
       default:

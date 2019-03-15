@@ -139,6 +139,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
       header: header,
       body: body,
     ).then((res) {
+      _ws.send({'action': 'update', 'user_id': _auth.userID});
       _ws.send({'action': 'updateFollow', 'user_id': _auth.userID, 'follow_id': widget.userId});
     });
   }
