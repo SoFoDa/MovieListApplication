@@ -14,7 +14,7 @@ module.exports = (socket, users) => {
         model.getFollowers(req.user).then((followers) => {
           console.log('Got followers');
           for (let key in followers) {
-            let followerId = followers[key].friend_id;
+            let followerId = followers[key].user_id;
             console.log("Follower: " + followerId);
             let followerSocket = users[followerId];
             if (followerSocket !== undefined) {

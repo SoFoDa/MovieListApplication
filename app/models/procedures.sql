@@ -253,11 +253,11 @@ CREATE PROCEDURE getFollowers
 (IN id CHAR(30))
 BEGIN
   SELECT  
-    ufri.friend_id
+    ufri.user_id
   FROM    
     User_friend as ufri
   WHERE
-    ufri.user_id = id;  
+    ufri.friend_id = id;  
 END //
 
 DELIMITER ;
