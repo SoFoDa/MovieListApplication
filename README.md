@@ -34,7 +34,8 @@ const Map serverProperties = const {
   'API_ENDPOINT': 'api'
 };
 ```
-5. Go to the root of the project and run the server with npm start
-6. Launch the app w/ flutter run
+5. Create mysql database with the schema found in app/models/db_schema.sql
+6. Go to the root of the project and run the server with npm start
+7. Launch the app w/ flutter run
 
 
